@@ -82,13 +82,13 @@ All code has to be readable in English. Moreover, all code must be commented fol
 
 Additionally, as PHP does not offer strict variable type declaration, naming conventions should be applied where the first character of a variable indicates a variable's (MySQL: column's) type (e.g., `bDeleted`). The rest of the variable should be formatted in camelCase. Parameters within functions/methods start with an underscore prefix (e.g., `_bDeleted`).
 
-- nVariable: numeric (integer or double/float)
-- sVariable: text
-- bVariable: boolean
-- aVariable: array (numeric or associative)
-- oVariable: object (or resource)
-- fVariable: function or method (also callbacks)
-- mVariable: mixed, can take multiple types (use sparingly)
+- `nVariable` numeric (integer or double/float)
+- `sVariable` text
+- `bVariable` boolean
+- `aVariable` array (numeric or associative)
+- `oVariable` object (or resource)
+- `fVariable` function or method (also callbacks)
+- `mVariable` mixed, can take multiple types (use sparingly)
 - the only exception are counter variables for `for` and `while` loops (use `i`, `j`, `k` and so forth)
 
 
