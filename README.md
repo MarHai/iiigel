@@ -14,19 +14,15 @@ _**I**nformatik **i**n **i**nteraktiven **G**ruppen **e**infach **l**ernen_ || _
 
 ## Setup
 
-First, clone the repository into your webserver's website directory (for xampp, that's normally c:/xampp/htdocs).
+1. Clone the repository into your webserver's website directory (for xampp, that's normally c:/xampp/htdocs).
+2. Install [composer](https://getcomposer.org/), fire up a command line (probably with admin. permissions), change to the main directory of the cloned repo and enter `composer update`.
+3. Run `res/iiigel.sql` through your database.
+4. Update `config/main.php` and set both main URL and database access settings.
+5. Update `.htaccess` and set the main URL's path in the last line.
+6. Start up a browser, navigate to **i³gel** and register as a new user.
+7. Open [HeidiSQL](http://www.heidisql.com/) or phpMyAdmin or something similar, find the `user` table and set both `bAdmin` and `bActive` of your newly generated user to `1`.
 
-Second, install [composer](https://getcomposer.org/), fire up a command line (probably with admin. permissions), change to the main directory of the cloned repo and enter `composer update`.
-
-Third, run `res/iiigel.sql` through your database.
-
-Fourth, update `config/main.php` and set both main URL and database access settings.
-
-Fifth, start up a browser, navigate to **i³gel** and register as a new user.
-
-Sixth, open [HeidiSQL](http://www.heidisql.com/) or phpMyAdmin or something similar, find the `user` table and set both `bAdmin` and `bActive` of your newly generated user to `1`.
-
-Good to go, now start coding/improving/documenting. And finally, push the modifications with a good (= self-explanatory and English) comment to the GitHub repo.
+Now, you should be good to go. Start coding/improving/documenting. And finally, push the modifications with a good (= self-explanatory and English) comment to the GitHub repo.
 
 
 ## i18n (language)
