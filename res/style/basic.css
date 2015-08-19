@@ -1,0 +1,63 @@
+body {
+    padding-top: 70px;
+}
+
+.dataTables_wrapper .col-sm-6 > div.dataTables_filter > label > input {
+    margin-left: 5px;
+}
+
+.dataTables_wrapper .col-sm-6 > div.dataTables_filter {
+    float: right;
+}
+
+#main-content table tr.Iiigel-click {
+    cursor: pointer;
+}
+
+.box0 p {
+    color: #FFF;
+}
+
+.box1 {
+    display: block;
+}
+
+.editable-pre-wrapped {
+    white-space: normal;
+}
+
+.progress.small {
+    margin: 20px 0;
+    height: 10px;
+}
+
+.list-group {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.debug {
+    margin: 10px 0;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid #F00;
+    clear: both;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><text x="70%" y="50" style="font-family: Arial; font-size: 60; fill: #CCC;">DEBUG output</text></svg>');
+}
+.debug .debug {
+    float: left;
+    border: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+.debug table {
+    margin: 10px 0;
+}
+.debug h1 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #F00;
+}

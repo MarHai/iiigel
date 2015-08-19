@@ -1,0 +1,54 @@
+<h3><i class="fa fa-angle-right"></i> {% trans 'permission.create' %}</h3>
+<form class="form-horizontal" method="post" action="{{ sUrl }}Admin/Right/create">
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="nIdUser">{% trans %}user{% plural 1 %}user.plural{% endtrans %}</label>
+        <div class="col-md-6">
+            <select id="nIdUser" name="nIdUser" class="form-control input-md">
+                {% for aRow in aUser %}
+                    <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="nIdType">{% trans %}permission{% plural 1 %}permission.plural{% endtrans %}</label>
+        <div class="col-md-6">
+            <select id="nIdType" name="nIdType" class="form-control input-md">
+                {% if aTypeId.chapter|length > 0 %}
+                    <optgroup label="Chapter">
+                        {% for aRow in aTypeId.chapter %}
+                            <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endif %}
+                {% if aTypeId.group|length > 0 %}
+                    <optgroup label="Group">
+                        {% for aRow in aTypeId.group %}
+                            <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endif %}
+                {% if aTypeId.institution|length > 0 %}
+                    <optgroup label="Institution">
+                        {% for aRow in aTypeId.institution %}
+                            <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endif %}
+                {% if aTypeId.module|length > 0 %}
+                    <optgroup label="Module">
+                        {% for aRow in aTypeId.module %}
+                            <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-6">
+            <input type="hidden" name="sPreviousUrl" value="{{ sCurrentUrl }}" />
+            <input type="submit" class="btn btn-success" value="{% trans 'create' %}" />
+        </div>
+    </div>
+</form>

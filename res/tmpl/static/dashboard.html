@@ -1,0 +1,61 @@
+{% macro mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) %}
+    <div class="row mtbox">
+        {% if bAdmin %}
+            <div class="col-md-2 col-sm-2 col-md-offset-2 box0">
+                <a class="box1" href="{{ sUrl }}Admin/User/showList">
+                    <span class="fa fa-user"></span>
+                    <h3>{{ nCountUser }}</h3>
+                </a>
+                <p>
+                    {% set temp %}{% trans %}dash.usersreg{% plural nCountUser %}dash.usersreg.plural{% endtrans %}{% endset %}
+                    {{ temp|format(nCountUser) }}
+                </p>
+            </div>
+        {% endif %}
+        <div class="col-md-2 col-sm-2 {{ bAdmin ? '' : 'col-md-offset-3' }} box0">
+            <a class="box1" href="{{ sUrl }}Admin/Group/showList">
+                <span class="fa fa-users"></span>
+                <h3>{{ nCountGroup }}</h3>
+            </a>
+            <p>
+                {% set temp %}{% trans %}dash.groupsreg{% plural nCountGroup %}dash.groupsreg.plural{% endtrans %}{% endset %}
+                {{ temp|format(nCountGroup) }}
+            </p>
+        </div>
+        <div class="col-md-2 col-sm-2 box0">
+            <a class="box1" href="{{ sUrl }}Admin/Institution/showList">
+                <span class="fa fa-university  "></span>
+                <h3>{{ nCountInstitution }}</h3>
+            </a>
+            <p>
+                {% set temp %}{% trans %}dash.institutionsreg{% plural nCountInstitution %}dash.institutionsreg.plural{% endtrans %}{% endset %}
+                {{ temp|format(nCountInstitution) }}
+            </p>
+        </div>
+        <div class="col-md-2 col-sm-2 box0">
+            <a class="box1" href="{{ sUrl }}Admin/Module/showList">
+                <span class="fa fa-code"></span>
+                <h3>{{ nCountModule }}</h3>
+            </a>
+            <p>
+                {% set temp %}{% trans %}dash.modulereg{% plural nCountModule %}dash.modulereg.plural{% endtrans %}{% endset %}
+                {{ temp|format(nCountModule) }}
+            </p>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nColumns = 1 %}
+{% if (bAdmin) or (bInstitutionAdmin) or (bGroupAdmin) or (bModuleAdmin) %}
+    {% set aContent = { '0': get.mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) } %}
+{% else %}
+    {% set aContent = { '0': 'hallo welt' } %}
+{% endif %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

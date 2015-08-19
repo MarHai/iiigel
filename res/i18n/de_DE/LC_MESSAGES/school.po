@@ -1,0 +1,465 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.8.4\n"
+"Last-Translator: \n"
+"Language: de_DE\n"
+
+msgid "app.name"
+msgstr "iiigel"
+
+msgid "app.description"
+msgstr "Informatik in interaktiven Gruppen einfach lernen"
+
+msgid "app.keywords"
+msgstr "i³gel, lernen, E-Learning, coden, programmieren, üben, individuelles Tempo, Gruppenarbeit, Hilfesystem"
+
+# #####################
+# BASICS
+# #####################
+msgid "institution"
+msgid_plural "institution.plural"
+msgstr[0] "Institution"
+msgstr[1] "Institutionen"
+
+msgid "group"
+msgid_plural "group.plural"
+msgstr[0] "Gruppe"
+msgstr[1] "Gruppen"
+
+msgid "module"
+msgid_plural "module.plural"
+msgstr[0] "Modul"
+msgstr[1] "Module"
+
+msgid "user"
+msgid_plural "user.plural"
+msgstr[0] "Benutzer"
+msgstr[1] "Benutzer"
+
+msgid "permission"
+msgid_plural "permission.plural"
+msgstr[0] "Berechtigung"
+msgstr[1] "Berechtigungen"
+
+msgid "percent"
+msgstr "%d &#37;"
+
+msgid "nothingfound"
+msgstr "Keine Einträge gefunden."
+
+# #####################
+# general GUI
+# #####################
+msgid "menu.login"
+msgstr "Anmelden"
+
+msgid "menu.logout"
+msgstr "Abmelden"
+
+msgid "menu.toggle"
+msgstr "Navigationsleiste ein-/ausklappen"
+
+msgid "menu.home"
+msgstr "Zur Startseite wechseln"
+
+msgid "menu.active"
+msgstr "aktive Module anzeigen"
+
+msgid "menu.profile"
+msgstr "Profildaten ändern"
+
+msgid "menu.dashboard"
+msgstr "Überblick"
+
+msgid "menu.help"
+msgstr "Hilfe"
+
+msgid "menu.about"
+msgstr "Über %s"
+
+msgid "menu.backtotop"
+msgstr "nach oben"
+
+msgid "menu.activemodules"
+msgid_plural "menu.activemodules.plural"
+msgstr[0] "Du hast %d aktives Modul"
+msgstr[1] "Du hast %d aktive Module"
+
+msgid "menu.showallmodules"
+msgstr "zeige alle Module"
+
+# #####################
+# FORMS
+# #####################
+msgid "yes"
+msgstr "Ja"
+
+msgid "no"
+msgstr "Nein"
+
+msgid "email"
+msgstr "E-Mail"
+
+msgid "name"
+msgstr "Name"
+
+msgid "emailaddress"
+msgstr "E-Mail-Adresse"
+
+msgid "password"
+msgstr "Passwort"
+
+msgid "description"
+msgstr "Beschreibung"
+
+msgid "image"
+msgstr "Bild"
+
+msgid "activationcode"
+msgstr "Aktivierungscode"
+
+msgid "create"
+msgstr "Erstellen"
+
+msgid "language.country"
+msgstr "Sprache"
+
+msgid "language.domain"
+msgstr "Sprachentyp"
+
+msgid "live"
+msgstr "Aktiv"
+
+msgid "goback"
+msgstr "zurück"
+
+msgid "delete"
+msgstr "löschen"
+
+msgid "doyoureallywanttodelete"
+msgstr "Soll %s wirklich gelöscht werden?"
+
+msgid "thispermission"
+msgstr "diese Berechtigung"
+
+msgid "reglinktoshare"
+msgstr "Direktlink für die Registrierung (zum Weitergeben)"
+
+msgid "cancel"
+msgstr "Abbrechen"
+
+# #####################
+# MAIN LEARNING ENVIRONMENT
+# #####################
+msgid "mode.chapter"
+msgstr "Kapitel"
+
+msgid "mode.cloud"
+msgstr "Speicher"
+
+msgid "mode.cloud.upload"
+msgstr "Dateien hochladen"
+
+msgid "mode.interpretation"
+msgstr "Interpretation"
+
+msgid "mode.interpretation.fullscreen"
+msgstr "Interpretationsmodus als Vollbild"
+
+msgid "mode.handin"
+msgstr "abgeben"
+
+msgid "mode.helpwanted"
+msgstr "Hilfe anfordern"
+
+# #####################
+# HTML TABLES
+# #####################
+msgid "table.headline"
+msgstr "%s bearbeiten"
+
+msgid "table.displayinfo"
+msgstr "zeige Einträge _START_ bis _END_ von insgesamt _TOTAL_ Einträgen"
+
+msgid "table.showentries"
+msgstr "_MENU_ Einträge anzeigen"
+
+msgid "table.search"
+msgstr "Suchen"
+
+msgid "table.loading"
+msgstr "... lade ..."
+
+msgid "table.sortasc"
+msgstr "klicken, um aufsteigend zu sortieren"
+
+msgid "table.sortdesc"
+msgstr "klicken, um absteigend zu sortieren"
+
+# #####################
+# EMAILS
+# #####################
+msgid "mail.reg.subject"
+msgstr "E-Mail-Validierung für die Registrierung"
+
+msgid "mail.reg.message"
+msgstr "Hallo und herzlich willkommen, bitte validieren Sie folgenden Code: %s %s"
+
+# #####################
+# INSTITUTION
+# #####################
+msgid "institution.create"
+msgstr "Neue Institution erstellen"
+
+msgid "institution.nameexample"
+msgstr "z.B. Gymnasium am Geroweiher"
+
+# #####################
+# GROUP
+# #####################
+msgid "group.create"
+msgstr "Neue Gruppe erstellen"
+
+msgid "group.nameexample"
+msgstr "z.B. Klasse 9a"
+
+# #####################
+# MODULE
+# #####################
+msgid "module.create"
+msgstr "Neues Modul erstellen"
+
+msgid "module.nameexample"
+msgstr "z.B. HTML für Einsteiger"
+
+msgid "module.descriptionexample"
+msgstr "z.B. geeignet für X, erklärt Y, endet mit Z"
+
+# #####################
+# PERMISSIONS
+# #####################
+msgid "permission.create"
+msgstr "Neue Berechtigung erstellen"
+
+# #####################
+# USER
+# #####################
+msgid "user.create"
+msgstr "Neuen Benutzer erstellen"
+
+msgid "user.nameexample"
+msgstr "z.B. Max Mustermann"
+
+msgid "user.emailexample"
+msgstr "z.B. max@mustermann.org"
+
+msgid "user.mailifoffline"
+msgstr "E-Mail-Benachrichtigungen"
+
+msgid "user.admin"
+msgstr "Administrator"
+
+msgid "user.active"
+msgstr "Aktiv"
+
+# #####################
+# HOME
+# #####################
+msgid "home.intro"
+msgstr "Willkommen, User. Hier findest du vielleicht die Antwort auf alle Fragen."
+
+# #####################
+# HELP
+# #####################
+msgid "help.intro"
+msgstr "Hier gibt's später sicher mal Hilfe ... einstweilen: 42"
+
+# #####################
+# PROFILE
+# #####################
+msgid "profile.intro"
+msgstr "Hier kannst du irgendwann mal dein Profil anpassen und ändern. Aktuell beziehen wir das Benutzerbild übrigens von gravatar ..."
+
+# #####################
+# ACTIVATION
+# #####################
+msgid "activation.pastecodefromemail"
+msgstr "Code aus E-Mail einfügen"
+
+msgid "activation.activate"
+msgstr "Aktivieren"
+
+msgid "activation.activateregistration"
+msgstr "Registrierung aktivieren"
+
+msgid "activation.thankyou"
+msgstr "Vielen Dank für die Registrierung. Wir haben dir eine E-Mail mit einem Aktivierungscode geschickt. Um den Anmeldevorgang abzuschließen, kannst du jetzt ..."
+
+msgid "activation.option1"
+msgstr "... entweder den Aktivierungslink in der E-Mail anklicken"
+
+msgid "activation.option2"
+msgstr "... oder den Aktivierungscode hier einfügen"
+
+msgid "activation.afterwards"
+msgstr "Im Anschluss ist dein Profil aktiv und es kann aber wirklich losgehen."
+
+# #####################
+# UPLOAD
+# #####################
+msgid "upload.defaultfilename"
+msgstr "datei_ohne_name"
+
+# #####################
+# ABOUT
+# #####################
+msgid "about.intro"
+msgstr "über uns bla bla"
+
+msgid "about.idea"
+msgstr "Idee"
+
+msgid "about.concept"
+msgstr "Konzept"
+
+msgid "about.coding"
+msgstr "Programmierung"
+
+msgid "about.template"
+msgstr "CSS-Template"
+
+# #####################
+# DASHBOARD
+# #####################
+msgid "dash.usersreg"
+msgid_plural "dash.usersreg.plural"
+msgstr[0] "ein Benutzer ist registriert"
+msgstr[1] "%d Benutzer sind registriert"
+
+msgid "dash.groupsreg"
+msgid_plural "dash.groupsreg.plural"
+msgstr[0] "in einer Gruppe wird gelernt"
+msgstr[1] "in %d Gruppen wird gelernt"
+
+msgid "dash.institutionsreg"
+msgid_plural "dash.institutionsreg.plural"
+msgstr[0] "die Gruppen sind Teil von einer Institution"
+msgstr[1] "die Gruppen sind Teil von %d Institutionen"
+
+msgid "dash.modulereg"
+msgid_plural "dash.modulereg.plural"
+msgstr[0] "ein Modul ist aktuell live"
+msgstr[1] "%d Module sind aktuell live"
+
+# #####################
+# ERRORS
+# #####################
+msgid "error"
+msgstr "Ausnahmefehler"
+
+msgid "error.templatenotloaded"
+msgstr "Die Template-Datei konnte nicht geladen werden."
+
+msgid "error.newclass"
+msgstr "PHP-Klasse %s konnte nicht instanziert werden."
+
+msgid "error.update"
+msgstr "UPDATE-Prozess konnte nicht durchgeführt werden."
+
+msgid "error.create"
+msgstr "INSERT-Prozess konnte nicht durchgeführt werden."
+
+msgid "error.objectload"
+msgstr "Objekt (%s) konnte nicht geladen werden."
+
+msgid "error.lastidnotfound"
+msgstr "Neuer Eintrag konnte nicht gefunden werden."
+
+msgid "error.invalidrequest"
+msgstr "Anfrage nicht erlaubt."
+
+msgid "error.permission"
+msgstr "Sie haben keine Berechtigung für diesen Vorgang."
+
+msgid "error.delete"
+msgstr "Das Objekt #%s (%s) konnte nicht gelöscht werden."
+
+msgid "error.regmailnotsent"
+msgstr "Registrierungsmail konnte nicht verschickt werden."
+
+msgid "error.filesizeexceeded"
+msgstr "Die hochgeladene Datei ist zu groß (maximale Dateigröße: %d Byte)."
+
+msgid "error.moveuploadedfile"
+msgstr "Die hochgeladene Datei '%s' konnte nicht verschoben werden."
+
+msgid "error.upload"
+msgstr "Fehler beim Upload einer Datei: %s"
+
+msgid "error.loginunsuccessful"
+msgstr "Der Anmeldevorgang war nicht erfolgreich. Alles richtig eingegeben?"
+
+msgid "error.nodatagiven"
+msgstr "Dateneingabe nicht vollständig. Bitte erneut versuchen."
+
+msgid "error.registrationunsuccessful"
+msgstr "Die Registrierung wurde nicht korrekt ausgeführt. Bitte ernaut versuchen."
+
+msgid "error.activationcodewrong"
+msgstr "Der Aktivierungscode ist falsch."
+
+msgid "error.dbconnection"
+msgstr "Die Datenbankverbindung konnte nicht hergestellt werden."
+
+msgid "error.querymissspelled"
+msgstr "Die Datenbankabfrage ist fehlerhaft."
+
+msgid "error.querynoresult"
+msgstr "Die Datenbankabfrage lieferte keine Ergebnisse."
+
+msgid "error.emailalreadytaken"
+msgstr "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert."
+
+# #####################
+# DEBUG MSGS
+# #####################
+msgid "debug.pagegenerationstats"
+msgstr "Statistiken & Umgebungsvariablen"
+
+msgid "debug.executiontime"
+msgstr "Dauer der Ausführung [Sekunden]"
+
+msgid "debug.version"
+msgstr "Programmversion"
+
+msgid "debug.url"
+msgstr "URL"
+
+msgid "debug.urlpath"
+msgstr "URL-Pfad"
+
+msgid "debug.basepath"
+msgstr "Verzeichnispfad"
+
+msgid "debug.controller"
+msgstr "Controller"
+
+msgid "debug.action"
+msgstr "Controller-Action"
+
+msgid "debug.params"
+msgstr "Parameter"
+
+msgid "debug.session"
+msgstr "Session-ID"
+
+msgid "debug.loggedinuser"
+msgstr "eingeloggter Benutzer"

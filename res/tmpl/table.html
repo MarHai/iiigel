@@ -1,0 +1,44 @@
+{% if sHeadline %}
+    <h3><i class="fa fa-angle-right"></i> {{sHeadline}}</h3>
+{% endif %}
+<table class="{{ aData|length > 0 ? aCss|join(' ') : '' }}"
+    {% for sAttribute, sValue in aParam %}
+        {{ sAttribute }}="{{sValue}}"
+    {% endfor %}
+    >
+    {% if aHead|length > 0 %}
+        <thead>
+            {% for aRow in aHead %}
+                <tr>
+                    {% for sCell in aRow %}
+                        {% if sCell != 'Hash Id' %}
+                            <th>{{ sCell }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </thead>
+    {% endif %}
+    {% for aRow in aData %}
+        <tr {% if sRowClick %}class="Iiigel-click" data-click="{{ sRowClick|format(aRow.sHashId) }}"{% endif %}>
+            {% for sKey, sCell in aRow %}
+                {% if sKey != 'sHashId' %}
+                    <td>{{ sCell }}</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% else %}
+        <tr><td colspan="{{ nWidth }}">{% trans 'nothingfound' %}</td></tr>
+    {% endfor %}
+    {% if aFoot|length > 0 %}
+        <tfoot>
+            {% for aRow in aFoot %}
+                <tr>
+                    {% for sCell in aRow %}
+                        <th>{{ sCell }}</th>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tfoot>
+    {% endif %}
+</table>

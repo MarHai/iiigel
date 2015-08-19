@@ -1,0 +1,24 @@
+<h3><i class="fa fa-angle-right"></i> {% trans 'group.create' %}</h3>
+<form class="form-horizontal" method="post" action="{{ sUrl }}Admin/Group/create">
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="sName">{% trans 'name' %}</label>
+        <div class="col-md-6">
+            <input id="sName" name="sName" type="text" placeholder="{% trans 'group.nameexample' %}" class="form-control input-md" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="nIdInstitution">{% trans %}institution{% plural 1 %}institution.plural{% endtrans %}</label>
+        <div class="col-md-6">
+            <select id="nIdInstitution" name="nIdInstitution" class="form-control input-md">
+                {% for oInstitution in aInstitution %}
+                    <option value="{{ oInstitution.nId }}">{{ oInstitution.sName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-6">
+            <input type="submit" class="btn btn-success" value="{% trans 'create' %}" />
+        </div>
+    </div>
+</form>

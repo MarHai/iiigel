@@ -1,0 +1,15 @@
+{% macro mainContent(sErrorMessage) %}
+    <h1>{% trans 'error' %}</h1>
+    <p>{{ sErrorMessage }}</p>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nColumns = 1 %}
+{% set aContent = { '0': get.mainContent(sErrorMessage) } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

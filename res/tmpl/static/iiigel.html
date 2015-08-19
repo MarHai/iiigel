@@ -1,0 +1,76 @@
+{% macro mainContent(bGroupAdmin, oModule, oChapter) %}
+    <div class="row mt">
+        <div class="col-lg-9 col-md-9 col-sm-12">
+            <div class="showback">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#file1" aria-controls="file1" role="tab" data-toggle="tab">File 1</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#file2" aria-controls="file2" role="tab" data-toggle="tab">File 2</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#file3" aria-controls="file3" role="tab" data-toggle="tab">File 3</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt">
+                    <div role="tabpanel" class="tab-pane fade in active" id="file1">
+                        file 1
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="file2">
+                        file 2
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="file3">
+                        file 3
+                    </div>
+                </div>
+            </div>
+            <div class="showback">
+                chapter
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="showback">
+                <h4>
+                    <i class="fa fa-angle-right"></i> 
+                    {{ oModule.sName }}
+                </h4>
+                <div class="progress small">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ oModule.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oModule.nProgress }}%"></div>
+                </div>
+                <div class="list-group">
+                    {% for oChapter in oModule.aChapter %}
+                        <a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" class="list-group-item{{ oChapter.nId == oModule.nCurrentChapter ? ' active' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="showback">
+                <p class="btn-group">		
+                    <a class="btn btn-default">{% trans 'mode.chapter' %}</a>
+                    {% if oChapter.bCloud %}
+                        <a class="btn btn-default">{% trans 'mode.cloud' %}</a>
+                    {% endif %}
+                    {% if oChapter.bInterpreter %}
+                        <a class="btn btn-default">{% trans 'mode.interpretation' %}</a>
+                    {% endif %}
+                </p>
+                <p>
+                    <a class="btn btn-theme"><i class="fa fa-hand-o-right"></i> {% trans 'mode.handin' %}</a>
+                    <a class="btn btn-theme"><i class="fa fa-question"></i> {% trans 'mode.helpwanted' %}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nColumns = 0 %}
+{% set aContent = { '0': get.mainContent(bGroupAdmin, oModule, oChapter) } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

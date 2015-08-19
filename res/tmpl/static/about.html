@@ -1,0 +1,29 @@
+{% macro mainContent() %}
+    <p>{% trans 'about.intro' %}</p>
+    <p>
+        <dl>
+            <dt>{% trans 'about.idea' %}</dt>
+            <dd>Felix Nattermann</dd>
+            
+            <dt>{% trans 'about.concept' %}</dt>
+            <dd>Mario Haim & Felix Nattermann</dd>
+            
+            <dt>{% trans 'about.coding' %}</dt>
+            <dd>Tobias Frisch, Mario Haim, Jan Haupts, Kai Hilgers, Jan Robens</dd>
+            
+            <dt>{% trans 'about.template' %}</dt>
+            <dd><a href="http://blacktie.co/2014/07/dashgum-free-dashboard/" target="_blank">Alvarez.is</a></dd>
+        </dl>
+    </p>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nColumns = 1 %}
+{% set aContent = { '0': get.mainContent() } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

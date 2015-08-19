@@ -1,0 +1,35 @@
+{% macro mainContent() %}
+    <h1>{% trans 'activation.activateregistration' %}</h1>
+    <p>
+        {% trans 'activation.thankyou' %}
+        <ul>
+            <li>{% trans 'activation.option1' %}</li>
+            <li>{% trans 'activation.option2' %}</li>
+        </ul>
+        {% trans 'activation.afterwards' %}
+    </p>
+    <form class="form-horizontal" method="post" action="{{ sUrl }}html/activate">
+        <div class="form-group">
+            <label class="col-md-offset-1 col-md-3 control-label" for="sHashId">{% trans 'activationcode' %}</label>
+            <div class="col-md-6">
+                <input id="sHashId" name="sHashId" type="text" placeholder="{% trans 'activation.pastecodefromemail' %}" class="form-control input-md" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-6">
+                <input value="{% trans 'activation.activate' %}" type="submit" class="form-control input-md btn btn-primary" />
+            </div>
+        </div>
+    </form>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nColumns = 1 %}
+{% set aContent = { '0': get.mainContent() } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

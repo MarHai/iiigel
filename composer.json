@@ -1,0 +1,33 @@
+{
+    "require": {
+        "twig/twig": "1.19.*",
+        "twig/extensions": "1.2.*",
+		
+        "matthiasmullie/minify": "1.3.*",
+		"phpdocumentor/phpdocumentor": "2.*",
+        "php-imap/php-imap": "~2.0",
+        "gettext/gettext": "3.4.*",
+		
+        "afarkas/html5shiv": "3.7.*",
+        "rogeriopradoj/respond": "1.4.*",
+		"components/jquery": "1.11.*",
+		"blueimp/jquery-file-upload": "9.10.*",
+		
+		"twbs/bootstrap": "3.3.5",
+        "components/font-awesome": "4.4.*",
+		"components/bootbox": "dev-master",
+		"eonasdan/bootstrap-datetimepicker": "4.*",
+		"vitalets/x-editable": "dev-master",
+		"select2/select2": "4.0.*",
+        "datatables/datatables": "1.10.*",
+		
+		"bear/ace": "1.0.*",
+		"tinymce/tinymce": "4.2.*"
+    },
+	
+	"autoload": {
+		"psr-4": {
+			"Iiigel\\": "src/"
+		}
+	}
+}

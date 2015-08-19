@@ -1,0 +1,12 @@
+RewriteEngine On
+
+RewriteRule ^config/.*$ - [L]
+RewriteRule ^src/.*$ - [L]
+RewriteRule ^vendor/.*$ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+
+#careful, as here the main/home path needs to be inserted
+RewriteRule ^([^?]*)$ /Iiigel/index.php?path=$1 [NC,L,QSA]

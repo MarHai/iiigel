@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="{{ sCountry|slice(0, 2) }}">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <title>{{ sTitle }}</title>
+
+        <base href="{{ sUrl }}" />
+        
+        <meta name="application-name" content="{% trans 'app.name' %}" />
+        <meta name="description" content="{% trans 'app.description' %}" />
+        <meta name="author" content="Mario Haim <mario@haim.it>, Felix Nattermann <nat@gag-mg.de>" />
+        <meta name="keyword" content="{% trans 'app.keywords' %}" />
+
+        <link href="{{ sUrl }}vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="{{ sUrl }}res/style/bootstrap-theme.min.css" rel="stylesheet" />
+        <link href="{{ sUrl }}vendor/components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="{{ sUrl }}res/style/dataTables.bootstrap.min.css" rel="stylesheet" />
+        <link href="{{ sUrl }}vendor/vitalets/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+        <link href="{{ sUrl }}vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="{{ sUrl }}res/style/tabdrop.css" rel="stylesheet" />
+        <link href="{{ sUrl }}res/style/basic.css" rel="stylesheet" />
+        
+        <!--[if lt IE 9]>
+        <script src="{{ sUrl }}vendor/afarkas/html5shiv/dist/html5shiv.min.js"></script>
+        <script src="{{ sUrl }}vendor/rogeriopradoj/respond/dest/respond.min.js"></script>
+        <![endif]-->
+        
+        <script src="{{ sUrl }}vendor/components/jquery/jquery.min.js"></script>
+        <script src="{{ sUrl }}vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="{{ sUrl }}vendor/components/bootbox/bootbox.js"></script>
+        <script src="{{ sUrl }}vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+        <script src="{{ sUrl }}res/script/dataTables.bootstrap.min.js"></script>
+        <script src="{{ sUrl }}vendor/vitalets/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+        <script src="{{ sUrl }}vendor/select2/select2/dist/js/select2.min.js"></script>
+        <script src="{{ sUrl }}vendor/blueimp/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+        <script src="{{ sUrl }}vendor/blueimp/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+        <script src="{{ sUrl }}vendor/blueimp/jquery-file-upload/js/jquery.fileupload.js"></script>
+        <script src="{{ sUrl }}res/script/bootstrap-tabdrop.js"></script>
+        <script src="{{ sUrl }}res/i18n/{{ sCountry }}/LC_MESSAGES/{{ sDomain }}.js"></script>
+        <script src="{{ sUrl }}res/script/basic.js"></script>
+    </head>
+    <body>
+        <section id="container">
+            <header class="header black-bg">
+                {% if bLogin %}
+                    <div class="sidebar-toggle-box">
+                      <div class="fa fa-bars tooltips" data-placement="right" data-original-title="{% trans 'menu.toggle' %}"></div>
+                    </div>
+                {% endif %}
+                <a href="{{ sUrl }}" class="logo tooltips" data-original-title="{% trans 'menu.home' %}" data-placement="right"><strong>{% trans 'app.name' %}</strong></a>
+
+                <div class="nav notify-row" id="top_menu">
+                    <ul class="nav top-menu">
+                        {% if bLogin %}
+                            <li class="dropdown">
+                                <a data-toggle="dropdown" class="dropdown-toggle tooltips" href="#" data-original-title="{% trans 'menu.active' %}" data-placement="right">
+                                    <i class="fa fa-tasks"></i>
+                                    <span class="badge bg-theme">{{ aActiveModule|length }}</span>
+                                </a>
+                                <ul class="dropdown-menu extended tasks-bar">
+                                    <div class="notify-arrow notify-arrow-green"></div>
+                                    <li>
+                                        <p class="green">
+                                            {% set sTemp %}
+                                                {% trans %}
+                                                    menu.activemodules
+                                                {% plural aActiveModule|length %}
+                                                    menu.activemodules.plural
+                                                {% endtrans %}
+                                            {% endset %}
+                                            {{ sTemp|format(aActiveModule|length) }}
+                                        </p>
+                                    </li>
+                                    {% for oRow in aActiveModule %}
+                                        <li>
+                                            <a href="{{ sUrl }}learn/{{ oRow.sHashId }}">
+                                                <div class="task-info">
+                                                    <div class="desc">{{ oRow.sName }}</div>
+                                                    <div class="percent">{{ 'percent'|trans|format(oRow.nProgress)|raw }}</div>
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nProgress }}%">
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                    <li class="external">
+                                        <a href="{{ sUrl }}Dashboard">{% trans 'menu.showallmodules' %}</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li><a href="{{ sUrl }}html/help">{% trans 'menu.help' %}</a></li>
+                            <li><a href="{{ sUrl }}html/about">{{ 'menu.about'|trans|format('app.name'|trans) }}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="top-menu">
+                    <ul class="nav pull-right top-menu">
+                        {% if bLogin %}
+                            <li><a class="logout" href="{{ sUrl }}html/logout">{% trans 'menu.logout' %}</a></li>
+                        {% else %}
+                            <li><a class="logout" href="#" data-iiigel="form" data-form="login">{% trans 'menu.login' %}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </header>
+            
+            {% if bLogin %}
+                <aside>
+                    <div id="sidebar" class="nav-collapse"{{ bDashboardNavShown ? '' : ' data-initial="closed"' }}>
+                        <ul class="sidebar-menu" id="nav-accordion">
+                            <li class="mt">
+                                <p class="centered">
+                                    <a href="{{ sUrl }}html/profil" class="tooltips" data-original-title="{% trans 'menu.profile' %}" data-placement="right">
+                                        <img src="http://www.gravatar.com/avatar/{{ sUserHash }}.jpg?s=60&d=mm" class="img-circle" width="60" />
+                                    </a>
+                                </p>
+                                <h5 class="centered">{{ aCurrentUser.sName }}</h5>
+                            </li>
+                            <li class="mt">
+                                <a {{ sPage == 'dashboard' ? 'class="active"' : '' }} href="{{ sUrl }}Dashboard">
+                                    <i class="fa fa-dashboard"></i>
+                                    <span>{% trans 'menu.dashboard' %}</span>
+                                </a>
+                            </li>
+                            {% if (bInstitutionAdmin) or (bAdmin) %}
+                                <li>
+                                    <a {{ sPage == 'institution' ? 'class="active"' : '' }} href="{{ sUrl }}Admin/Institution/showList">
+                                        <i class="fa fa-university"></i>
+                                        <span>{% trans %}institution{% plural 2 %}institution.plural{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if (bGroupAdmin) or (bAdmin) %}
+                                <li>
+                                    <a {{ sPage == 'group' ? 'class="active"' : '' }} href="{{ sUrl }}Admin/Group/showList">
+                                        <i class="fa fa-users"></i>
+                                        <span>{% trans %}group{% plural 2 %}group.plural{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if (bModuleAdmin) or (bAdmin) %}
+                                <li>
+                                    <a {{ sPage == 'module' ? 'class="active"' : '' }} href="{{ sUrl }}Admin/Module/showList">
+                                        <i class="fa fa-code"></i>
+                                        <span>{% trans %}module{% plural 2 %}module.plural{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if bAdmin %}
+                                <li>
+                                    <a {{ sPage == 'user' ? 'class="active"' : '' }} href="{{ sUrl }}Admin/User/showList">
+                                        <i class="fa fa-user"></i>
+                                        <span>{% trans %}user{% plural 2 %}user.plural{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a {{ sPage == 'help' ? 'class="active"' : '' }} href="{{ sUrl }}html/help">
+                                    <i class="fa fa-question"></i>
+                                    <span>{% trans 'menu.help' %}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a {{ sPage == 'about' ? 'class="active"' : '' }} href="{{ sUrl }}html/about">
+                                    <i class="fa fa-info"></i>
+                                    <span>{{ 'menu.about'|trans|format('app.name'|trans) }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+            {% endif %}
+
+            <section id="main-content">
+                <section class="wrapper">
+                    {% block content %}
+                        {% if nColumns > 0 %}
+                            <div class="row mt">
+                                {% for i in range(1, nColumns) %}
+                                    <div class="col-lg-{{ 12 // nColumns }} col-md-{{ 12 // nColumns }}">
+      				                    <div class="showback">
+                                            {{ aContent[i-1]|raw }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ aContent[0]|raw }}
+                        {% endif %}
+                    {% endblock %}
+                </section>
+            </section>
+            <footer class="site-footer">
+                <div class="text-center">
+                    {% trans 'app.name' %}
+                    <a href="#" class="backtotop go-top tooltips" data-placement="left" data-original-title="{% trans 'menu.backtotop' %}">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+            </footer>
+        </section>
+    </body>
+</html>

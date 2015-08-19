@@ -1,0 +1,46 @@
+<h3><i class="fa fa-angle-right"></i> {% trans 'module.create' %}</h3>
+<form class="form-horizontal" method="post" action="{{ sUrl }}Admin/Module/create" enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="sName">{% trans 'name' %}</label>
+        <div class="col-md-6">
+            <input id="sName" name="sName" type="text" placeholder="{% trans 'module.nameexample' %}" class="form-control input-md" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="sDescription">{% trans 'description' %}</label>
+        <div class="col-md-6">
+            <textarea id="sDescription" name="sDescription" placeholder="{% trans 'module.descriptionexample' %}" class="form-control input-md" rows="4"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="sImage-input">{% trans 'image' %}</label>
+        <div class="col-md-6">
+            <textarea id="sImage" name="sImage" class="hide"></textarea>
+            <input id="sImage-input" name="sImage-input" type="file" class="form-control input-md" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="bLive">{% trans 'live' %}</label>
+        <div class="col-md-6">
+            <select id="bLive" name="bLive" class="form-control input-md">
+                <option value="0">{% trans 'no' %}</option>
+                <option value="1">{% trans 'yes' %}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="sDomain">{% trans 'language.domain' %}</label>
+        <div class="col-md-6">
+            <select id="sDomain" name="sDomain" class="form-control input-md">
+                {% for sType in aDomain %}
+                    <option value="{{ sType }}">{{ sType }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-6">
+            <input type="submit" class="btn btn-success" value="{% trans 'create' %}" />
+        </div>
+    </div>
+</form>

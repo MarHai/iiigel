@@ -1,0 +1,42 @@
+<h3><i class="fa fa-angle-right"></i> {% if sClass == 'Right' %}{{ aDetail.nIdUser.mValue }} <i class="fa fa-arrow-right"></i> {{ aDetail.nIdType.mValue }}{% else %}{{ sName }}{% endif %}</h3>
+<dl class="dl-horizontal">
+{% for sKey, aRow in aDetail %}
+    <dt>{{ aRow.sHeadline }}</dt>
+    <dd>
+        {% if sKey == 'sHashId' %}
+            {{ aRow.mValue }}
+            {% if (sClass == 'Institution') or (sClass == 'Group') %}
+                <br />
+                <code>
+                    <a href="{{ sUrl }}?sActivation={{ aRow.mValue }}" target="_blank" class="tooltips" title="{% trans 'reglinktoshare' %}">{{ sUrl }}?sActivation={{ aRow.mValue }}</a>
+                </code>
+            {% endif %}
+        {% elseif (sKey == 'nCreate') or (sKey == 'nUpdate') %}
+            {{ aRow.mValue|date(sDateFormatPhp) }}
+        {% else %}
+            {% if (aRow.bEdit) and (sClass != 'Right') %}
+                <a href="#" data-name="{{ sKey }}" data-url="{{ sUrl }}?c=Admin\{{ sClass }}&a=update&_sHashId={{ sHashId }}" data-title="New {{ aRow.sHeadline }}" data-type="{{ aRow.eType }}"
+                    {% if aRow.eType == 'select' %}
+                        data-select="{{ aRow.aSelect|json_encode()|raw|escape('url') }}" data-value="{{ aRow.nValue }}"
+                    {% endif %}
+                    {% if aRow.eType == 'datetime' %}
+                        data-format="{{ aRow.sFormat }}"
+                    {% endif %}
+                >
+            {% endif %}
+                {% if sKey|slice(0, 1) == 'b' %}
+                    <i class="fa fa-{{ aRow.mValue == 1 ? 'check' : 'ban' }}"></i>
+                {% else %}
+                    {{ aRow.mValue }}
+                {% endif %}
+            {% if aRow.bEdit %}
+                </a>
+            {% endif %}
+        {% endif %}
+    </dd>
+{% endfor %}
+</dl>
+<p>
+    <a href="{{ sUrl }}{{ sClass == 'Right' ? sPreviousUrl : 'Admin/' ~ sClass ~ '/showList' }}" class="btn btn-default">&larr; {% trans 'goback' %}</a>
+    <a href="{{ sUrl }}Admin/{{ sClass }}/delete/{{ sHashId }}{{ sClass == 'Right' ? '?sPreviousUrl=' ~ sPreviousUrl : '' }}" class="btn btn-danger" data-iiigel="confirm" data-confirm="{{ sClass == 'Right' ? 'doyoureallywanttodelete'|trans|format('thispermission'|trans) : 'doyoureallywanttodelete'|trans|format(sName|escape('html_attr')|trans) }}">{% trans 'delete' %}</a>
+</p>
