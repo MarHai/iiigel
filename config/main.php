@@ -39,7 +39,10 @@ $GLOBALS['aConfig'] = array(
     //file uploads
     'sUploadDir' => 'upload/',
     'nUploadMaxSize' => 10*1024*1024,
-    'sFileUrl' => 'file/'
+    'sFileUrl' => 'file/',
+    
+    //interval (in milliseconds) after which both (1) the live interpretation takes place (2) and the editor-content is saved after 
+    'nEditorWaitTime' => 2500
 );
 
 ?>

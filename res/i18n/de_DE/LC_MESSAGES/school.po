@@ -44,6 +44,11 @@ msgid_plural "user.plural"
 msgstr[0] "Benutzer"
 msgstr[1] "Benutzer"
 
+msgid "chapter"
+msgid_plural "chapter.plural"
+msgstr[0] "Kapitel"
+msgstr[1] "Kapitel"
+
 msgid "permission"
 msgid_plural "permission.plural"
 msgstr[0] "Berechtigung"
@@ -180,6 +185,12 @@ msgstr "abgeben"
 msgid "mode.helpwanted"
 msgstr "Hilfe anfordern"
 
+msgid "mode.interpret"
+msgstr "Ausführen"
+
+msgid "mode.openfiletoedit"
+msgstr "Es muss zuerst eine Datei erstellt oder geöffnet werden."
+
 # #####################
 # HTML TABLES
 # #####################
@@ -287,6 +298,81 @@ msgstr "Hier gibt's später sicher mal Hilfe ... einstweilen: 42"
 # #####################
 msgid "profile.intro"
 msgstr "Hier kannst du irgendwann mal dein Profil anpassen und ändern. Aktuell beziehen wir das Benutzerbild übrigens von gravatar ..."
+
+# #####################
+# HELP
+# #####################
+msgid "help.question"
+msgstr "Beschreibe ganz kurz dein Problem:"
+
+# #####################
+# HANDIN
+# #####################
+msgid "handin.areyousure"
+msgstr "Bist du sicher, dass du den aktuellen Stand jetzt deinem Lehrer abgeben möchtest?"
+
+msgid "handin.done"
+msgstr "Alles klar, Abgabe erledigt. Während du auf deinen Lehrer wartest, kannst du gerne anderen helfen, die deine Hilfe benötigen."
+
+# #####################
+# CLOUD
+# #####################
+msgid "cloud.openfiles"
+msgstr "Offene Dateien"
+
+msgid "cloud.size"
+msgstr "Größe"
+
+msgid "cloud.lastchange"
+msgstr "letzte Änderung"
+
+msgid "cloud.onedirup"
+msgstr "ins darüber liegende Verzeichnis wechseln"
+
+msgid "cloud.create"
+msgstr "Neu erstellen ..."
+
+msgid "cloud.createdir"
+msgstr "neuer Ordner"
+
+msgid "cloud.createfile"
+msgstr "neue Datei"
+
+msgid "cloud.upload"
+msgstr "Hochladen ..."
+
+msgid "cloud.importfromurl"
+msgstr "aus URL importieren"
+
+msgid "cloud.or"
+msgstr "... oder ..."
+
+msgid "cloud.root"
+msgstr "%ss Dateien"
+
+msgid "cloud.countfiles"
+msgstr "%d Dateien"
+
+msgid "cloud.downloadfile"
+msgstr "herunterladen"
+
+msgid "cloud.downloadfolder"
+msgstr "als .zip-Archiv herunterladen"
+
+msgid "cloud.rename"
+msgstr "umbenennen"
+
+msgid "cloud.deletefile"
+msgstr "Datei löschen"
+
+msgid "cloud.deletefolder"
+msgstr "Ordner und alle darin enthaltenen Dateien löschen"
+
+msgid "cloud.deleteareyousure"
+msgstr "Bist du sicher, dass du das löschen möchtest? Dieser Schritt kann nicht rückgängig gemacht werden."
+
+msgid "cloud.close"
+msgstr "schließen"
 
 # #####################
 # ACTIVATION
@@ -427,6 +513,9 @@ msgstr "Die Datenbankabfrage lieferte keine Ergebnisse."
 
 msgid "error.emailalreadytaken"
 msgstr "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert."
+
+msgid "error.usecloudforfilelist"
+msgstr "Iiigel/Model/File() kann keine Datei-Listings ausgeben. Es muss stattdessen Iiigel/Model/Cloud() verwendet werden."
 
 # #####################
 # DEBUG MSGS

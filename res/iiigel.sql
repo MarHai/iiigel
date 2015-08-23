@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `chapter` (
 
 CREATE TABLE IF NOT EXISTS `cloud` (
   `nId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `sHashId` VARCHAR(30) NOT NULL,
   `bDeleted` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `nCreate` int(35) unsigned NOT NULL,
   `nUpdate` int(35) unsigned NOT NULL,
@@ -47,7 +48,9 @@ CREATE TABLE IF NOT EXISTS `cloud` (
   `sName` varchar(255) NOT NULL,
   `bFilesystem` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `sFile` text NOT NULL,
-  PRIMARY KEY (`nId`)
+  `bOpen` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`nId`),
+  UNIQUE INDEX `sHashId_bDeleted` (`sHashId`, `bDeleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

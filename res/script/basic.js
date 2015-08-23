@@ -44,6 +44,7 @@ $(function() {
                         label: sTitle,
                         className: 'btn-success',
                         callback: function() {
+                            $('.bootbox form input[name="sCurrentPageUrl"]').val(document.location.href);
                             $('.bootbox form').submit();
                         }
                     }
@@ -154,9 +155,6 @@ $(function() {
         minimumResultsForSearch: 5
     });
     
-    //navdrops (too many navs on a nav-list)
-    $('.nav-tabs').tabdrop();
-    
     //back-to-top link
     $('.backtotop').on('click', function(_oEvent) {
         _oEvent.preventDefault();
@@ -165,7 +163,7 @@ $(function() {
     });
     
     //file uploads
-    $('input[type="file"]').fileupload({
+    $('input[type="file"]:not(.iiigel-nodefaultupload)').fileupload({
         dataType: 'json',
         url: '?c=File&a=upload',
         add: function(_oEvent, _oData) {

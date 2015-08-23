@@ -36,6 +36,54 @@ body {
     overflow-y: auto;
 }
 
+.iiigel-scroll {
+    overflow: auto;
+}
+
+.iiigel-unobtrusive {
+    background-color: transparent;
+    border-color: #DDD;
+    color: #DDD;
+}
+
+#iiigel-editor-ace {
+    font-size: 14px;
+    background-color: #FFF;
+}
+
+#iiigel-cloudbrowser tbody tr[data-type] {
+    cursor: pointer;
+}
+
+#iiigel-editor a.iiigel-interpret {
+    display: block;
+}
+
+#iiigel-editor a.iiigel-close {
+}
+
+#iiigel-editor a.iiigel-close:hover {
+    color: #CCC;
+}
+
+#iiigel-editor .iiigel-files .btn-group {
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+#iiigel-editor .iiigel-files .btn-group .btn[data-hash] {
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+#iiigel-editor .iiigel-files .btn-group .btn[data-close] {
+    width: 20%;
+    padding: 6px 0;
+}
+
+
 .debug {
     margin: 10px 0;
     padding: 5px;

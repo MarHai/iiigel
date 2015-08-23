@@ -17,6 +17,7 @@
                 <label class="col-md-offset-1 col-md-3 control-label" for="sHashId">{% trans 'group' %} / {% trans 'institution' %}</label>
                 <div class="col-md-6">
                     <input id="sHashId" name="sHashId" type="text" placeholder="{% trans 'activationcode' %}" value="{{ sActivation }}" class="form-control input-md" />
+                    <input name="sCurrentPageUrl" type="hidden" value="" />
                 </div>
             </div>
         </form>

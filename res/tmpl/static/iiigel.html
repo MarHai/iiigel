@@ -1,37 +1,81 @@
-{% macro mainContent(bGroupAdmin, oModule, oChapter) %}
+{% macro mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime) %}
     <div class="row mt">
         <div class="col-lg-9 col-md-9 col-sm-12">
-            <div class="showback">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active">
-                        <a href="#file1" aria-controls="file1" role="tab" data-toggle="tab">File 1</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#file2" aria-controls="file2" role="tab" data-toggle="tab">File 2</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#file3" aria-controls="file3" role="tab" data-toggle="tab">File 3</a>
-                    </li>
-                </ul>
-                <div class="tab-content mt">
-                    <div role="tabpanel" class="tab-pane fade in active" id="file1">
-                        file 1
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="file2">
-                        file 2
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="file3">
-                        file 3
+            <div class="showback iiigel-scroll" id="iiigel-chapter">
+                <h3><i class="fa fa-angle-right"></i> {{ oChapter.sName }}</h3>
+                {{ oChapter.sText|raw }}
+            </div>
+            {% if oChapter.bCloud %}
+                <div class="showback hide iiigel-scroll" id="iiigel-cloud">
+                    <ol class="breadcrumb"></ol>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-12">
+                            <table class="table table-striped table-hover table-condensed" id="iiigel-cloudbrowser">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'name' %}</th>
+                                        <th>{% trans 'cloud.size' %}</th>
+                                        <th>{% trans 'cloud.lastchange' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5">{% trans 'table.loading' %}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <h4><i class="fa fa-angle-right"></i> {% trans 'cloud.create' %}</h4>
+                            <p>
+                                <a href="#" class="btn btn-default iiigel-createdir"><i class="fa fa-folder"></i> {% trans 'cloud.createdir' %}</a>
+                                <a href="#" class="btn btn-default iiigel-createfile"><i class="fa fa-file-text"></i> {% trans 'cloud.createfile' %}</a>
+                            </p>
+                            <h4><i class="fa fa-angle-right"></i> {% trans 'cloud.upload' %}</h4>
+                            <p>
+                                <div class="input-group">
+                                    <input type="url" id="sUrl" name="sUrl" placeholder="{% trans 'cloud.importfromurl' %}" class="form-control" />
+                                    <span class="input-group-btn">
+                                        <a href="#" class="btn btn-default"><i class="fa fa-download"></i></a>
+                                    </span>
+                                </div>
+                            </p>
+                            <p>{% trans 'cloud.or' %}</p>
+                            <p>
+                                <form class="form-horizontal" method="post" action="{{ sUrl }}Iiigel/uploadFromHost" enctype="multipart/form-data">
+                                    <input id="sFile-input" name="sFile-input" type="file" class="form-control input-md iiigel-nodefaultupload" multiple="multiple" />
+                                </form>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="showback">
-                chapter
-            </div>
+            {% endif %}
+            {% if (oChapter.bInterpreter) and (oChapter.sInterpreter != '') %}
+                <div class="showback hide iiigel-scroll" id="iiigel-interpreter">
+                    interpreter
+                </div>
+            {% endif %}
+            {% if oChapter.bInterpreter %}
+                <div class="showback iiigel-scroll" id="iiigel-editor" data-editorwaittime="{{ nEditorWaitTime }}">
+                    <div class="row">
+                        <div class="col-lg-10 col-md-10 col-sm-12">
+                            <div id="iiigel-editor-ace"></div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            {% if oChapter.bLiveInterpretation == 0 %}
+                                <a href="#" class="btn btn-success iiigel-interpret"><i class="fa fa-play"></i> {% trans 'mode.interpret' %}</a>
+                            {% endif %}
+                            <div class="iiigel-files{{ oChapter.bLiveInterpretation ? '' : ' mt' }}"></div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="showback">
+            <div class="showback" id="iiigel-module">
                 <h4>
                     <i class="fa fa-angle-right"></i> 
                     {{ oModule.sName }}
@@ -45,19 +89,19 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="showback">
+            <div class="showback" id="iiigel-controls">
                 <p class="btn-group">		
-                    <a class="btn btn-default">{% trans 'mode.chapter' %}</a>
-                    {% if oChapter.bCloud %}
-                        <a class="btn btn-default">{% trans 'mode.cloud' %}</a>
+                    <a class="btn btn-default active" href="#iiigel-chapter">{% trans 'mode.chapter' %}</a>
+                    {% if (oChapter.bInterpreter) and (oChapter.sInterpreter != '') %}
+                        <a class="btn btn-default" href="#iiigel-interpreter">{% trans 'mode.interpretation' %}</a>
                     {% endif %}
-                    {% if oChapter.bInterpreter %}
-                        <a class="btn btn-default">{% trans 'mode.interpretation' %}</a>
+                    {% if oChapter.bCloud %}
+                        <a class="btn btn-default" href="#iiigel-cloud">{% trans 'mode.cloud' %}</a>
                     {% endif %}
                 </p>
                 <p>
-                    <a class="btn btn-theme"><i class="fa fa-hand-o-right"></i> {% trans 'mode.handin' %}</a>
-                    <a class="btn btn-theme"><i class="fa fa-question"></i> {% trans 'mode.helpwanted' %}</a>
+                    <a class="btn btn-primary iiigel-handin" href="#"><i class="fa fa-hand-o-right"></i> {% trans 'mode.handin' %}</a>
+                    <a class="btn btn-primary iiigel-help" href="#"><i class="fa fa-question"></i> {% trans 'mode.helpwanted' %}</a>
                 </p>
             </div>
         </div>
@@ -69,7 +113,7 @@
 {% extends "page.html" %}
 
 {% set nColumns = 0 %}
-{% set aContent = { '0': get.mainContent(bGroupAdmin, oModule, oChapter) } %}
+{% set aContent = { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime) } %}
 
 {% block content %}
     {{ parent() }}

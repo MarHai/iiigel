@@ -15,28 +15,28 @@
         <div class="col-md-6">
             <select id="nIdType" name="nIdType" class="form-control input-md">
                 {% if aTypeId.chapter|length > 0 %}
-                    <optgroup label="Chapter">
+                    <optgroup label="{% trans %}chapter{% plural 1 %}chapter.plural{% endtrans %}">
                         {% for aRow in aTypeId.chapter %}
                             <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
                         {% endfor %}
                     </optgroup>
                 {% endif %}
                 {% if aTypeId.group|length > 0 %}
-                    <optgroup label="Group">
+                    <optgroup label="{% trans %}group{% plural 1 %}group.plural{% endtrans %}">
                         {% for aRow in aTypeId.group %}
                             <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
                         {% endfor %}
                     </optgroup>
                 {% endif %}
                 {% if aTypeId.institution|length > 0 %}
-                    <optgroup label="Institution">
+                    <optgroup label="{% trans %}institution{% plural 1 %}institution.plural{% endtrans %}">
                         {% for aRow in aTypeId.institution %}
                             <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
                         {% endfor %}
                     </optgroup>
                 {% endif %}
                 {% if aTypeId.module|length > 0 %}
-                    <optgroup label="Module">
+                    <optgroup label="{% trans %}module{% plural 1 %}module.plural{% endtrans %}">
                         {% for aRow in aTypeId.module %}
                             <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
                         {% endfor %}

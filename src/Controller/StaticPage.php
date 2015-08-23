@@ -48,7 +48,7 @@ class StaticPage extends \Iiigel\Controller\DefaultController {
             $oUser = new \Iiigel\Model\User();
             $bLogin = $oUser->login($GLOBALS['aRequest']['sMail'], $GLOBALS['aRequest']['sPassword'], isset($GLOBALS['aRequest']['sHashId']) ? $GLOBALS['aRequest']['sHashId'] : NULL);
             if($bLogin === TRUE) {
-                $this->redirect('');
+                $this->redirect(isset($GLOBALS['aRequest']['sCurrentPageUrl']) ? $GLOBALS['aRequest']['sCurrentPageUrl'] : '');
             } elseif($bLogin === FALSE) {
                 throw new \Exception(_('error.loginunsuccessful'));
             } else {
