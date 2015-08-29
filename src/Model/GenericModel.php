@@ -1,6 +1,6 @@
 <?php namespace Iiigel\Model;
 
-abstract class GenericModel {
+abstract class GenericModel implements \JsonSerializable {
     private $nId = NULL;
     private $aData = array();
     private $aMapping = array();
@@ -103,6 +103,15 @@ abstract class GenericModel {
             }
         }
         return $aData;
+    }
+    
+    /**
+     * Method which provides rewrite for json_encode calls.
+     * 
+     * @return array same as ->getCompleteEntry(TRUE)
+     */
+    public function jsonSerialize() {
+        return $this->getCompleteEntry(TRUE);
     }
     
     /**

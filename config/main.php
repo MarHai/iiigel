@@ -34,6 +34,7 @@ $GLOBALS['aConfig'] = array(
     
     //default date format
     'sDateFormatJs' => 'dd. mm. yyyy hh:ii',
+    'sDateFormatJsMoment' => 'DD.MM.YYYY HH:mm',
     'sDateFormatPhp' => 'd.m.Y H:i',
     
     //file uploads

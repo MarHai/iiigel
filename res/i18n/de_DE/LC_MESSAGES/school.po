@@ -174,10 +174,10 @@ msgid "mode.cloud.upload"
 msgstr "Dateien hochladen"
 
 msgid "mode.interpretation"
-msgstr "Interpretation"
+msgstr "Code"
 
 msgid "mode.interpretation.fullscreen"
-msgstr "Interpretationsmodus als Vollbild"
+msgstr "Code-Modus als Vollbild"
 
 msgid "mode.handin"
 msgstr "abgeben"
@@ -516,6 +516,9 @@ msgstr "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert."
 
 msgid "error.usecloudforfilelist"
 msgstr "Iiigel/Model/File() kann keine Datei-Listings ausgeben. Es muss stattdessen Iiigel/Model/Cloud() verwendet werden."
+
+msgid "error.filenotfound"
+msgstr "Die angegebene Datei konnte nicht gefunden werden."
 
 # #####################
 # DEBUG MSGS

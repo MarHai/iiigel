@@ -85,23 +85,38 @@
                 </div>
                 <div class="list-group">
                     {% for oChapter in oModule.aChapter %}
-                        <a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" class="list-group-item{{ oChapter.nId == oModule.nCurrentChapter ? ' active' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+                        <a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" data-chapter="{{ oChapter.sHashId }}" class="list-group-item{{ oChapter.nId == oModule.nCurrentChapter ? ' active' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
                     {% endfor %}
                 </div>
             </div>
             <div class="showback" id="iiigel-controls">
                 <p class="btn-group">		
-                    <a class="btn btn-default active" href="#iiigel-chapter">{% trans 'mode.chapter' %}</a>
+                    <a class="btn btn-default tooltips active" href="#iiigel-chapter" data-title="{% trans 'mode.chapter' %}">
+                        <i class="fa fa-code hidden-sm hidden-xs hidden-lg"></i>
+                        <span class="hidden-md">{% trans 'mode.chapter' %}</span>
+                    </a>
                     {% if (oChapter.bInterpreter) and (oChapter.sInterpreter != '') %}
-                        <a class="btn btn-default" href="#iiigel-interpreter">{% trans 'mode.interpretation' %}</a>
+                        <a class="btn btn-default tooltips" href="#iiigel-interpreter" data-title="{% trans 'mode.interpretation' %}">
+                            <i class="fa fa-language hidden-sm hidden-xs hidden-lg"></i> 
+                            <span class="hidden-md">{% trans 'mode.interpretation' %}</span>
+                        </a>
                     {% endif %}
                     {% if oChapter.bCloud %}
-                        <a class="btn btn-default" href="#iiigel-cloud">{% trans 'mode.cloud' %}</a>
+                        <a class="btn btn-default tooltips" href="#iiigel-cloud" data-title="{% trans 'mode.cloud' %}">
+                            <i class="fa fa-hdd-o hidden-sm hidden-xs hidden-lg"></i> 
+                            <span class="hidden-md">{% trans 'mode.cloud' %}</span>
+                        </a>
                     {% endif %}
                 </p>
                 <p>
-                    <a class="btn btn-primary iiigel-handin" href="#"><i class="fa fa-hand-o-right"></i> {% trans 'mode.handin' %}</a>
-                    <a class="btn btn-primary iiigel-help" href="#"><i class="fa fa-question"></i> {% trans 'mode.helpwanted' %}</a>
+                    <a class="btn btn-primary iiigel-handin tooltips" href="#" data-title="{% trans 'mode.handin' %}">
+                        <i class="fa fa-hand-o-right hidden-sm hidden-xs hidden-lg"></i>
+                        <span class="hidden-md">{% trans 'mode.handin' %}</span>
+                    </a>
+                    <a class="btn btn-primary iiigel-help tooltips" href="#" data-title="{% trans 'mode.helpwanted' %}">
+                        <i class="fa fa-question hidden-sm hidden-xs hidden-lg"></i>
+                        <span class="hidden-md">{% trans 'mode.helpwanted' %}</span>
+                    </a>
                 </p>
             </div>
         </div>

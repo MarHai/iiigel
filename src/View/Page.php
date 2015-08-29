@@ -65,7 +65,8 @@ class Page extends \Iiigel\View\DefaultView {
                     \Gettext\Generators\Jed::toString(
                         \Gettext\Extractors\Mo::fromFile(PATH_DIR.'res/i18n/'.$this->sCountry.'/LC_MESSAGES/'.$this->sDomain.'.mo')
                     ).
-                '; if(arguments.length == 1 || arguments[1] <= 1) return typeof(oLang.messages[arguments[0]]) !== \'undefined\' ? oLang.messages[arguments[0]][1] : arguments[0]; else return typeof(oLang.messages[arguments[0]]) !== \'undefined\' ? oLang.messages[arguments[0]][2] : arguments[0]; }'
+                '; if(arguments.length == 1 || arguments[1] <= 1) return typeof(oLang.messages[arguments[0]]) !== \'undefined\' ? oLang.messages[arguments[0]][1] : arguments[0]; else return typeof(oLang.messages[arguments[0]]) !== \'undefined\' ? oLang.messages[arguments[0]][2] : arguments[0]; }'.
+                'function i18n_datetime(_nTimestamp) { return moment.unix(_nTimestamp).format(\''.$GLOBALS['aConfig']['sDateFormatJsMoment'].'\') }'
             );
         }
     }

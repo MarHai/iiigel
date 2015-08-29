@@ -4,12 +4,51 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
     const DEFAULT_ACTION = 'show';
     
     protected $sRawOutput = NULL;
+    protected $oCloud = NULL;
+    protected $oInterpreter = NULL;
+    protected $oChapter = NULL;
+    protected $oModule = NULL;
     
     public function __construct() {
         if(!isset($GLOBALS['oUserLogin'])) {
             throw new \Exception(_('error.permission'));
         }
         parent::__construct();
+        $this->oCloud = new \Iiigel\Model\Cloud();
+    }
+    
+    /**
+     * Loads an environment (= module, chapter and interpreter) based on a given hash (either module hash or chapter hash).
+     * 
+     * @param  string  [$_sHashId       = ''] module or chapter hashed ID
+     * @return boolean true if successfully loaded
+     */
+    protected function loadEnvironment($_sHashId = '') {
+        $this->oChapter = $this->oModule = NULL;
+        if($_sHashId{0} == 'm') {
+            $this->oModule = new \Iiigel\Model\Module($_sHashId);
+            $this->oChapter = new \Iiigel\Model\Chapter();
+            $oResult = $this->oChapter->getList($this->oModule->nId);
+            if(($aRow = $GLOBALS['oDb']->get($oResult))) {
+                $this->oChapter = new \Iiigel\Model\Chapter($aRow);
+            } else {
+                $this->oChapter = NULL;
+            }
+        } else {
+            $this->oChapter = new \Iiigel\Model\Chapter($_sHashId);
+            $this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
+        }
+        if($this->oModule->nId > 0 && $this->oChapter !== NULL) {
+            if($this->oChapter->sInterpreter !== NULL) {
+                $sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$this->oChapter->sInterpreter;
+                if(class_exists($sInterpreter)) {
+                    $this->oInterpreter = new $sInterpreter($this->oCloud);
+                }
+            }
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
     
     /**
@@ -27,25 +66,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashId if module ID, first chapter of this module is shown; if chapter ID, this chapter is shown
      */
     public function show($_sHashId = '') {
-        $oChapter = $oModule = NULL;
-        if($_sHashId{0} == 'm') {
-            $oModule = new \Iiigel\Model\Module($_sHashId);
-            $oChapter = new \Iiigel\Model\Chapter();
-            $oResult = $oChapter->getList($oModule->nId);
-            if(($aRow = $GLOBALS['oDb']->get($oResult))) {
-                $oChapter = new \Iiigel\Model\Chapter($aRow);
-            } else {
-                $oChapter = NULL;
-            }
-        } else {
-            $oChapter = new \Iiigel\Model\Chapter($_sHashId);
-            $oModule = new \Iiigel\Model\Module($oChapter->nIdModule);
-        }
-        if($oModule->nId > 0) {
+        if($this->loadEnvironment($_sHashId)) {
             //check if current user is in this module
             //load module data (incl. chapter)
-            $this->oView->oModule = $oModule;
-            $this->oView->oChapter = $oChapter;
+            $this->oView->oModule = $this->oModule;
+            $this->oView->oChapter = $this->oChapter;
             $this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
             $this->loadFile('iiigel');
         } else {
@@ -57,87 +82,23 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * Loads cloud and sets ->sRawOutput accordingly.
      */
     public function cloud() {
-        $this->sRawOutput = json_encode($this->getCloud());
-    }
-    
-    protected function getCloud() {
-            /**
-            * TESTING
-            */
-        return array(
-            array(
-                'sName' => sprintf(_('cloud.root'), $GLOBALS['oUserLogin']->sName),
-                'sHashId' => 'sdlfiji3fjlin',
-                'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1439960329),
-                'sSize' => sprintf(_('cloud.countfiles'), 4),
-                'sType' => 'folder',
-                'aChildren' => array(
-                    array(
-                        'sName' => 'ordner1',
-                        'sHashId' => 'sdf3fwg4tgfg4',
-                        'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440015549),
-                        'sSize' => sprintf(_('cloud.countfiles'), 3),
-                        'sType' => 'folder',
-                        'aChildren' => array(
-                            array(
-                                'sName' => 'ordnar 2',
-                                'sHashId' => 'al8j3ljsfö80u',
-                                'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440015549),
-                                'sSize' => sprintf(_('cloud.countfiles'), 2),
-                                'sType' => 'folder',
-                                'aChildren' => array(
-                                    array(
-                                        'sName' => 'test_element.css',
-                                        'sHashId' => 'muhaoj3jl8jf3',
-                                        'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440000762),
-                                        'sSize' => '318 KByte',
-                                        'sType' => 'text/css',
-                                        'bOpen' => TRUE
-                                    ),
-                                    array(
-                                        'sName' => 'test_element.min.js',
-                                        'sHashId' => 'asdf3effw3ss3',
-                                        'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440000032),
-                                        'sSize' => '84 Byte',
-                                        'sType' => 'text/js',
-                                        'bOpen' => FALSE
-                                    )
-                                )
-                            ),
-                            array(
-                                'sName' => 'bar.php',
-                                'sHashId' => 'skliuj3fflii',
-                                'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440018654),
-                                'sSize' => '318 KByte',
-                                'sType' => 'text/php',
-                                'bOpen' => FALSE
-                            )
-                        )
-                    ),
-                    array(
-                        'sName' => 'foo.html',
-                        'sHashId' => 'bkalkjsdlfjd',
-                        'sUpdate' => date($GLOBALS['aConfig']['sDateFormatPhp'], 1440017230),
-                        'sSize' => '212 KByte',
-                        'sType' => 'text/html',
-                        'bOpen' => TRUE
-                    )
-                )
-            )
-        );
-            /**
-            * TESTING done
-            */
+        $this->sRawOutput = json_encode($this->oCloud->get());
     }
     
     /**
-     * Interpreteas a specific file. Sets any (HTML) output into ->sRawOutput (without doctype, html, head, body tags).
+     * Interpretes a specific file within a specific chapter. Sets any (HTML) output into ->sRawOutput (without doctype, html, head, body tags).
      * 
-     * @param string $_sHashId hash ID of element to interpret
+     * @param string $_sHashIdFile    hash ID of element to interpret
+     * @param string $_sHashIdChapter hash ID of chapter to be interpreted in (important for correct interpreter)
      */
-    public function interpret($_sHashId) {
-        //TEST CODE FROM HERE
-        $this->sRawOutput = '<p>now interpreting ... <code>'.$_sHashId.'</code></p>';
+    public function interpret($_sHashIdFile, $_sHashIdChapter) {
+        if($this->loadEnvironment($_sHashIdChapter)) {
+            if(($oFile = $this->oCloud->loadFile($_sHashIdFile))) {
+                $this->sRawOutput = $this->oInterpreter->interpret($oFile);
+                return;
+            }
+        }
+        throw new \Exception(_('error.filenotfound'));
     }
     
     /**
@@ -146,27 +107,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashId hash ID of element to open
      */
     public function open($_sHashId) {
-        //SET file to be opened
-        //READ file content and return
-        
-        //TEST CODE FROM HERE
-        $aFile = $this->deletelater__findFileInCloud($_sHashId, $this->getCloud());
-        $aFile['sFile'] = '<html>head></head><body><p>hallo welt</p></body></html>';
-        $this->sRawOutput = json_encode($aFile);
-    }
-    
-    private function deletelater__findFileInCloud($_sHashId, $_aCloud) {
-        for($i = 0; $i < count($_aCloud); $i++) {
-            if($_aCloud[$i]['sHashId'] == $_sHashId) {
-                return $_aCloud[$i];
-            } elseif(isset($_aCloud[$i]['aChildren'])) {
-                $mReturn = $this->deletelater__findFileInCloud($_sHashId, $_aCloud[$i]['aChildren']);
-                if($mReturn !== NULL) {
-                    return $mReturn;
-                }
-            }
-        }
-        return NULL;
+        $this->sRawOutput = json_encode($this->oCloud->loadFile($_sHashId)->getCompleteEntry(TRUE));
     }
     
     /**
@@ -175,8 +116,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashId hash ID of element to close
      */
     public function close($_sHashId) {
-        //SET file to be closed
-        $this->sRawOutput = TRUE;
+        $this->sRawOutput = $this->oCloud->closeFile($_sHashId);
     }
     
     /**
@@ -186,8 +126,9 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sContent new contents
      */
     public function update($_sHashId, $_sContent) {
-        //SAVE content to this file
-        $this->sRawOutput = TRUE;
+        $oFile = $this->oCloud->loadFile($_sHashId);
+        $oFile->sFile = $_sContent;
+        $this->sRawOutput = $oFile->update();
     }
     
     /**
@@ -197,8 +138,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sName         new file's name
      */
     public function createFile($_sHashIdParent, $_sName) {
-        //CREATE new file
-        $this->sRawOutput = json_encode($this->getCloud());
+        if($this->oCloud->createFile($_sName, new \Iiigel\Model\Folder($_sHashIdParent, $this->oCloud))) {
+            $this->sRawOutput = json_encode($this->oCloud->get());
+        } else {
+            $this->sRawOutput = _('error.create');
+        }
     }
     
     /**
@@ -208,8 +152,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sName         new folder's name
      */
     public function createDir($_sHashIdParent, $_sName) {
-        //CREATE new directory
-        $this->sRawOutput = json_encode($this->getCloud());
+        if($this->oCloud->createFolder($_sName, new \Iiigel\Model\Folder($_sHashIdParent, $this->oCloud))) {
+            $this->sRawOutput = json_encode($this->oCloud->get());
+        } else {
+            $this->sRawOutput = _('error.create');
+        }
     }
     
     /**
@@ -219,8 +166,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sNewName new name
      */
     public function rename($_sHashId, $_sNewName) {
-        //RENAME an object (could be file or directory)
-        $this->sRawOutput = json_encode($this->getCloud());
+        if($this->oCloud->rename($_sHashId, $_sNewName)) {
+            $this->sRawOutput = json_encode($this->oCloud->get());
+        } else {
+            $this->sRawOutput = _('error.update');
+        }
     }
     
     /**
@@ -229,8 +179,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashId hash ID of element to be deleted
      */
     public function delete($_sHashId) {
-        //DELETE an object (could be file or directory)
-        $this->sRawOutput = json_encode($this->getCloud());
+        if($this->oCloud->delete($_sHashId)) {
+            $this->sRawOutput = json_encode($this->oCloud->get());
+        } else {
+            $this->sRawOutput = sprintf(_('error.delete'), 'Cloud', $_sHashId);
+        }
     }
     
     /**
@@ -252,7 +205,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
     public function uploadFromHost($_sHashId) {
         $oUpload = new \Iiigel\Generic\Upload();
         //PUSH $oUpload->getFiles() into cloud from current folder
-        $this->sRawOutput = json_encode($this->getCloud());
+        $this->sRawOutput = json_encode($this->oCloud->get());
     }
     
     /**
@@ -263,7 +216,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      */
     public function uploadFromUrl($_sHashId, $_sUrl) {
         //PUSH file_get_contents or curl into cloud from current folder
-        $this->sRawOutput = json_encode($this->getCloud());
+        $this->sRawOutput = json_encode($this->oCloud->get());
     }
 }
 

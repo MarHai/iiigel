@@ -76,7 +76,7 @@ $(function() {
     }
 
     function interpret() {
-        $('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashId: sCurrentFileHash });
+        $('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter') });
     }
 
     //open-folder selector
@@ -102,7 +102,7 @@ $(function() {
                     '<td><i class="fa fa-' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file-text') + '"></i></td>' +
                     '<td>' + oElem.aChildren[i].sName + '</td>' +
                     '<td>' + oElem.aChildren[i].sSize + '</td>' +
-                    '<td>' + oElem.aChildren[i].sUpdate + '</td>' +
+                    '<td>' + i18n_datetime(oElem.aChildren[i].nUpdate) + '</td>' +
                     '<td>' +
                         '<a href="' + $('.logo').get(0).href + 'Iiigel/download/' + oElem.aChildren[i].sHashId + '" class="btn btn-default btn-xs tooltips iiigel-download iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.download' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file')) +'"><i class="fa fa-' + (oElem.aChildren[i].sType == 'folder' ? 'dropbox' : 'download') + '"></i></a> ' +
                         '<a href="#" class="btn btn-default btn-xs tooltips iiigel-rename iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.rename') +'"><i class="fa fa-i-cursor"></i></a> ' +
@@ -172,9 +172,9 @@ $(function() {
             _oCloud = oCloud;
         }
         for(var i in _oCloud) {
-            if(_oCloud[i]['sType'] != 'folder' && _oCloud[i]['bOpen']) {
+            if(_oCloud[i]['sType'] != 'folder' && _oCloud[i]['bOpen'] == 1) {
                 addToOpenFiles(_oCloud[i], false);
-            } else if(_oCloud[i]['sType'] == 'folder') {
+            } else if(_oCloud[i]['sType'] == 'folder' && typeof(_oCloud[i]['aChildren']) !== 'undefined') {
                 extractOpenFiles_inner(_oCloud[i]['aChildren']);
             }
         }
@@ -182,11 +182,13 @@ $(function() {
     }
     
     function addToOpenFiles(_oFile, _bOpen) {
-        $('<div class="btn-group"><a href="#" class="btn btn-' + (_bOpen ? 'primary' : 'default') + ' tooltips" title="' + _oFile.sName + '" data-placement="left" data-hash="' + _oFile.sHashId + '">' + _oFile.sName + '</a><a href="#" class="btn btn-' + (_bOpen ? 'primary' : 'default') + ' tooltips" data-placement="left" data-close="' + _oFile.sHashId + '" title="' + i18n('cloud.close') + '">&times;</a></div>')
-            .prependTo($('#iiigel-editor .iiigel-files'));
-        $('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"].tooltips, #iiigel-editor .iiigel-files a[data-close="' + _oFile.sHashId + '"].tooltips').tooltip();
-        $('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"]').on('click', openOpenedFile);
-        $('#iiigel-editor .iiigel-files a[data-close="' + _oFile.sHashId + '"]').on('click', closeOpenedFile);
+        if($('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"]').length == 0) {
+            $('<div class="btn-group"><a href="#" class="btn btn-' + (_bOpen ? 'primary' : 'default') + ' tooltips" title="' + _oFile.sName + '" data-placement="left" data-hash="' + _oFile.sHashId + '">' + _oFile.sName + '</a><a href="#" class="btn btn-' + (_bOpen ? 'primary' : 'default') + ' tooltips" data-placement="left" data-close="' + _oFile.sHashId + '" title="' + i18n('cloud.close') + '">&times;</a></div>')
+                .prependTo($('#iiigel-editor .iiigel-files'));
+            $('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"].tooltips, #iiigel-editor .iiigel-files a[data-close="' + _oFile.sHashId + '"].tooltips').tooltip();
+            $('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"]').on('click', openOpenedFile);
+            $('#iiigel-editor .iiigel-files a[data-close="' + _oFile.sHashId + '"]').on('click', closeOpenedFile);
+        }
     }
 
     function setupBreadcrumbs(_oFolder) {
@@ -297,6 +299,7 @@ $(function() {
         oSession = oEditor.getSession();
         oSession.setUseSoftTabs(true);
         oSession.setUseWrapMode(true);
+        oSession.setOption('useWorker', false);
         
         //interpret on click
         $('.iiigel-interpret').off('click').on('click', function(_oEvent) {
@@ -360,6 +363,7 @@ $(function() {
             _oEvent.preventDefault();
             $.getJSON('?c=Iiigel&a=uploadFromUrl', { _sHashId: sCurrentFolderHash, _sUrl: $('#iiigel-cloud #sUrl').val() }, function(_oData) {
                 updateCloudList(_oData);
+                $('#iiigel-cloud #sUrl').val('');
             });
             return false;
         });
