@@ -27,6 +27,7 @@ abstract class Affiliation extends \Iiigel\Model\GenericModel {
      */
     public function hashId() {
         list(, $sTable) = explode('2', $this::TABLE, 2);
+		//&sasdfsdf
         return '2u'.strtolower($sTable{0}).substr(parent::hashId(), 1);
     }
 }
