@@ -243,6 +243,14 @@ msgid "group.nameexample"
 msgstr "z.B. Klasse 9a"
 
 # #####################
+# USER2GROUP
+# #####################
+msgid "user2group.member"
+msgid_plural "user2group.member.plural"
+msgstr[0] "Gruppenmitglied"
+msgstr[1] "Gruppenmitglieder"
+
+# #####################
 # MODULE
 # #####################
 msgid "module.create"
