@@ -2,7 +2,12 @@
 
 abstract class DefaultView {
     public function __construct() {
+    	//	Only for WINDOWS!
         putenv('LANG='.$GLOBALS['sLanguage']);
+        
+        //	UNIX needs this line!
+        putenv('LANGUAGE='.$GLOBALS['sLanguage']);
+        
         setlocale(LC_ALL, $GLOBALS['sLanguage']);
         bindtextdomain($GLOBALS['sDomain'], 'res/i18n/');
         bind_textdomain_codeset($GLOBALS['sDomain'], 'UTF-8');
