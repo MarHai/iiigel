@@ -28,6 +28,7 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
 	public function showDetail($_sHashId) {
 		parent::showDetail($_sHashId);
 		
+		/*
 		$oTemp = new $this->sClass($_sHashId);
 		
 		// $this->oView->addRow();
@@ -36,6 +37,7 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
 		$oChapterController->showList($oTemp->nId);
 		
 		$this->oView->aContent = $oChapterController->oView->aContent;
+		*/
 	}
 	
 }
