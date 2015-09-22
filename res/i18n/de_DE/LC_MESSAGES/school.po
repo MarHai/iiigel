@@ -18,6 +18,9 @@ msgstr "iiigel"
 msgid "app.description"
 msgstr "Informatik in interaktiven Gruppen einfach lernen"
 
+msgid "app.author"
+msgstr "Mario Haim <mario@haim.it>, Felix Nattermann <nat@gag-mg.de>"
+
 msgid "app.keywords"
 msgstr "i³gel, lernen, E-Learning, coden, programmieren, üben, individuelles Tempo, Gruppenarbeit, Hilfesystem"
 

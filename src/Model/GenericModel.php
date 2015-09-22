@@ -78,8 +78,9 @@ abstract class GenericModel implements \JsonSerializable {
         if(count($this->aData) > $this->nIterator) {
             $aReturn = array_slice($this->aData, $this->nIterator, 1, TRUE);
             $this->nIterator++;
-            if(isset($this->aMapping[array_keys($aReturn)[0]])) {
-                $aReturn[array_keys($aReturn)[0]] = $this->aMapping[array_keys($aReturn)[0]];
+            $aKeys = array_keys($aReturn);
+            if(isset($this->aMapping[$aKeys[0]])) {
+                $aReturn[$aKeys[0]] = $this->aMapping[$aKeys[0]];
             }
             return $aReturn;
         } else {
@@ -97,7 +98,8 @@ abstract class GenericModel implements \JsonSerializable {
     public function getCompleteEntry($_bIncludeConfigColumns = FALSE) {
         $aData = array();
         while(($aRow = $this->get())) {
-            $sKey = array_keys($aRow)[0];
+        	$aKeys = array_keys($aRow);
+            $sKey = $aKeys[0];
             if((!in_array($sKey, $this::CONFIG_COLUMN) && $sKey != 'nId') || $_bIncludeConfigColumns) {
                 $aData[$sKey] = $aRow[$sKey];
             }

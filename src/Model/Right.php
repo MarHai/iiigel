@@ -29,7 +29,8 @@ class Right extends \Iiigel\Model\GenericModel {
                     break;
             }
             if($sTable != '') {
-                return intval($GLOBALS['oDb']->getOneRow('SELECT nId FROM `'.$sTable.'` WHERE sHashId = '.$GLOBALS['oDb']->escape($_mId))['nId']);
+            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT nId FROM `'.$sTable.'` WHERE sHashId = '.$GLOBALS['oDb']->escape($_mId));
+                return intval($aRow['nId']);
             } else {
                 return 0;
             }
@@ -92,7 +93,9 @@ class Right extends \Iiigel\Model\GenericModel {
                         $this->eType = 'group';
                         break;
                 }
-                $this->nIdType = $GLOBALS['oDb']->getOneRow('SELECT nId FROM `'.$this->eType.'` WHERE sHashId = '.$GLOBALS['oDb']->escape($this->nIdType).' LIMIT 1')['nId'];
+                
+                $aRow = $GLOBALS['oDb']->getOneRow('SELECT nId FROM `'.$this->eType.'` WHERE sHashId = '.$GLOBALS['oDb']->escape($this->nIdType).' LIMIT 1');
+                $this->nIdType = $aRow['nId'];
             }
         }
         return parent::create();

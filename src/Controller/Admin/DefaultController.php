@@ -132,7 +132,8 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
         $aDetail = array();
         $oTemp = new $this->sClass($_sHashId);
         while(($aRow = $oTemp->get())) {
-            $sKey = array_keys($aRow)[0];
+        	$aKeys = array_keys($aRow);
+            $sKey = $aKeys[0];
             $aDetail[$sKey] = array(
                 'sHeadline' => $oView->makeCamelCaseNicer($sKey),
                 'mValue' => $aRow[$sKey],

@@ -69,7 +69,11 @@ class Database {
      * @return array  associative array of single entry
      */
     public function get(&$_oResult) {
-        return $_oResult->fetch_assoc();
+    	if (method_exists($_oResult, 'fetch_assoc')) {
+    		return $_oResult->fetch_assoc();
+    	} else {
+    		return array();
+    	}
     }
     
     /**

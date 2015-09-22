@@ -19,6 +19,25 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
         }
         parent::create();
     }
+
+	/**
+     * Show details for a single entry, based on its hashed ID.
+     * 
+     * @param string $_sHashId hashed representation of ID
+     */
+	public function showDetail($_sHashId) {
+		parent::showDetail($_sHashId);
+		
+		$oTemp = new $this->sClass($_sHashId);
+		
+		// $this->oView->addRow();
+		
+		$oChapterController = new \Iiigel\Controller\Admin\Chapter();
+		$oChapterController->showList($oTemp->nId);
+		
+		$this->oView->aContent = $oChapterController->oView->aContent;
+	}
+	
 }
 
 ?>
