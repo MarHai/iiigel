@@ -28,7 +28,7 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
 	public function showDetail($_sHashId) {
 		parent::showDetail($_sHashId);
 		
-		// ADD ROW
+		$this->oView->addRow();
 		
 		$oTemp = new $this->sClass($_sHashId);
 		

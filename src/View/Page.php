@@ -149,7 +149,14 @@ class Page extends \Iiigel\View\DefaultView {
      */
     public function __set($_sName, $_mValue) {
         if($_sName == 'aContent') {
-            $this->aMarker['aContent'][] = $_mValue;
+        	$nRows = count($this->aMarker['aContent']);
+        	
+        	if ($nRows == 0) {
+        		$this->addRow();
+        		$nRows++;
+        	}
+        	
+            $this->aMarker['aContent'][$nRows - 1][] = $_mValue;
         } else {
             $this->aMarker[$_sName] = $_mValue;
         }
@@ -176,12 +183,25 @@ class Page extends \Iiigel\View\DefaultView {
     }
     
     /**
+     * Adds a new row to content
+     */
+    public function addRow() {
+    	$this->aMarker['aContent'][] = array();
+    }
+    
+    /**
      * Renders the current template with all its markers.
      * 
      * @return string full-page HTML code
      */
     public function render() {
-        $this->aMarker['nColumns'] = count($this->aMarker['aContent']);
+    	$nRows = count($this->aMarker['aContent']);
+        $this->aMarker['nRows'] = $nRows;
+        
+        for ($j = 0; $j < $nRows; $j++) {
+        	$this->aMarker['nColumns'][] = count($this->aMarker['aContent'][$j]);
+        }
+        
         return $this->oTemplate->render($this->aMarker);
     }
 }
