@@ -164,6 +164,11 @@ msgstr "Direktlink für die Registrierung (zum Weitergeben)"
 msgid "cancel"
 msgstr "Abbrechen"
 
+msgid "note"
+msgid_plural "note.plural"
+msgstr[0] "Notiz"
+msgstr[1] "Notizen"
+
 # #####################
 # MAIN LEARNING ENVIRONMENT
 # #####################
@@ -266,10 +271,41 @@ msgid "module.descriptionexample"
 msgstr "z.B. geeignet für X, erklärt Y, endet mit Z"
 
 # #####################
+# CHAPTER
+# #####################
+msgid "chapter.create"
+msgstr "Neues Kapitel erstellen"
+
+msgid "chapter.nameexample"
+msgstr "z.B. Formulare"
+
+msgid "chapter.textexample"
+msgstr "z.B. X wird mit folgendem Code Y ausgeführt."
+
+msgid "chapter.cloud"
+msgstr "Speicher"
+
+msgid "chapter.noteexample"
+msgstr "z.B. Dieses Kapitel benötigt noch Überarbeitungen bezogen auf X."
+
+# #####################
 # PERMISSIONS
 # #####################
 msgid "permission.create"
 msgstr "Neue Berechtigung erstellen"
+
+# #####################
+# INTERPRETER
+# #####################
+
+msgid "interpreter"
+msgstr "Interpreter"
+
+msgid "interpreter.live"
+msgstr "Interpretation während Bearbeitung"
+
+msgid "interpreter.namedefault"
+msgstr "z.B. HTML"
 
 # #####################
 # USER
@@ -324,6 +360,9 @@ msgstr "Bist du sicher, dass du den aktuellen Stand jetzt deinem Lehrer abgeben 
 
 msgid "handin.done"
 msgstr "Alles klar, Abgabe erledigt. Während du auf deinen Lehrer wartest, kannst du gerne anderen helfen, die deine Hilfe benötigen."
+
+msgid "handin.obligatory"
+msgstr "Verpflichtende Abgabe"
 
 # #####################
 # CLOUD

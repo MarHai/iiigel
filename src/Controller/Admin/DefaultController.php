@@ -27,12 +27,12 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
     /**
      * Set viewer (page) to be a two-column design with a list of entries on left-hand and a new form on right-hand side.
      */
-    public function showList() {
+    public function showList($_sHashId = NULL, $_oView = NULL) {
         $oSingle = new $this->sClass();
         
         //left col
         $aData = array();
-        if(($oResult = $oSingle->getList())) {
+        if(($oResult = $oSingle->getList($_sHashId))) {
             while(($aRow = $GLOBALS['oDb']->get($oResult))) {
                 $oTemp = new $this->sClass($aRow);
                 $this->aList[] = $oTemp;
@@ -41,18 +41,31 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
                 $aData[] = $aTemp;
             }
         }
-        $oTable = new \Iiigel\View\Table($aData);
-        $oTable->makeInteractive($this->oView);
-        $oTable->onRowClick(URL.'Admin/'.ucfirst($this::TABLE).'/showDetail/');
-        $oTable->addHeadline(sprintf(_('table.headline'), ngettext($this::TABLE, $this::TABLE.'s', 2)));
-        $this->oView->aContent = $oTable->render();
+        
+        if (count($aData) >= 0) {
+        	$oTable = new \Iiigel\View\Table($aData);
+        	$oTable->makeInteractive($this->oView);
+        	$oTable->onRowClick(URL.'Admin/'.ucfirst($this::TABLE).'/showDetail/');
+        	$oTable->addHeadline(sprintf(_('table.headline'), ngettext($this::TABLE, $this::TABLE.'s', 2)));
+        	
+        	if ($_oView == NULL) {
+        		$this->oView->aContent = $oTable->render();
+        	} else {
+        		$_oView->aContent = $oTable->render();
+        	}
+        }
         
         //right col
         $oForm = new \Iiigel\View\Page();
         $oForm->loadTemplate('admin/'.$this::TABLE.'.html');
         $oForm->aGroup = $GLOBALS['oUserLogin']->getGroups(TRUE);
         $oForm->aInstitution = $GLOBALS['oUserLogin']->getInstitutions(TRUE);
-        $this->oView->aContent = $oForm->render();
+        
+        if ($_oView == NULL) {
+        	$this->oView->aContent = $oForm->render();
+        } else {
+        	$_oView->aContent = $oForm->render();
+        }
     }
     
     /**

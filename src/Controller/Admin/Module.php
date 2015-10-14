@@ -28,16 +28,12 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
 	public function showDetail($_sHashId) {
 		parent::showDetail($_sHashId);
 		
-		/*
+		// ADD ROW
+		
 		$oTemp = new $this->sClass($_sHashId);
 		
-		// $this->oView->addRow();
-		
 		$oChapterController = new \Iiigel\Controller\Admin\Chapter();
-		$oChapterController->showList($oTemp->nId);
-		
-		$this->oView->aContent = $oChapterController->oView->aContent;
-		*/
+		$oChapterController->showList($oTemp->nId, $this->oView);
 	}
 	
 }
