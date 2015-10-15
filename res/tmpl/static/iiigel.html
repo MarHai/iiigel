@@ -127,8 +127,9 @@
 {% import _self as get %}
 {% extends "page.html" %}
 
-{% set nColumns = 0 %}
-{% set aContent = { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime) } %}
+{% set nRows = 1 %}
+{% set nColumns = [ 1 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime) } } %}
 
 {% block content %}
     {{ parent() }}

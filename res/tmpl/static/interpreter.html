@@ -1,0 +1,17 @@
+{% macro mainContent(sName, sHashId) %}
+    <div class="row mtbox" style="text-align: center;">
+        <iframe width="95%" height="600" src="{{ sUrl }}Frame/{{ sName }}/show/{{ sHashId }}">
+        </iframe>
+    </div>
+{% endmacro %}
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nRows = 1 %}
+{% set nColumns = [ 1 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sName, sHashId) } } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

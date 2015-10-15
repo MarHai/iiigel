@@ -36,7 +36,8 @@ class Cloud {
      * @return object Iiigel/Model/File object
      */
     public function loadFile($_sHashId) {
-        $oFile = new \Iiigel\Model\File($_sHashId, $this);
+    	// WARNING: intval($_sHashId) is WRONG ( please correct this to load with hashed id )
+        $oFile = new \Iiigel\Model\File(intval($_sHashId), $this);
         $oFile->bOpen = TRUE;
         $oFile->update();
         return $oFile;

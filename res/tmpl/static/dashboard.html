@@ -49,11 +49,12 @@
 {% import _self as get %}
 {% extends "page.html" %}
 
-{% set nColumns = 1 %}
+{% set nRows = 1 %}
+{% set nColumns = [ 1 ] %}
 {% if (bAdmin) or (bInstitutionAdmin) or (bGroupAdmin) or (bModuleAdmin) %}
-    {% set aContent = { '0': get.mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) } %}
+    {% set aContent = { '0': { '0': get.mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) } } %}
 {% else %}
-    {% set aContent = { '0': 'hallo welt' } %}
+    {% set aContent = { '0': { '0': 'hallo welt' } } %}
 {% endif %}
 
 {% block content %}

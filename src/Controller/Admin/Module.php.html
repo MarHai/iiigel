@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><title>Module.php</title></head><body><p>
+<a style='background-color: #00FF00;'>&lt;?php&nbsp;namespace&nbsp;Iiigel\Controller\Admin;</a><br>
+<a style='background-color: #00FF00;'></a><br>
+<a style='background-color: #00FF00;'>class&nbsp;Module&nbsp;extends&nbsp;\Iiigel\Controller\Admin\DefaultController&nbsp;{</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;DEFAULT_ACTION&nbsp;=&nbsp;'showList';</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;TABLE&nbsp;=&nbsp;'module';</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;/**</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Creates&nbsp;entry&nbsp;with&nbsp;submitted&nbsp;GET/POST&nbsp;data.</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;On&nbsp;success,&nbsp;shows&nbsp;list&nbsp;again.&nbsp;On&nbsp;error,&nbsp;shows&nbsp;message.</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;create()&nbsp;{</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$oUpload&nbsp;=&nbsp;new&nbsp;\Iiigel\Generic\Upload();</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$aFile&nbsp;=&nbsp;$oUpload-&gt;getFiles();</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($aFile['sImage']))&nbsp;{</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(\Iiigel\Generic\Image::isImage($GLOBALS['aConfig']['sUploadDir'].$aFile['sImage']['name']))&nbsp;{</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\Iiigel\Generic\Image::resize($GLOBALS['aConfig']['sUploadDir'].$aFile['sImage']['name']);</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$GLOBALS['aRequest']['sImage']&nbsp;=&nbsp;$aFile['sImage']['name'];</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent::create();</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;}</a><br>
+<a style='background-color: #00FF00;'></a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;/**</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Show&nbsp;details&nbsp;for&nbsp;a&nbsp;single&nbsp;entry,&nbsp;based&nbsp;on&nbsp;its&nbsp;hashed&nbsp;ID.</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$_sHashId&nbsp;hashed&nbsp;representation&nbsp;of&nbsp;ID</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;showDetail($_sHashId)&nbsp;{</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent::showDetail($_sHashId);</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;oView-&gt;addRow();</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$oTemp&nbsp;=&nbsp;new&nbsp;$this-&gt;sClass($_sHashId);</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$oChapterController&nbsp;=&nbsp;new&nbsp;\Iiigel\Controller\Admin\Chapter();</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$oChapterController-&gt;showList($oTemp-&gt;nId,&nbsp;$this-&gt;oView);</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;}</a><br>
+<a style='background-color: #00FF00;'>&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+<a style='background-color: #00FF00;'>}</a><br>
+<a style='background-color: #00FF00;'></a><br>
+<a style='background-color: #00FF00;'>?&gt;</a><br>
+<a style='background-color: #00FF00;'></a><br>
+</body></html>

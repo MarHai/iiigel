@@ -7,8 +7,9 @@
 {% import _self as get %}
 {% extends "page.html" %}
 
-{% set nColumns = 1 %}
-{% set aContent = { '0': get.mainContent(sErrorMessage) } %}
+{% set nRows = 1 %}
+{% set nColumns = [ 1 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sErrorMessage) } } %}
 
 {% block content %}
     {{ parent() }}
