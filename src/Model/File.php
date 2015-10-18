@@ -29,8 +29,7 @@ class File extends \Iiigel\Model\GenericModel {
             if ((is_array($_mInit)) && ($_mInit['sType'] === 'root')) {
 		        $nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
 		    	
-		    	$oResult = $GLOBALS['oDb']->query('SELECT * FROM `'.$this::TABLE.'` WHERE nIdCreator='.$nIdCreator.' AND bFileSystem AND NOT bDeleted LIMIT 1');
-		    	
+		    	$oResult = $GLOBALS['oDb']->query('SELECT * FROM `'.$this::TABLE.'` WHERE nIdCreator='.$nIdCreator.' AND nTreeLeft=1 AND NOT bDeleted LIMIT 1');
 		    	$bNeedCreation = true;
 		    	
 		    	if ($GLOBALS['oDb']->count($oResult) > 0) {

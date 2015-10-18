@@ -21,8 +21,7 @@ class Cloud {
         	'sName' => '',
         	'sType' => 'root',
         	'nTreeLeft' => 1,
-    		'nTreeRight' => 2,
-    		'bFileSystem' => 1
+    		'nTreeRight' => 2
         ), $this);
     }
     
