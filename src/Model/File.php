@@ -135,7 +135,8 @@ class File extends \Iiigel\Model\GenericModel {
     		$nTreeLeft = $GLOBALS['oDb']->escape($this->nTreeLeft);
     		$nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
     		
-    		$GLOBALS['oDb']->query('UPDATE `'.$this::TABLE.'` SET nTreeLeft=nTreeLeft+2 WHERE nTreeLeft > '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted; UPDATE `'.$this::TABLE.'` SET nTreeRight=nTreeRight+2 WHERE nTreeRight >= '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted');
+    		$GLOBALS['oDb']->query('UPDATE `'.$this::TABLE.'` SET nTreeLeft=nTreeLeft+2 WHERE nTreeLeft > '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted');
+    		$GLOBALS['oDb']->query('UPDATE `'.$this::TABLE.'` SET nTreeRight=nTreeRight+2 WHERE nTreeLeft <> '.$nTreeLeft.' AND nTreeRight >= '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted');
     	}
     	
     	return $mId;
