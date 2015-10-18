@@ -27,7 +27,7 @@ class Chapter extends \Iiigel\Model\GenericModel {
      * @return object  oDb result object
      */
     public function getList($_nIdModule = NULL) {
-        return $GLOBALS['oDb']->query('SELECT * FROM `chapter` WHERE bLive AND NOT bDeleted'.($_nIdModule === NULL ? '' : (' AND nIdModule = '.$GLOBALS['oDb']->escape($_nIdModule))).' ORDER BY '.$this::DEFAULT_ORDER);
+        return $GLOBALS['oDb']->query('SELECT sName,sNote,bLive,nOrder FROM `chapter` WHERE  NOT bDeleted'.($_nIdModule === NULL ? '' : (' AND nIdModule = '.$GLOBALS['oDb']->escape($_nIdModule))).' ORDER BY '.$this::DEFAULT_ORDER);
     }
 }
 
