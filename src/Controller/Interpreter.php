@@ -1,7 +1,7 @@
 <?php namespace Iiigel\Controller;
 
-class Dashboard extends \Iiigel\Controller\StaticPage {
-    const DEFAULT_ACTION = 'show';
+class Interpreter extends \Iiigel\Controller\StaticPage {
+    const DEFAULT_ACTION = 'showFile';
     
     /**
      * Display the interpreter-window with some markers for admins and non-admins.
@@ -13,10 +13,6 @@ class Dashboard extends \Iiigel\Controller\StaticPage {
     	$this->oView->sName = $_sName;
         $this->oView->sHashId = $_sHashId;
         $this->loadFile('interpreter');
-    }
-    
-    public function show() {
-    	$this->showFile("Html", 2);
     }
 }
 

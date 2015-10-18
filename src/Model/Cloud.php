@@ -2,6 +2,7 @@
 
 class Cloud {
     public $oUser = NULL;
+    public $oRootFolder = NULL;
     
     /**
      * Setup new cloud based on user given or currently logged in user if not explicitely given.
@@ -15,6 +16,14 @@ class Cloud {
         //################ ACHTUNG: hier muss noch geprüft werden, ob der aktuell eingeloggte user das denn sehen darf
             $this->oUser = new \Iiigel\Model\User($_mIdUser);
         }
+        
+        $this->oRootFolder = new \Iiigel\Model\Folder(array(
+        	'sName' => '',
+        	'sType' => 'root',
+        	'nTreeLeft' => 1,
+    		'nTreeRight' => 2,
+    		'bFileSystem' => 1
+        ), $this);
     }
     
     /**
@@ -25,7 +34,17 @@ class Cloud {
      * @return boolean TRUE if successfully created
      */
     public function createFile($_sName, $_mFolderParent = NULL) {
-        return TRUE;
+        $oFolderParent = ($_mFolderParent === NULL? $this->oRootFolder : $_mFolderParent);
+    	
+    	$oFile = new \Iiigel\Model\File(array(
+    		'sName' => $_sName,
+    		'sType' => "text/plain",
+    		'nTreeLeft' => $oFolderParent->nTreeRight,
+    		'nTreeRight' => $oFolderParent->nTreeRight + 1,
+    		'nIdCreator' => $this->oUser->nId
+    	), $this);
+    	
+    	return ($oFile->create() !== NULL);
     }
     
     /**
@@ -36,8 +55,7 @@ class Cloud {
      * @return object Iiigel/Model/File object
      */
     public function loadFile($_sHashId) {
-    	// WARNING: intval($_sHashId) is WRONG ( please correct this to load with hashed id )
-        $oFile = new \Iiigel\Model\File(intval($_sHashId), $this);
+        $oFile = new \Iiigel\Model\File($_sHashId, $this);
         $oFile->bOpen = TRUE;
         $oFile->update();
         return $oFile;
@@ -63,7 +81,17 @@ class Cloud {
      * @return boolean TRUE if successfully created
      */
     public function createFolder($_sName, $_mFolderParent = NULL) {
-        return TRUE;
+    	$oFolderParent = ($_mFolderParent === NULL? $this->oRootFolder : $_mFolderParent);
+    	
+    	$oFolder = new \Iiigel\Model\Folder(array(
+    		'sName' => $_sName,
+    		'sType' => "folder",
+    		'nTreeLeft' => $oFolderParent->nTreeRight,
+    		'nTreeRight' => $oFolderParent->nTreeRight + 1,
+    		'nIdCreator' => $this->oUser->nId
+    	), $this);
+    	
+    	return ($oFolder->create() !== NULL);
     }
     
     /**
@@ -75,28 +103,73 @@ class Cloud {
      * @return array \Iiigel\Model\Folder and \Iiigel\Model\File objects returned (in adequate order) in an array
      */
     public function get($_mFolderHashId = NULL) {
-        if($_mFolderHashId === NULL) {
-            return array(new \Iiigel\Model\Folder('clJLjlLDFkjL(JKkj', $this));
-        } else {
-            switch($_mFolderHashId) {
-                case 'cLljsl88lsdfY:':
-                    return array(new \Iiigel\Model\File('cL(FJL(§Jdf8', $this));
-                case 'cLljskjdfdfY:':
-                    return array(
-                        new \Iiigel\Model\Folder('cLljskksl(fY:', $this),
-                        new \Iiigel\Model\File('cLoOoOoOf8kd', $this)
-                    );
-                case 'clJLjlLDFkjL(JKkj':
-                    return array(
-                        new \Iiigel\Model\Folder('cLljsl88lsdfY:', $this),
-                        new \Iiigel\Model\Folder('cLljskjdfdfY:', $this),
-                        new \Iiigel\Model\File('cNTQxZTg4MWNkNmY:', $this),
-                        new \Iiigel\Model\File('cNTQxZkd8lsdfY:', $this)
-                    );
-                default:
-                    return array();
-            }
-        }
+    	if ($_mFolderHashId !== NULL) {
+			$oFolder = new \Iiigel\Model\Folder($_mFolderHashId, $this);
+			
+			if ($oFolder->sType !== 'folder') {
+				$oFolder = $this->oRootFolder;
+			}
+		} else {
+			$oFolder = $this->oRootFolder;
+		}
+		
+		$nTreeLeft = $GLOBALS['oDb']->escape($oFolder->nTreeLeft);
+		$nTreeRight = $GLOBALS['oDb']->escape($oFolder->nTreeRight);
+		$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
+		
+		$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nTreeLeft > '.$nTreeLeft.' AND nTreeRight < '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
+		
+		$aSub = array();
+		
+		if ($oResult) {
+			$nCount = $GLOBALS['oDb']->count($oResult);
+			
+			$nLastTreeLeft = $nTreeLeft;
+			
+			for ($i = 0; $i < $nCount; $i++) {
+				$aRow = $GLOBALS['oDb']->get($oResult);
+				
+				if ($aRow['nTreeLeft'] > $nLastTreeLeft) {
+					if ($aRow['sType'] === 'folder') {
+						$aSub[] = new \Iiigel\Model\Folder($aRow, $this);
+					} else {
+						$aSub[] = new \Iiigel\Model\File($aRow, $this);
+					}
+					
+					$nLastTreeLeft = $aRow['nTreeRight'];
+				}
+			}
+		}
+		
+		return $aSub;
+    }
+    
+    /**
+     * List all folders in path of file
+     * 
+     * @param  string $_sHashId file's hashed ID (within cloud table)
+     * @return array \Iiigel\Model\Folder objects returned (in adequate order) in an array
+     */
+    public function listPath($_mFolderHashId) {
+    	$oFile = new \Iiigel\Model\File($_sHashId, $this);
+    	
+    	$nTreeLeft = $GLOBALS['oDb']->escape($oFile->nTreeLeft);
+		$nTreeRight = $GLOBALS['oDb']->escape($oFile->nTreeRight);
+		$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
+		
+		$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nTreeLeft < '.$nTreeLeft.' AND nTreeRight > '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
+		
+		$aPath = array();
+		
+		if ($oResult) {
+			$nCount = $GLOBALS['oDb']->count($oResult);
+			
+			for ($i = 0; $i < $nCount; $i++) {
+				$aPath[] = new \Iiigel\Model\Folder($GLOBALS['oDb']->get($oResult), $this);
+			}
+		}
+		
+		return $aPath;
     }
     
     /**
@@ -107,7 +180,21 @@ class Cloud {
      * @return boolean TRUE if successful, FALSE otherwise
      */
     public function rename($_sHashId, $_sNewName) {
-        return TRUE;
+    	$oFile = new \Iiigel\Model\File($_sHashId, $this);
+    	$oParent = $oFile->oParent;
+    	
+    	if ($oParent !== NULL) {
+    		$aSub = $this->get($oParent->sHashId);
+    		
+    		for ($i = 0; $i < count($aSub); $i++) {
+    			if ($aSub[$i]->sName === $_sNewName) {
+    				return false;
+    			}
+    		}
+    	}
+    	
+        $oFile->sName = $_sNewName;
+        return $oFile->update();
     }
 }
 

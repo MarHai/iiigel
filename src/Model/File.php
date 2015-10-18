@@ -6,6 +6,7 @@ class File extends \Iiigel\Model\GenericModel {
     const CONFIG_COLUMN = array('bDeleted', 'nCreate', 'nUpdate', 'nIdCreator');
     
     protected $oCloud = NULL;
+    protected $oParentFolder = NULL;
     
     /**
      * Initiates new object which could be one of the following cases:
@@ -20,10 +21,34 @@ class File extends \Iiigel\Model\GenericModel {
      * @param mixed [$_oCloud        = NULL] if set, surrounding cloud is set directly
      */
     public function __construct($_mInit = NULL, $_oCloud = NULL) {
+        $bNeedCreation = false;
+        
         if($_oCloud !== NULL) {
             $this->setSurroundingCloud($_oCloud);
+            
+            if ((is_array($_mInit)) && ($_mInit['sType'] === 'root')) {
+		        $nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
+		    	
+		    	$oResult = $GLOBALS['oDb']->query('SELECT * FROM `'.$this::TABLE.'` WHERE nIdCreator='.$nIdCreator.' AND bFileSystem AND NOT bDeleted LIMIT 1');
+		    	
+		    	$bNeedCreation = true;
+		    	
+		    	if ($GLOBALS['oDb']->count($oResult) > 0) {
+		    		$aRow = $GLOBALS['oDb']->get($oResult);
+		    		
+		    		if (isset($aRow['nId'])) {
+		    			parent::__construct($aRow);
+		    			return;
+		    		}
+		    	}
+		    }
         }
+        
         parent::__construct($_mInit);
+        
+        if ($bNeedCreation) {
+        	$this->create();
+        }
     }
     
     /**
@@ -60,7 +85,19 @@ class File extends \Iiigel\Model\GenericModel {
      * @return mixed  depending on parameter; NULL if not set
      */
     public function __get($_sName) {
-        if($_sName == 'sSize') {
+    	if ($_sName === 'oParent') {
+    		if($this->oParentFolder === NULL) {
+    			$aPath = $this->oCloud->listPath($this->sHashId);
+    			$nCount = count($aPath);
+    			
+    			if ($nCount > 0) {
+    				$this->oParentFolder = $aPath[$nCount - 1];
+    			}
+    		}
+    		
+    		return $this->oParentFolder;
+    	} else
+        if($_sName === 'sSize') {
             //NEEDS rework for local files
             $nSize = mb_strlen($this->sFile, 'utf8');
             $aPrefix = array('', 'K', 'M', 'G', 'T', 'P');
@@ -85,6 +122,24 @@ class File extends \Iiigel\Model\GenericModel {
         $aData = parent::getCompleteEntry($_bIncludeConfigColumns);
         $aData['sSize'] = $this->sSize;
         return $aData;
+    }
+
+	/**
+     * If current entry does not have an ID, entry is created and ID is returned. Also, object is updated with INSERT information.
+     * 
+     * @return integer ID if successful, NULL otherwise
+     */
+    public function create() {
+    	$mId = parent::create();
+    	
+    	if (($mId !== NULL) && ($this->oCloud !== NULL)) {
+    		$nTreeLeft = $GLOBALS['oDb']->escape($this->nTreeLeft);
+    		$nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
+    		
+    		$GLOBALS['oDb']->query('UPDATE `'.$this::TABLE.'` SET nTreeLeft=nTreeLeft+2 WHERE nTreeLeft > '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted; UPDATE `'.$this::TABLE.'` SET nTreeRight=nTreeRight+2 WHERE nTreeRight >= '.$nTreeLeft.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted');
+    	}
+    	
+    	return $mId;
     }
 }
 

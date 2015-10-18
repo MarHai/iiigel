@@ -30,7 +30,7 @@ class Folder extends \Iiigel\Model\File {
      * @return integer number of data values set (in this process only)
      */
     public function setData($_aData) {
-        if(isset($_aData['sName']) && isset($_aData['sType']) && $_aData['sType'] == 'root') {
+        if(isset($_aData['sName']) && isset($_aData['sType']) && $_aData['sType'] === 'root') {
             $_aData['sName'] = sprintf(_('cloud.root'), $this->oCloud->oUser->sName);
             $_aData['sType'] = 'folder';
         }
