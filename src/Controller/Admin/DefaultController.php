@@ -26,13 +26,15 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
     
     /**
      * Set viewer (page) to be a two-column design with a list of entries on left-hand and a new form on right-hand side.
+     * 
+     * @param object $_oView View object to render columns. In case $_oView is NULL, the own view of the controller is used
      */
-    public function showList($_sHashId = NULL, $_oView = NULL) {
+    public function showList($_oView = NULL) {
         $oSingle = new $this->sClass();
         
         //left col
         $aData = array();
-        if(($oResult = $oSingle->getList($_sHashId))) {
+        if(($oResult = $oSingle->getList())) {
             while(($aRow = $GLOBALS['oDb']->get($oResult))) {
                 $oTemp = new $this->sClass($aRow);
                 $this->aList[] = $oTemp;
@@ -48,7 +50,7 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
         	$oTable->onRowClick(URL.'Admin/'.ucfirst($this::TABLE).'/showDetail/');
         	$oTable->addHeadline(sprintf(_('table.headline'), ngettext($this::TABLE, $this::TABLE.'s', 2)));
         	
-        	if ($_oView == NULL) {
+        	if ($_oView === NULL) {
         		$this->oView->aContent = $oTable->render();
         	} else {
         		$_oView->aContent = $oTable->render();
@@ -61,7 +63,7 @@ class DefaultController extends \Iiigel\Controller\DefaultController {
         $oForm->aGroup = $GLOBALS['oUserLogin']->getGroups(TRUE);
         $oForm->aInstitution = $GLOBALS['oUserLogin']->getInstitutions(TRUE);
         
-        if ($_oView == NULL) {
+        if ($_oView === NULL) {
         	$this->oView->aContent = $oForm->render();
         } else {
         	$_oView->aContent = $oForm->render();

@@ -1,5 +1,7 @@
 <h3><i class="fa fa-angle-right"></i> {% trans 'chapter.create' %}</h3>
 <form class="form-horizontal" method="post" action="{{ sUrl }}Admin/Chapter/create" enctype="multipart/form-data">
+	<input id="nIdModule" name="nIdModule" type="hidden" value="{{ nIdModule }}" />
+	<input id="nOrder" name="nOrder" type="hidden" value="{{ nOrder }}" />
     <div class="form-group">
         <label class="col-md-offset-1 col-md-3 control-label" for="sName">{% trans 'name' %}</label>
         <div class="col-md-6">

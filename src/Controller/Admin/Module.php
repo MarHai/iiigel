@@ -33,7 +33,7 @@ class Module extends \Iiigel\Controller\Admin\DefaultController {
 		$oTemp = new $this->sClass($_sHashId);
 		
 		$oChapterController = new \Iiigel\Controller\Admin\Chapter();
-		$oChapterController->showList($oTemp->nId, $this->oView);
+		$oChapterController->showList($this->oView, $oTemp->nId);
 	}
 	
 }
