@@ -39,4 +39,7 @@
 <p>
     <a href="{{ sUrl }}{{ sClass == 'Right' or sClass == 'Chapter' ? sPreviousUrl : 'Admin/' ~ sClass ~ '/showList' }}" class="btn btn-default">&larr; {% trans 'goback' %}</a>
     <a href="{{ sUrl }}Admin/{{ sClass }}/delete/{{ sHashId }}{{ sClass == 'Right' ? '?sPreviousUrl=' ~ sPreviousUrl : '' }}" class="btn btn-danger" data-iiigel="confirm" data-confirm="{{ sClass == 'Right' ? 'doyoureallywanttodelete'|trans|format('thispermission'|trans) : 'doyoureallywanttodelete'|trans|format(sName|escape('html_attr')|trans) }}">{% trans 'delete' %}</a>
+    {% if sClass == 'Chapter' %}
+    	<a href="{{ sUrl }}{{ 'learn/' ~ sHashId }}" class="btn btn-default">{% trans 'open' %}</a>
+    {% endif %}
 </p>
