@@ -55,9 +55,14 @@ class Cloud {
      */
     public function loadFile($_sHashId) {
         $oFile = new \Iiigel\Model\File($_sHashId, $this);
-        $oFile->bOpen = TRUE;
-        $oFile->update();
-        return $oFile;
+        
+        if ($oFile->nIdCreator === $this->oUser->nId) {
+        	$oFile->bOpen = TRUE;
+        	$oFile->update();
+        	return $oFile;
+        } else {
+        	return NULL;
+        }
     }
     
     /**
@@ -68,8 +73,13 @@ class Cloud {
      */
     public function closeFile($_sHashId) {
         $oFile = new \Iiigel\Model\File($_sHashId, $this);
-        $oFile->bOpen = FALSE;
-        return $oFile->update();
+        
+        if ($oFile->nIdCreator === $this->oUser->nId) {
+	        $oFile->bOpen = FALSE;
+	        return $oFile->update();
+        } else {
+        	return false;
+        }
     }
     
     /**
@@ -194,6 +204,16 @@ class Cloud {
     	
         $oFile->sName = $_sNewName;
         return $oFile->update();
+    }
+    
+    /*
+     * Returns the assigned path for local files in cloud
+     * 
+     * @param  string $_sFilename filename of local file
+     * @return string assigned path of the local file
+     */
+    public static function getCloudFilename($_sFilename) {
+    	return '../../cloud/'.$_sFilename;
     }
 }
 

@@ -84,6 +84,21 @@ class File extends \Iiigel\Model\GenericModel {
      * @return mixed  depending on parameter; NULL if not set
      */
     public function __get($_sName) {
+    	if ($_sName === 'sFile') {
+    		$sFile = parent::__get('sFile');
+    		
+	    	if ($this->bFilesystem) {
+	    		$sFilename = Cloud::getCloudFilename($sFile);
+	    		
+	    		if (file_exists($sFilename)) {
+	    			return file_get_contents($sFilename);
+	    		} else {
+	    			return '';
+	    		}
+	    	} else {
+	    		return $sFile;
+	    	}
+    	} else
     	if ($_sName === 'oParent') {
     		if($this->oParentFolder === NULL) {
     			$aPath = $this->oCloud->listPath($this->sHashId);
@@ -97,8 +112,13 @@ class File extends \Iiigel\Model\GenericModel {
     		return $this->oParentFolder;
     	} else
         if($_sName === 'sSize') {
-            //NEEDS rework for local files
-            $nSize = mb_strlen($this->sFile, 'utf8');
+        	if ($this->bFilesystem) {
+        		$sFilename = Cloud::getCloudFilename(parent::__get('sFile'));
+        		$nSize = filesize($sFilename);
+        	} else {
+        		$nSize = mb_strlen($this->sFile, 'utf8');
+        	}
+            
             $aPrefix = array('', 'K', 'M', 'G', 'T', 'P');
             $i = 0;
             while($nSize/1024 > 1 && isset($aPrefix[$i+1])) {
