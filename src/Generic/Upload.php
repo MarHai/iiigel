@@ -9,6 +9,7 @@ class Upload {
     public function __construct() {
         if(isset($_FILES) && count($_FILES) > 0) {
             reset($_FILES);
+            
             foreach($_FILES as $sKey => $aConfig) {
                 if(is_uploaded_file($aConfig['tmp_name'])) {
                     if($aConfig['error'] == UPLOAD_ERR_OK) {
@@ -16,7 +17,7 @@ class Upload {
                             throw new \Exception(sprintf(_('error.filesizeexceeded'), $GLOBALS['aConfig']['nUploadMaxSize']));
                         } else {
                             $sName = $this::findName($aConfig['name']);
-                            if(move_uploaded_file($aConfig['tmp_name'], PATH_DIR.$GLOBALS['aConfig']['sUploadDir'].$sName)) {
+                            if($this->moveUploadedFile($aConfig['tmp_name'], $sName)) {
                                 $this->aFile[$sKey] = array(
                                     'name' => $sName,
                                     'size' => $aConfig['size'],
@@ -35,6 +36,16 @@ class Upload {
                 }
             }
         }
+    }
+    
+    private function moveUploadedFile($_sTmpName, $_sName) {
+    	if (!is_dir($GLOBALS['aConfig']['sUploadDir'])) {
+    		if (!mkdir($GLOBALS['aConfig']['sUploadDir'], null, true)) {
+    			return false;
+    		}
+    	}
+    	
+    	return move_uploaded_file($_sTmpName, $GLOBALS['aConfig']['sUploadDir'].$_sName);
     }
     
     /**

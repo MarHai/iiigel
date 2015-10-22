@@ -84,21 +84,6 @@ class File extends \Iiigel\Model\GenericModel {
      * @return mixed  depending on parameter; NULL if not set
      */
     public function __get($_sName) {
-    	if ($_sName === 'sFile') {
-    		$sFile = parent::__get('sFile');
-    		
-	    	if ($this->bFilesystem) {
-	    		$sFilename = Cloud::getCloudFilename($sFile);
-	    		
-	    		if (file_exists($sFilename)) {
-	    			return file_get_contents($sFilename);
-	    		} else {
-	    			return '';
-	    		}
-	    	} else {
-	    		return $sFile;
-	    	}
-    	} else
     	if ($_sName === 'oParent') {
     		if($this->oParentFolder === NULL) {
     			$aPath = $this->oCloud->listPath($this->sHashId);
@@ -113,8 +98,8 @@ class File extends \Iiigel\Model\GenericModel {
     	} else
         if($_sName === 'sSize') {
         	if ($this->bFilesystem) {
-        		$sFilename = Cloud::getCloudFilename(parent::__get('sFile'));
-        		$nSize = filesize($sFilename);
+        		$aFile = explode(';', $this->sFile);
+        		$nSize = filesize($GLOBALS['aConfig']['sUploadDir'].$aFile[0]);
         	} else {
         		$nSize = mb_strlen($this->sFile, 'utf8');
         	}
@@ -131,6 +116,28 @@ class File extends \Iiigel\Model\GenericModel {
         }
     }
     
+	/**
+     * Set one specific parameter.
+     * 
+     * @param  string  $_sName  parameter name (be careful as it needs to match a DB column but not one of CONFIG_COLUMN or nId
+     * @param  mixed   $_mValue value to insert
+     * @return boolean true if value was set, false otherwise
+     */
+    public function __set($_sName, $_mValue) {
+    	if (($_sName == 'sFile') && ($this->bFilesystem)) {
+    		$aFile = explode(';', $this->sFile);
+    		$sFilename = $GLOBALS['aConfig']['sUploadDir'].$aFile[0];
+    		
+    		if (!file_put_contents($sFilename, $_mValue)) {
+    			return false;
+    		} else {
+    			return true;
+    		}
+    	} else {
+    		return parent::__set($_sName, $_mValue);
+    	}
+    }
+    
     /**
      * Runs through all columns (via ->get()) and returns the loaded entry (so far).
      * 
@@ -140,6 +147,18 @@ class File extends \Iiigel\Model\GenericModel {
     public function getCompleteEntry($_bIncludeConfigColumns = FALSE) {
         $aData = parent::getCompleteEntry($_bIncludeConfigColumns);
         $aData['sSize'] = $this->sSize;
+        
+        if ($this->bFilesystem) {
+        	$aFile = explode(';', $aData['sFile']);
+        	$sFilename = $GLOBALS['aConfig']['sUploadDir'].$aFile[0];
+        	
+        	if (file_exists($sFilename)) {
+        		$aData['sFile'] = file_get_contents($sFilename);
+        	} else {
+        		$aData['sFile'] = '';
+        	}
+        }
+        
         return $aData;
     }
 

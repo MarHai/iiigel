@@ -47,6 +47,29 @@ class Cloud {
     }
     
     /**
+     * Creates a new file (with content which was uploaded).
+     * 
+     * @param  string  $_sName         new file's name
+     * @param  mixed   $_mFolderParent if folder object, then file is created in this folder; if null, file is created in user's root dir.
+     * @return boolean TRUE if successfully created
+     */
+    public function uploadFile($aFile, $_mFolderParent = NULL) {
+    	$oFolderParent = ($_mFolderParent === NULL? $this->oRootFolder : $_mFolderParent);
+    	
+    	$oFile = new \Iiigel\Model\File(array(
+    		'sName' => $aFile['originalName'],
+    		'sType' => $aFile['type'],
+    		'nTreeLeft' => $oFolderParent->nTreeRight,
+    		'nTreeRight' => $oFolderParent->nTreeRight + 1,
+    		'nIdCreator' => $this->oUser->nId,
+    		'sFile' => $aFile['name'].';'.$aFile['url'].';'.$aFile['deleteUrl'],
+    		'bFilesystem' => 1
+    	), $this);
+    	
+    	return ($oFile->create() !== NULL);
+    }
+    
+    /**
      * Checks whether a file is allowed to be opened by current user and returns \Iiigel\Model\File if appropriate.
      * Also sets file to be opened within database.
      * 
@@ -213,16 +236,6 @@ class Cloud {
     	} else {
     		return false;
     	}
-    }
-    
-    /**
-     * Returns the assigned path for local files in cloud
-     * 
-     * @param  string $_sFilename filename of local file
-     * @return string assigned path of the local file
-     */
-    public static function getCloudFilename($_sFilename) {
-    	return PATH_DIR.$GLOBALS['aConfig']['sFileUrl'].$_sFilename;
     }
 }
 

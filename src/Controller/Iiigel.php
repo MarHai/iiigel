@@ -207,7 +207,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      */
     public function uploadFromHost($_sHashId) {
         $oUpload = new \Iiigel\Generic\Upload();
-        //PUSH $oUpload->getFiles() into cloud from current folder
+        
+        foreach ($oUpload->getFiles() as $sKey => $aFile) {
+        	$this->oCloud->uploadFile($aFile, new \Iiigel\Model\Folder($_sHashId, $this->oCloud));
+        }
+        
         $this->sRawOutput = json_encode($this->oCloud->get());
     }
     

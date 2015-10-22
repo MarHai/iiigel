@@ -81,8 +81,11 @@ $(function() {
     }
 
     function interpret() {
-    	//sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
-    	sCurrentChapterHash = $($('#iiigel-module a[data-chapter]').get(0)).data('chapter');
+    	sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
+    	
+    	if ((typeof(sCurrentChapterHash) === 'undefined') || (sCurrentChapterHash === null)) {
+    		sCurrentChapterHash = $($('#iiigel-module a[data-chapter]').get(0)).data('chapter');
+    	}
     	
     	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null) &&
     		(typeof(sCurrentChapterHash) !== 'undefined') && (sCurrentChapterHash !== null)) {
@@ -251,6 +254,7 @@ $(function() {
                     $('#iiigel-editor .iiigel-files a[data-hash="' + _oFile.sHashId + '"]').addClass('btn-primary').removeClass('btn-default');
                     $('#iiigel-editor .iiigel-files a[data-close="' + _oFile.sHashId + '"]').addClass('btn-primary').removeClass('btn-default');
                 }
+                
                 oEditor.setValue(_oFile.sFile);
                 oEditor.setReadOnly(false);
                 oEditor.focus();
@@ -397,11 +401,12 @@ $(function() {
         //upload from host
         $('input[type="file"].iiigel-nodefaultupload').fileupload({
             dataType: 'json',
-            url: '?c=Iiigel&a=uploadFromHost&_sHashId=' + sCurrentFolderHash,
             add: function(_oEvent, _oData) {
                 for(var i = 0; i < _oData.files.length; i++) {
                     $(this).after('<div class="control-label"><div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" data-name="' + _oData.files[i].name + '"><span class="sr-only">' + _oData.files[i].name + '</span></div></div></div>');
                 }
+                
+                _oData.form[0].action = '?c=Iiigel&a=uploadFromHost&_sHashId=' + sCurrentFolderHash;
                 _oData.submit();
             },
             error: function(_oEvent, _sStatus, _oError) {
