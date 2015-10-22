@@ -16,7 +16,7 @@ class Upload {
                             throw new \Exception(sprintf(_('error.filesizeexceeded'), $GLOBALS['aConfig']['nUploadMaxSize']));
                         } else {
                             $sName = $this::findName($aConfig['name']);
-                            if(move_uploaded_file($aConfig['tmp_name'], $GLOBALS['aConfig']['sUploadDir'].$sName)) {
+                            if(move_uploaded_file($aConfig['tmp_name'], PATH_DIR.$GLOBALS['aConfig']['sUploadDir'].$sName)) {
                                 $this->aFile[$sKey] = array(
                                     'name' => $sName,
                                     'size' => $aConfig['size'],

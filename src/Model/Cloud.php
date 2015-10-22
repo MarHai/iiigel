@@ -56,7 +56,7 @@ class Cloud {
     public function loadFile($_sHashId) {
         $oFile = new \Iiigel\Model\File($_sHashId, $this);
         
-        if ($oFile->nIdCreator === $this->oUser->nId) {
+        if ($oFile->nIdCreator == $this->oUser->nId) {
         	$oFile->bOpen = TRUE;
         	$oFile->update();
         	return $oFile;
@@ -74,7 +74,7 @@ class Cloud {
     public function closeFile($_sHashId) {
         $oFile = new \Iiigel\Model\File($_sHashId, $this);
         
-        if ($oFile->nIdCreator === $this->oUser->nId) {
+        if ($oFile->nIdCreator == $this->oUser->nId) {
 	        $oFile->bOpen = FALSE;
 	        return $oFile->update();
         } else {
@@ -112,21 +112,21 @@ class Cloud {
      * @return array \Iiigel\Model\Folder and \Iiigel\Model\File objects returned (in adequate order) in an array
      */
     public function get($_mFolderHashId = NULL) {
-    	if ($_mFolderHashId !== NULL) {
-			$oFolder = new \Iiigel\Model\Folder($_mFolderHashId, $this);
-			
-			if ($oFolder->sType !== 'folder') {
-				$oFolder = $this->oRootFolder;
-			}
-		} else {
-			$oFolder = $this->oRootFolder;
+		if ($_mFolderHashId === NULL) {
+			return array($this->oRootFolder);
+		}
+		
+    	$oFolder = new \Iiigel\Model\Folder($_mFolderHashId, $this);
+		
+		if (($oFolder->nIdCreator != $this->oUser->nId) || ($oFolder->sType !== 'folder')) {
+			return array($this->oRootFolder);
 		}
 		
 		$nTreeLeft = $GLOBALS['oDb']->escape($oFolder->nTreeLeft);
 		$nTreeRight = $GLOBALS['oDb']->escape($oFolder->nTreeRight);
 		$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
 		
-		$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nTreeLeft > '.$nTreeLeft.' AND nTreeRight < '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
+		$oResult = $GLOBALS['oDb']->query('SELECT sHashId, nCreate, nUpdate, nTreeLeft, nTreeRight, sType, sName, bFilesystem, sFile FROM `cloud` WHERE nTreeLeft > '.$nTreeLeft.' AND nTreeRight < '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
 		
 		$aSub = array();
 		
@@ -162,6 +162,10 @@ class Cloud {
     public function listPath($_mFolderHashId) {
     	$oFile = new \Iiigel\Model\File($_sHashId, $this);
     	
+    	if ($oFile->nIdCreator != $this->oUser->nId) {
+    		return array();
+    	}
+    	
     	$nTreeLeft = $GLOBALS['oDb']->escape($oFile->nTreeLeft);
 		$nTreeRight = $GLOBALS['oDb']->escape($oFile->nTreeRight);
 		$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
@@ -190,30 +194,35 @@ class Cloud {
      */
     public function rename($_sHashId, $_sNewName) {
     	$oFile = new \Iiigel\Model\File($_sHashId, $this);
-    	$oParent = $oFile->oParent;
     	
-    	if ($oParent !== NULL) {
-    		$aSub = $this->get($oParent->sHashId);
-    		
-    		for ($i = 0; $i < count($aSub); $i++) {
-    			if ($aSub[$i]->sName === $_sNewName) {
-    				return false;
-    			}
-    		}
+    	if ($oFile->nIdCreator == $this->oUser->nId) {
+    		$oParent = $oFile->oParent;
+			
+			if ($oParent !== NULL) {
+				$aSub = $this->get($oParent->sHashId);
+				
+				for ($i = 0; $i < count($aSub); $i++) {
+					if ($aSub[$i]->sName === $_sNewName) {
+						return false;
+					}
+				}
+			}
+			
+		    $oFile->sName = $_sNewName;
+		    return $oFile->update();
+    	} else {
+    		return false;
     	}
-    	
-        $oFile->sName = $_sNewName;
-        return $oFile->update();
     }
     
-    /*
+    /**
      * Returns the assigned path for local files in cloud
      * 
      * @param  string $_sFilename filename of local file
      * @return string assigned path of the local file
      */
     public static function getCloudFilename($_sFilename) {
-    	return '../../cloud/'.$_sFilename;
+    	return PATH_DIR.$GLOBALS['aConfig']['sFileUrl'].$_sFilename;
     }
 }
 

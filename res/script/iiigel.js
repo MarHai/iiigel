@@ -28,7 +28,10 @@ $(function() {
     function updateCloudList(_oFolder) {
         oCloud = _oFolder;
         extractOpenFiles();
-        openDir(sCurrentFolderHash === null ? oCloud[0]['sHashId'] : sCurrentFolderHash);
+        
+        if ((sCurrentFolderHash !== null) || (oCloud.length > 0)) {
+        	openDir(sCurrentFolderHash === null ? oCloud[0]['sHashId'] : sCurrentFolderHash);
+        }
     }
 
     function findElementForHash(_sHashId, _oCloud) {
@@ -72,11 +75,19 @@ $(function() {
     }
     
     function saveFile(_sContent) {
-        $.get('?c=Iiigel&a=update', { _sHashId: sCurrentFileHash, _sContent: _sContent });
+    	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null)) {
+    		$.get('?c=Iiigel&a=update', { _sHashId: sCurrentFileHash, _sContent: _sContent });
+    	}
     }
 
     function interpret() {
-        $('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter') });
+    	//sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
+    	sCurrentChapterHash = $($('#iiigel-module a[data-chapter]').get(0)).data('chapter');
+    	
+    	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null) &&
+    		(typeof(sCurrentChapterHash) !== 'undefined') && (sCurrentChapterHash !== null)) {
+    		$('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: sCurrentChapterHash });
+    	}
     }
 
     //open-folder selector
@@ -247,10 +258,18 @@ $(function() {
                 oSession.off('change');
                 oSession.on('change', function(_oEvent) {
                     clearTimeout(oEditorTimeout);
-                    oEditorTimeout = setTimeout(function(_sContent) {
-                        saveFile(_sContent);
-                        interpret();
-                    }, parseInt($('#iiigel-editor').data('editorwaittime')), oEditor.getValue());
+                    nEditorWaitTime = parseInt($('#iiigel-editor').data('editorwaittime'));
+                    
+                    if (nEditorWaitTime >= 0) {
+                    	oEditorTimeout = setTimeout(function(_sContent) {
+                            saveFile(_sContent);
+                            interpret();
+                        }, nEditorWaitTime, oEditor.getValue());
+                    } else {
+                    	oEditorTimeout = setTimeout(function(_sContent) {
+                            saveFile(_sContent);
+                        }, nEditorWaitTime, oEditor.getValue());
+                    }
                 });
             } else {
                 //open file in new browser window with

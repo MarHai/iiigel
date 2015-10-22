@@ -97,7 +97,10 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
                 $this->sRawOutput = $this->oInterpreter->interpret($oFile);
                 return;
             }
+        } else {
+        	throw new \Exception($_sHashIdFile." - ".$_sHashIdChapter);
         }
+        
         throw new \Exception(_('error.filenotfound'));
     }
     

@@ -58,7 +58,7 @@
                 </div>
             {% endif %}
             {% if oChapter.bInterpreter %}
-                <div class="showback iiigel-scroll" id="iiigel-editor" data-editorwaittime="{{ nEditorWaitTime }}">
+                <div class="showback iiigel-scroll" id="iiigel-editor" data-editorwaittime="{{ oChapter.bLiveInterpretation? nEditorWaitTime : -1 }}">
                     <div class="row">
                         <div class="col-lg-10 col-md-10 col-sm-12">
                             <div id="iiigel-editor-ace"></div>
@@ -84,7 +84,7 @@
                     <div class="progress-bar" role="progressbar" aria-valuenow="{{ oModule.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oModule.nProgress }}%"></div>
                 </div>
                 <div class="list-group">
-                    {% for oChapter in oModule.aChapter %}
+                	{% for oChapter in oModule.aChapter %}
                         <a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" data-chapter="{{ oChapter.sHashId }}" class="list-group-item{{ oChapter.nId == oModule.nCurrentChapter ? ' active' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
                     {% endfor %}
                 </div>

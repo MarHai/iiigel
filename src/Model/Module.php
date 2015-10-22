@@ -27,8 +27,15 @@ class Module extends \Iiigel\Model\GenericModel {
     public function __get($_sName) {
         switch($_sName) {
             case 'nProgress':
-                //############################ need to calculate actual progress here
-                return 25;
+            	if (!isset($GLOBALS['oUserLogin'])) {
+            		return 0;
+            	}
+            	
+            	$oUser = $GLOBALS['oUserLogin'];
+            	
+            	// CALCULATE PROGRESS OF USER
+            	
+            	return 25;
             case 'aChapter':
                 $oChapter = new \Iiigel\Model\Chapter();
                 $oChapter = $oChapter->getList($this->nId);
@@ -38,8 +45,15 @@ class Module extends \Iiigel\Model\GenericModel {
                 }
                 return $aReturn;
             case 'nCurrentChapter':
-                //############################ need to find current chapter ID here
-                return 1;
+            	if (!isset($GLOBALS['oUserLogin'])) {
+            		return 0;
+            	}
+            	
+            	$oUser = $GLOBALS['oUserLogin'];
+            	
+            	// GET ACTIVE CHAPTER OF USER
+            	
+            	return 1;
             default:
                 return parent::__get($_sName);
         }
