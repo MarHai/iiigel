@@ -276,8 +276,7 @@ $(function() {
                     }
                 });
             } else {
-                //open file in new browser window with
-                //url/file/' + _oFile.sFile
+            	bootbox.alert('<iframe scrolling="no" src="' + _oFile.sFile + '"  onload="adjustIframeHeight(this);"></iframe><script src="res/script/iframe.js"></script>');
             }
         });
     }
@@ -327,6 +326,7 @@ $(function() {
         //interpret on click
         $('.iiigel-interpret').off('click').on('click', function(_oEvent) {
             _oEvent.preventDefault();
+            saveFile(oEditor.getValue());
             interpret();
             $('a[href="#iiigel-interpreter"]').click();
             return false;

@@ -4,6 +4,8 @@ RewriteRule ^config/.*$ - [L]
 RewriteRule ^src/.*$ - [L]
 RewriteRule ^vendor/.*$ - [L]
 
+RewriteRule ^upload/.*$ - [F]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l

@@ -2,6 +2,13 @@ body {
     padding-top: 70px;
 }
 
+iframe {
+	margin: 0;
+	width: 100%;
+	border: none;
+	overflow: hidden;
+}
+
 .dataTables_wrapper .col-sm-6 > div.dataTables_filter > label > input {
     margin-left: 5px;
 }

@@ -10,12 +10,12 @@ class Javascript extends \Iiigel\View\Interpreter\DefaultInterpreter {
     	$sCode = '<script src="'.URL.'res/script/interpreter/interpreter-javascript.js"></script>';
     	
     	if ($_oFile->bFilesystem) {
-    		$sCode .= '<script>'.$_oFile->sFile.'</script>';
-    	} else {
     		$aFile = explode(';', $_oFile->sFile);
         	$sFileUrl = $aFile[1];
     		
     		$sCode .= '<script src="'.$sFileUrl.'"></script>';
+    	} else {
+    		$sCode .= '<script>'.$_oFile->sFile.'</script>';
     	}
     	
     	return $sCode;

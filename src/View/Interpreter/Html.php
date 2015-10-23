@@ -11,8 +11,8 @@ class Html extends \Iiigel\View\Interpreter\DefaultInterpreter {
         	$aFile = explode(';', $_oFile->sFile);
         	$sFileUrl = $aFile[1];
         	
-        	$sCode = '<iframe style="margin: 0; width: 100%; border: none; overflow: hidden;" scrolling="no" src="'.$sFileUrl.'" onload="adjustIframeHeight(this);"></iframe>';
-        	$sCode .= '<script src="'.URL.'res/script/interpreter/interpreter-html.js"></script>';
+        	$sCode = '<iframe scrolling="no" src="'.$sFileUrl.'" onload="adjustIframeHeight(this);"></iframe>';
+        	$sCode .= '<script src="'.URL.'res/script/interpreter/iframe.js"></script>';
         	
         	return $sCode;
         } else {

@@ -3,7 +3,8 @@
 $GLOBALS['aConfig']['aController'] = array(
     'html' => 'StaticPage',
     'file' => 'File',
-    'learn' => 'Iiigel'
+    'learn' => 'Iiigel',
+	'@cloud' => 'Cloud'
 );
 
 ?>

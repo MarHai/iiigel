@@ -86,7 +86,7 @@ class File extends \Iiigel\Model\GenericModel {
     public function __get($_sName) {
     	if ($_sName === 'oParent') {
     		if($this->oParentFolder === NULL) {
-    			$aPath = $this->oCloud->listPath($this->sHashId);
+    			$aPath = $this->path();
     			$nCount = count($aPath);
     			
     			if ($nCount > 0) {
@@ -151,11 +151,12 @@ class File extends \Iiigel\Model\GenericModel {
         if ($this->bFilesystem) {
         	$aFile = explode(';', $aData['sFile']);
         	$sFilename = $GLOBALS['aConfig']['sUploadDir'].$aFile[0];
+        	$sFileUrl = $aFile[1];
         	
-        	if (file_exists($sFilename)) {
+        	if ((strpos($aData['sType'], 'text') === 0) && (file_exists($sFilename))) {
         		$aData['sFile'] = file_get_contents($sFilename);
         	} else {
-        		$aData['sFile'] = '';
+        		$aData['sFile'] = $sFileUrl;
         	}
         }
         
@@ -179,6 +180,47 @@ class File extends \Iiigel\Model\GenericModel {
     	}
     	
     	return $mId;
+    }
+    
+    /**
+     * List all folders in path of file
+     * 
+     * @return array \Iiigel\Model\Folder objects returned (in adequate order) in an array
+     */
+    public function path() {
+    	$nTreeLeft = $GLOBALS['oDb']->escape($this->nTreeLeft);
+		$nTreeRight = $GLOBALS['oDb']->escape($this->nTreeRight);
+		$nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
+		
+		$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nTreeLeft < '.$nTreeLeft.' AND nTreeRight > '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
+		
+		$aPath = array();
+		
+		if ($oResult) {
+			$nCount = $GLOBALS['oDb']->count($oResult);
+			
+			for ($i = 0; $i < $nCount; $i++) {
+				$aPath[] = new \Iiigel\Model\Folder($GLOBALS['oDb']->get($oResult), $this->oCloud);
+			}
+		}
+		
+		return $aPath;
+    }
+    
+    /**
+     * Get joined list of folders as string
+     * 
+     * @return string path of file
+     */
+    public function pathString() {
+    	$aPath = $this->path();
+    	$sPath = '';
+    	
+    	foreach ($aPath as $oFolder) {
+    		$sPath .= $oFolder->sName.'/';
+    	}
+    	
+    	return $sPath.$this->sName;
     }
 }
 

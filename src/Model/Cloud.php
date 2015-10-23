@@ -177,35 +177,53 @@ class Cloud {
     }
     
     /**
+     * Get object which represents the file/folder at path ($_sFilename) if available
+     * 
+     * @param  string $_sFilename is path of file
+     * @return \Iiigel\Model\File object if successful, NULL otherwise
+     */
+	public function getFile($_sPath) {
+    	$nLastIndex = strrpos($_sPath, '/');
+    	
+    	$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
+    	$sName = $GLOBALS['oDb']->escape(substr($_sPath, $nLastIndex + 1));
+    	
+    	$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nIdCreator = '.$nIdCreator.' AND sName = '.$sName.' AND NOT bDeleted');
+    	
+		if ($oResult) {
+			$nCount = $GLOBALS['oDb']->count($oResult);
+			
+			for ($i = 0; $i < $nCount; $i++) {
+				$oFile = new \Iiigel\Model\File($GLOBALS['oDb']->get($oResult), $this);
+				$sPath = $oFile->pathString();
+				
+				$nC = strcmp($sPath, $_sPath);
+				
+				if ($nC == 0) {
+					return $oFile;
+				} else {
+					print($sPath.'<br>'.$_sPath.'<br>'.$nC);
+				}
+			}
+		}
+		
+		return NULL;
+    }
+    
+    /**
      * List all folders in path of file
      * 
      * @param  string $_sHashId file's hashed ID (within cloud table)
      * @return array \Iiigel\Model\Folder objects returned (in adequate order) in an array
      */
-    public function listPath($_mFolderHashId) {
+    public function listPath($_sHashId) {
     	$oFile = new \Iiigel\Model\File($_sHashId, $this);
     	
     	if ($oFile->nIdCreator != $this->oUser->nId) {
     		return array();
     	}
     	
-    	$nTreeLeft = $GLOBALS['oDb']->escape($oFile->nTreeLeft);
-		$nTreeRight = $GLOBALS['oDb']->escape($oFile->nTreeRight);
-		$nIdCreator = $GLOBALS['oDb']->escape($this->oUser->nId);
-		
-		$oResult = $GLOBALS['oDb']->query('SELECT * FROM `cloud` WHERE nTreeLeft < '.$nTreeLeft.' AND nTreeRight > '.$nTreeRight.' AND nIdCreator = '.$nIdCreator.' AND NOT bDeleted ORDER BY nTreeLeft');
-		
-		$aPath = array();
-		
-		if ($oResult) {
-			$nCount = $GLOBALS['oDb']->count($oResult);
-			
-			for ($i = 0; $i < $nCount; $i++) {
-				$aPath[] = new \Iiigel\Model\Folder($GLOBALS['oDb']->get($oResult), $this);
-			}
-		}
-		
-		return $aPath;
+    	return $oFile->path();
     }
     
     /**
