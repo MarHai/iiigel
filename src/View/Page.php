@@ -36,7 +36,7 @@ class Page extends \Iiigel\View\DefaultView {
         if($this->bLogin) {
             $this->bDashboardNavShown = $GLOBALS['oUserLogin']->bDashboardNavShown;
         }
-        $this->sUserHash = $this->bLogin ? md5($GLOBALS['oUserLogin']->sMail) : FALSE;
+        $this->sUserHash = $this->bLogin ? md5(strtolower(trim($GLOBALS['oUserLogin']->sMail))) : FALSE;
         $this->sCurrentUrl = URL.(isset($GLOBALS['aRequest']['path']) ? $GLOBALS['aRequest']['path'] : '');
         $this->aCurrentUser = array(
             'sMail' => ($this->bLogin ? $GLOBALS['oUserLogin']->sMail : ''),

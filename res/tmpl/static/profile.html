@@ -1,0 +1,30 @@
+{% macro mainContent(sUserHash, aCurrentUser) %}
+   <!-- <p>{% trans 'profile.intro' %}</p> -->
+   
+   <div style="width: 350px;">
+    <center>
+     <div>
+      <img src="http://www.gravatar.com/avatar/{{ sUserHash }}.jpg?s=120&d=mm" class="img-circle" width="120" />
+     </div>
+     <br>
+     <div>
+      <table>
+       <tr><td align="right">{% trans 'name' %}:</td><td>{{ aCurrentUser.sName }}</td></tr>
+       <tr><td align="right">{% trans 'emailaddress' %}:</td><td>{{ aCurrentUser.sMail }}</td></tr>
+      </table>
+     </div>
+    </center>
+   </div>
+{% endmacro %}
+
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nRows = 1 %}
+{% set nColumns = [ 1 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sUserHash, aCurrentUser) } } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}
