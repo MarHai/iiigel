@@ -21,7 +21,7 @@ require_once(PATH_DIR.'src/functions.php');
 
 set_exception_handler('except');
 
-define('PATH_URL', (isset($GLOBALS['aConfig']['sRootPath']) && $GLOBALS['aConfig']['sRootPath'] !== '' && $GLOBALS['aConfig']['sRootPath'] !== '/' ? ('/'.$GLOBALS['aConfig']['sRootPath'].'/') : '/'));
+define('PATH_URL', ((isset($GLOBALS['aConfig']['sRootPath']) && $GLOBALS['aConfig']['sRootPath'] !== '' && $GLOBALS['aConfig']['sRootPath'] !== '/')? (($GLOBALS['aConfig']['sRootPath']{0} == ':')?($GLOBALS['aConfig']['sRootPath'].'/'):('/'.$GLOBALS['aConfig']['sRootPath'].'/')):'/'));
 define('URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://').$_SERVER['SERVER_NAME'].PATH_URL);
 
 $GLOBALS['aRequest'] = array_merge_recursive($_POST, $_GET);

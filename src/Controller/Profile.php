@@ -19,9 +19,6 @@ class Profile extends \Iiigel\Controller\StaticPage {
     		$oUser = new \Iiigel\Model\User($_sHashId);
     	}
     	
-    	//$this->oView->aCurrentUser = $oUser->getCompleteEntry(true);
-    	//$this->oView->sUserHash = md5(strtolower(trim($this->oView->aUser['sMail'])));
-    	
     	$this->loadFile('profile');
     }
 }

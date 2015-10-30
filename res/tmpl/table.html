@@ -23,7 +23,12 @@
         <tr {% if sRowClick %}class="Iiigel-click" data-click="{{ sRowClick|format(aRow.sHashId) }}"{% endif %}>
             {% for sKey, sCell in aRow %}
                 {% if sKey != 'sHashId' %}
-                    <td>{{ sCell }}</td>
+                    {% if sKey starts with 'b' %}
+                        {% if sCell == 1 %}<td align = 'center'><i class="fa fa-check-circle" ></i></td>{% endif %}
+                        {% if sCell == 0 %}<td align = 'center'><i class="fa fa-minus-circle" align = ></i></td>{% endif %}
+                    {% else %}
+                        <td>{{ sCell }}</td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </tr>

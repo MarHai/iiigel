@@ -175,7 +175,7 @@ $(function() {
 
     function extractOpenFiles() {
         extractOpenFiles_inner();
-        if($('#iiigel-editor .iiigel-files a[data-hash]').length == 0) {
+        if(($('#iiigel-editor .iiigel-files a[data-hash]').length == 0) && (oEditor !== null)) {
             oEditor.setValue(i18n('mode.openfiletoedit'));
             oEditor.setReadOnly(true);
         }
@@ -275,6 +275,8 @@ $(function() {
                         }, nEditorWaitTime, oEditor.getValue());
                     }
                 });
+                
+                interpret();
             } else {
             	bootbox.alert('<iframe scrolling="no" src="' + _oFile.sFile + '"  onload="adjustIframeHeight(this);"></iframe><script src="res/script/iframe.js"></script>');
             }
@@ -290,9 +292,6 @@ $(function() {
         $(this).addClass('active');
         return false;
     }
-    
-    
-    
     
     adjustIiigelHeight();
     $(window).resize(adjustIiigelHeight);
@@ -327,7 +326,7 @@ $(function() {
         $('.iiigel-interpret').off('click').on('click', function(_oEvent) {
             _oEvent.preventDefault();
             saveFile(oEditor.getValue());
-            interpret();
+        	interpret();
             $('a[href="#iiigel-interpreter"]').click();
             return false;
         });

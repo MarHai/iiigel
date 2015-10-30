@@ -1,5 +1,7 @@
 RewriteEngine On
 
+RewriteBase /iiigel
+
 RewriteRule ^config/.*$ - [L]
 RewriteRule ^src/.*$ - [L]
 RewriteRule ^vendor/.*$ - [L]
@@ -18,4 +20,5 @@ RewriteCond %{REQUEST_FILENAME} !-l
 #  Example 2: If you access index.php via www.url.tld/path/index.php, enter RewriteRule ^([^?]*)$ /path/index.php?path=$1 [NC,L,QSA]
 #  Example 3: If you access index.php via www.url.tld/iiigel/index.php, do not change anything
 ######
+
 RewriteRule ^([^?]*)$ index.php?path=$1 [NC,L,QSA]

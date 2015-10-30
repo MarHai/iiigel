@@ -105,7 +105,29 @@ class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     	$oTemp = new $this->sClass($_sHashId);
     	$oModule = new \Iiigel\Model\Module(intval($oTemp->nIdModule));
     	$this->sPreviousUrl = 'Admin/Module/showDetail/'.$oModule->sHashId;
+    	
+    	$oForm = new \Iiigel\View\Page();
+		$oForm->loadTemplate('admin/chapter-editor.html');
+		$oForm->sChapterId = $oTemp->sHashId;
+		    
+		$this->oView->aContent = $oForm->render();
+		$this->oView->aContent = '<div class="iiigel-scroll" id="chapter-interpreter">          
+</div>';
+    	
+    	$this->oView->addRow();
+    	
     	parent::showDetail($_sHashId);
+    }
+    
+	public function getChapter($_sHashId) {
+		$oTemp = new $this->sClass($_sHashId);
+        $this->sRawOutput = json_encode($oTemp->getCompleteEntry(TRUE));
+    }
+    
+	public function updateChapter($_sHashId, $_sContent) {
+		
+		
+        $this->sRawOutput = $_sContent;
     }
 }
 
