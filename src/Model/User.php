@@ -279,7 +279,7 @@ class User extends \Iiigel\Model\GenericModel {
                 ) ORDER BY sName ASC');
             }
         } else {
-            $mResult = $GLOBALS['oDb']->query('SELECT * FROM `group` WHERE NOT bDeleted WHERE nId IN (
+            $mResult = $GLOBALS['oDb']->query('SELECT * FROM `group` WHERE NOT bDeleted AND nId IN (
                 SELECT nIdGroup FROM user2group WHERE NOT bDeleted AND (nStart IS NULL OR nStart = 0 OR nStart < UNIX_TIMESTAMP()) AND (nEnd IS NULL OR nEnd = 0 OR nEnd > UNIX_TIMESTAMP()) AND nIdUser = '.$this->nId.' ORDER BY nId ASC
             ) ORDER BY sName ASC');
         }

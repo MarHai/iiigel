@@ -147,10 +147,19 @@ msgid "live"
 msgstr "Aktiv"
 
 msgid "goback"
-msgstr "zurück"
+msgstr "Zurück"
 
 msgid "delete"
-msgstr "löschen"
+msgstr "Löschen"
+
+msgid "open"
+msgstr "Öffnen"
+
+msgid "edit"
+msgstr "Bearbeiten"
+
+msgid "savechanges"
+msgstr "Änderungen speichern"
 
 msgid "doyoureallywanttodelete"
 msgstr "Soll %s wirklich gelöscht werden?"

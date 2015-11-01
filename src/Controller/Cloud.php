@@ -29,7 +29,7 @@ class Cloud extends \Iiigel\Controller\DefaultController {
 	        		$aFile = explode(';', $oFile->sFile);
 	        		$sFileUrl = $aFile[1];
 	        		
-	        		header('Location: '.$sFileUrl);
+	        		$this->redirect($sFileUrl);
 	        	} else {
 	        		header('Cache-Control: no-cache, must-revalidate');
 	        		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
@@ -41,7 +41,7 @@ class Cloud extends \Iiigel\Controller\DefaultController {
 	        	}
         	}
         } else {
-        	header('Location: '.URL);
+        	$this->redirect(URL);
         }
     }
 }

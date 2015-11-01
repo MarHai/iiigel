@@ -1,29 +1,117 @@
-{% macro mainContent(sUserHash, aCurrentUser) %}
+{% macro mainContent(sUrl, sProfileHash, aProfileUser, bProfileEdit) %}
    <!-- <p>{% trans 'profile.intro' %}</p> -->
-   
-   <div style="width: 350px;">
-    <center>
-     <div>
-      <img src="http://www.gravatar.com/avatar/{{ sUserHash }}.jpg?s=120&d=mm" class="img-circle" width="120" />
+   <center>
+    <img src="http://www.gravatar.com/avatar/{{ sProfileHash }}.jpg?s=180&d=mm" class="img-circle" width="180" style="margin-bottom: 12px;" />
+   </center>
+   {% if bProfileEdit %}
+  <form id="fEditProfile" action="{{ sUrl }}{{ 'Profile/edit/' ~ aProfileUser.sHashId }}" method="GET">
+   {% endif %}
+   <table class="table table-striped table-condensed table-hover">
+    <tr>
+     <td align="right">{% trans 'name' %}:</td>
+     <td>
+      {% if bProfileEdit %}
+       <input type="text" id="sName" name="sName" value="{{ aProfileUser.sName }}" class="hide" />
+      {% endif %}
+      <div id="sName-label" style="margin: 3px;">{{ aProfileUser.sName }}</div>
+     </td>
+    </tr>
+    <tr>
+     <td align="right">{% trans 'emailaddress' %}:</td>
+     <td>
+      {% if bProfileEdit %}
+       <input type="email" id="sMail" name="sMail" value="{{ aProfileUser.sMail }}" class="hide" />
+      {% endif %}
+      <div id="sMail-label" style="margin: 3px;">{{ aProfileUser.sMail }}</div>
+     </td>
+    </tr>
+    {% if bProfileEdit %}
+    <tr>
+     <td align="right">{% trans 'password' %}:</td>
+     <td>
+      <div>
+       <input type="password" id="sPassword" value="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
+       <i id="sPassword-correct" class="glyphicon glyphicon-ok hide"></i>
+      </div>
+      <div>
+       <input type="password" id="sPassword-repeat" value="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
+       <i id="sPassword-repeat-correct" class="glyphicon glyphicon-ok hide"></i>
+      </div>
+      <div id="sPassword-label" style="margin: 3px;">{{ aProfileUser.sPassword }}</div>
+     </td>
+    </tr>
+    {% endif %}
+   </table>
+   {% if bProfileEdit %}
+  </form>
+    <script type="text/javascript" src="res/script/profile.js"></script>
+    
+    <div style="height: 32px;">
+     <div style="float: right;">
+      <a id="btn-profile-save" class="btn btn-primary hide" onclick="return Profile.click('save');">{% trans 'savechanges' %}</a>
+      <a id="btn-profile-cancel" class="btn btn-default hide" onclick="return Profile.click('cancel');">{% trans 'cancel' %}</a>
+      <a id="btn-profile-edit" class="btn btn-default" onclick="return Profile.click('edit');">{% trans 'edit' %}</a>
      </div>
-     <br>
-     <div>
-      <table>
-       <tr><td align="right">{% trans 'name' %}:</td><td>{{ aCurrentUser.sName }}</td></tr>
-       <tr><td align="right">{% trans 'emailaddress' %}:</td><td>{{ aCurrentUser.sMail }}</td></tr>
-      </table>
-     </div>
-    </center>
-   </div>
+    </div>
+   {% endif %}
 {% endmacro %}
 
+{% macro groups(aProfileGroup) %}
+ <div>
+  <h3><i class="fa fa-angle-right"></i>
+   {% if aProfileGroup|length > 1 %}
+   		{% trans %}group{% plural 2 %}group.plural{% endtrans %}
+   {% else %}
+   		{% trans 'group' %}
+   {% endif %}
+  </h3>
+  <table class="table table-striped table-condensed table-hover">
+   <tr>
+    <th>{% trans 'name' %}</th>
+    <th>{% trans 'institution' %}</th>
+   </tr>
+   {% for oRow in aProfileGroup %}
+    <tr>
+     <td><b>{{ oRow.sName }}</b></td>
+     <td>{{ oRow.nIdInstitution }}</td>
+    </tr>
+   {% endfor %}
+  </table>
+ </div>
+{% endmacro %}
+
+{% macro modules(aProfileModule) %}
+ <div>
+  <h3><i class="fa fa-angle-right"></i>
+   {% if aProfileModule|length > 1 %}
+   		{% trans %}module{% plural 2 %}module.plural{% endtrans %}
+   {% else %}
+   		{% trans 'module' %}
+   {% endif %}
+  </h3>
+  <table class="table table-striped table-condensed table-hover">
+   {% for oRow in aProfileModule %}
+    <tr><td>
+     <div>
+      <h4><b>{{ oRow.sName }}</b></h4>
+      <h5 style="margin: 0px 12px; float: left;" >{{ 'percent'|trans|format(oRow.nProgress)|raw }}</h6>
+     </div>
+     <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nProgress }}%">
+      </div>
+     </div>
+    </td></tr>
+   {% endfor %}
+  </table>
+ </div>
+{% endmacro %}
 
 {% import _self as get %}
 {% extends "page.html" %}
 
-{% set nRows = 1 %}
-{% set nColumns = [ 1 ] %}
-{% set aContent = { '0': { '0': get.mainContent(sUserHash, aCurrentUser) } } %}
+{% set nRows = 2 %}
+{% set nColumns = [ 2, 1 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, sProfileHash, aProfileUser, (bProfileEdit) or (bAdmin)), '1' : get.groups(aProfileGroup) }, '1' : { '0' : get.modules(aProfileModule) } } %}
 
 {% block content %}
     {{ parent() }}

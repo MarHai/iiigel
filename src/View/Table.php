@@ -219,7 +219,7 @@ class Table extends \Iiigel\View\DefaultView {
                 'aParam' => $this->aParam,
                 'nLength' => $this->length,
                 'nWidth' => $this->width,
-                'sRowClick' => (strpos($this->sRowClick, '%s') === FALSE ? ($this->sRowClick.'%s') : $this->sRowClick),
+                'sRowClick' => ($this->sRowClick !== FALSE? (strpos($this->sRowClick, '%s') === FALSE ? ($this->sRowClick.'%s') : $this->sRowClick) : FALSE),
                 'sHeadline' => $this->sHeadline,
                 'nHeadlineLevel' => $this->nHeadlineLevel
             ));
