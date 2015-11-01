@@ -162,6 +162,19 @@ class File extends \Iiigel\Model\GenericModel {
         
         return $aData;
     }
+    
+    /**
+     * Used by GenericModel in order to find out whether changes on the current entry are allowed for the currently logged-in user.
+     * 
+     * @return boolean true if allowed, false otherwise
+     */
+    protected function changesAllowed() {
+    	if ((isset($GLOBALS['oUserLogin'])) && ((!isset($this->nIdCreator)) || ($this->nIdCreator === $GLOBALS['oUserLogin']->nId))) {
+    		return true;
+    	} else {
+    		return parent::changesAllowed();
+    	}
+    }
 
 	/**
      * If current entry does not have an ID, entry is created and ID is returned. Also, object is updated with INSERT information.

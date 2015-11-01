@@ -1,48 +1,66 @@
+{% macro moduleItem(oModule, nOffset) %}
+	<a href="{{ sUrl }}learn/{{ oModule.sHashId }}" class="col-sm-2 col-md-2{{ nOffset == 0 ? '' : ' col-md-offset-' ~ nOffset }} showback box0">
+     <div class="thumbnail">
+      <img src="{{ sUrl }}{{ oModule.sImage }}" alt="Image">
+      <div class="caption">
+       <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{ oModule.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oModule.nProgress }}%">
+        </div>
+       </div>
+       <center>
+        <h5>{{ oModule.sName }}</h5>
+       </center>
+      </div>
+     </div>
+	</a>
+{% endmacro %}
+
+{% macro adminItem(sAction, sFa, nCount, temp, nOffset) %}
+	<div class="col-md-2 col-sm-2{{ nOffset == 0 ? '' : ' col-md-offset-' ~ nOffset }} box0">
+     <a class="box1" href="{{ sUrl }}Admin/{{ sAction }}">
+      <span class="fa {{ sFa }}"></span>
+      <h3>{{ nCount }}</h3>
+     </a>
+     <p>
+      {{ temp|format(nCount) }}
+     </p>
+    </div>
+{% endmacro %}
+
 {% macro mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) %}
+	{% import _self as get %}
+	
     <div class="row mtbox">
         {% if bAdmin %}
-            <div class="col-md-2 col-sm-2 col-md-offset-2 box0">
-                <a class="box1" href="{{ sUrl }}Admin/User/showList">
-                    <span class="fa fa-user"></span>
-                    <h3>{{ nCountUser }}</h3>
-                </a>
-                <p>
-                    {% set temp %}{% trans %}dash.usersreg{% plural nCountUser %}dash.usersreg.plural{% endtrans %}{% endset %}
-                    {{ temp|format(nCountUser) }}
-                </p>
-            </div>
+        	{% set temp %}{% trans %}dash.usersreg{% plural nCountUser %}dash.usersreg.plural{% endtrans %}{% endset %}
+        	{{ get.adminItem('User/showList', 'fa-user', nCountUser, temp, 2) }}
         {% endif %}
-        <div class="col-md-2 col-sm-2 {{ bAdmin ? '' : 'col-md-offset-3' }} box0">
-            <a class="box1" href="{{ sUrl }}Admin/Group/showList">
-                <span class="fa fa-users"></span>
-                <h3>{{ nCountGroup }}</h3>
-            </a>
-            <p>
-                {% set temp %}{% trans %}dash.groupsreg{% plural nCountGroup %}dash.groupsreg.plural{% endtrans %}{% endset %}
-                {{ temp|format(nCountGroup) }}
-            </p>
-        </div>
-        <div class="col-md-2 col-sm-2 box0">
-            <a class="box1" href="{{ sUrl }}Admin/Institution/showList">
-                <span class="fa fa-university  "></span>
-                <h3>{{ nCountInstitution }}</h3>
-            </a>
-            <p>
-                {% set temp %}{% trans %}dash.institutionsreg{% plural nCountInstitution %}dash.institutionsreg.plural{% endtrans %}{% endset %}
-                {{ temp|format(nCountInstitution) }}
-            </p>
-        </div>
-        <div class="col-md-2 col-sm-2 box0">
-            <a class="box1" href="{{ sUrl }}Admin/Module/showList">
-                <span class="fa fa-code"></span>
-                <h3>{{ nCountModule }}</h3>
-            </a>
-            <p>
-                {% set temp %}{% trans %}dash.modulereg{% plural nCountModule %}dash.modulereg.plural{% endtrans %}{% endset %}
-                {{ temp|format(nCountModule) }}
-            </p>
-        </div>
+        
+        {% set temp %}{% trans %}dash.groupsreg{% plural nCountGroup %}dash.groupsreg.plural{% endtrans %}{% endset %}
+        {{ get.adminItem('Group/showList', 'fa-users', nCountGroup, temp, bAdmin ? 0 : 3) }}
+        
+        {% set temp %}{% trans %}dash.institutionsreg{% plural nCountInstitution %}dash.institutionsreg.plural{% endtrans %}{% endset %}
+        {{ get.adminItem('Institution/showList', 'fa-university', nCountInstitution, temp, 0) }}
+        
+        {% set temp %}{% trans %}dash.modulereg{% plural nCountModule %}dash.modulereg.plural{% endtrans %}{% endset %}
+        {{ get.adminItem('Module/showList', 'fa-code', nCountModule, temp, 0) }}
     </div>
+{% endmacro %}
+
+{% macro userContent(aModuleTable) %}
+	{% import _self as get %}
+	
+	{% block modules %}
+		{% if aModuleTable.nRows > 0 %}
+			{% for j in range(1, aModuleTable.nRows) %}
+				<div class="row mtbox">
+					{% for i in range(1, aModuleTable.aColumns[j - 1]) %}
+						{{ get.moduleItem(aModuleTable.aCells[j - 1][i - 1], i == 1? 6 - aModuleTable.aColumns[j - 1] : 0) }}
+					{% endfor %}
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endblock %}
 {% endmacro %}
 
 
@@ -54,7 +72,7 @@
 {% if (bAdmin) or (bInstitutionAdmin) or (bGroupAdmin) or (bModuleAdmin) %}
     {% set aContent = { '0': { '0': get.mainContent(nCountUser, nCountGroup, nCountInstitution, nCountModule, bAdmin) } } %}
 {% else %}
-    {% set aContent = { '0': { '0': 'hallo welt' } } %}
+    {% set aContent = { '0': { '0': get.userContent(aModuleTable) } } %}
 {% endif %}
 
 {% block content %}
