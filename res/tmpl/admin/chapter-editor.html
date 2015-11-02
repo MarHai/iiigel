@@ -1,8 +1,27 @@
 <script type="text/javascript" src="res/script/chapter-editor.js"></script>
 
+<div class="input-group input-group-sm">
+    <div class="input-group-btn">
+        <!-- Buttons -->
+        <div class="btn-group btn-group-sm" role="group" aria-label="...">
+
+
+            <button type="button" class="btn btn-default" onclick="writeText('[code][/code]')">Code</button>
+            <button type="button" class="btn btn-default" onclick="writeText('[tasks][/tasks]')">Tasks</button>
+            <button type="button" class="btn btn-default" onclick="writeText('[task][/task]')">Task</button>
+            <button type="button" class="btn btn-default" onclick="writeText('[break]')">Break</button>
+    
+            <button type="button" class="btn btn-default" onclick="writeText('[headline][/headline]')">Headline</button>
+            <button type="button" class="btn btn-default" onclick="writeText('[li][/li]')">List</button>
+            <button type="button" class="btn btn-default" onclick="writeText('[big][/big]')">Big</button>  
+        </div>
+    </div>
+</div>
+
 <div id="chapter-editor" data-editorwaittime="1000" data-chapterhashid="{{ sChapterId }}">
 	<div class="iiigel-scroll">
-   		<div id="chapter-editor-ace"></div>
+   		<div id="chapter-editor-ace">
+        </div>
 	</div>
 </div>
 

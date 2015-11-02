@@ -1,5 +1,6 @@
 <?php namespace Iiigel\Controller\Admin;
 
+
 class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     const DEFAULT_ACTION = 'showDetail';
     const TABLE = 'chapter';
@@ -118,16 +119,20 @@ class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     	
     	parent::showDetail($_sHashId);
     }
+
+
     
-	public function getChapter($_sHashId) {
+    public function getChapter($_sHashId) {
 		$oTemp = new $this->sClass($_sHashId);
         $this->sRawOutput = json_encode($oTemp->getCompleteEntry(TRUE));
     }
     
 	public function updateChapter($_sHashId, $_sContent) {
-		
-		
-        $this->sRawOutput = $_sContent;
+        $oChapter = new \Iiigel\Model\Chapter($_sHashId);
+        $oChapter->sText = $_sContent;
+        $oChapter->update();
+        $this->sRawOutput = (new \Iiigel\Model\Chapter())->replaceTags($_sContent);
+        
     }
 }
 
