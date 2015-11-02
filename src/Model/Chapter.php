@@ -29,6 +29,24 @@ class Chapter extends \Iiigel\Model\GenericModel {
     public function getList($_nIdModule = NULL) {
          return $GLOBALS['oDb']->query('SELECT nId,sHashId,sName,sNote,bLive,nOrder FROM `chapter` WHERE  NOT bDeleted'.($_nIdModule === NULL ? '' : (' AND nIdModule = '.$GLOBALS['oDb']->escape($_nIdModule))).' ORDER BY '.$this::DEFAULT_ORDER);
     }
+    
+    
+    /**
+    * Replaces our own Tags with respective html/js Tags
+    * 
+    * @param string $_sHashId hashed representation of ID
+    * returns the string that needs to be displayed
+    */
+    public function replaceTags ($_sContent)
+    {
+        $sMyDocument = str_replace('<', '&lt;', str_replace('>', '&gt;', $_sContent));
+        $sTags = $GLOBALS['oDb']->query('SELECT sTagFrom,sTagIn FROM tags');        
+        for ($x = 0; $x <= $GLOBALS['oDb']->count($sTags);$x++) {
+            $aRow = $GLOBALS['oDb']->get($sTags);
+          $sMyDocument =  str_replace ($aRow['sTagFrom'],$aRow['sTagIn'],$sMyDocument);
+        } 
+        return $sMyDocument;
+    }
 }
 
 ?>

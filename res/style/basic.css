@@ -2,6 +2,22 @@ body {
     padding-top: 70px;
 }
 
+.code {    
+    border:1px outset gray;
+    margin:.5em; 
+    padding:.5em;
+    background-color:#FFFF99;
+    font-family:monospace;
+    font-weight: bold;
+}
+.tasks {
+    border:1px outset gray;
+    margin:.5em; 
+    padding:.5em; 
+    color:#009933; 
+    background-color:#FFFFCC;
+}
+
 iframe {
 	margin: 0;
 	width: 100%;

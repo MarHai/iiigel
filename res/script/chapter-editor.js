@@ -1,12 +1,18 @@
+function writeText(_sText){
+    oCEditor = ace.edit('chapter-editor-ace');
+    oCEditor.insert(_sText);
+}
+
 $(function() {
     var oCEditor = null, oCSession = null, oCEditorTimeout = null;
+    
     
     function adjustIiigelHeight() {
         //initiate height
         var nHeightAvailable = $(window).innerHeight() - $('header').outerHeight() - $('footer').outerHeight();
         
         if($('#chapter-editor').length > 0) {
-            var nHeightEditor = Math.floor(nHeightAvailable/2);
+            var nHeightEditor = (Math.floor(nHeightAvailable/2)*0.9);
             $('#chapter-editor').height(nHeightEditor);
             $('#chapter-editor-ace').height($('#chapter-editor').height());
         }

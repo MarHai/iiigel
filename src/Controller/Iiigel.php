@@ -70,6 +70,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
             //check if current user is in this module
             //load module data (incl. chapter)
             $this->oView->oModule = $this->oModule;
+            $this->oChapter->sText =  $this->oChapter->replaceTags( $this->oChapter->sText);
             $this->oView->oChapter = $this->oChapter;
             $this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
             $this->loadFile('iiigel');
