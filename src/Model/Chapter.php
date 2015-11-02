@@ -39,7 +39,7 @@ class Chapter extends \Iiigel\Model\GenericModel {
     */
     public function replaceTags ($_sContent)
     {
-        $sMyDocument = str_replace('<', '&lt;', str_replace('>', '&gt;', $_sContent));
+        $sMyDocument = str_replace(' ', '&nbsp;', str_replace("\n", '<br>', str_replace('<', '&lt;', str_replace('>', '&gt;', $_sContent))));
         $sTags = $GLOBALS['oDb']->query('SELECT sTagFrom,sTagIn FROM tags');        
         for ($x = 0; $x <= $GLOBALS['oDb']->count($sTags);$x++) {
             $aRow = $GLOBALS['oDb']->get($sTags);
