@@ -391,6 +391,23 @@ class User extends \Iiigel\Model\GenericModel {
             0 => $GLOBALS['oDb']->getOneRow('SELECT nId, sName FROM `user` WHERE NOT bDeleted AND sHashId = '.$GLOBALS['oDb']->escape($_sHashId))
         );
     }
+    
+	/**
+     * Deletes current row.
+     * 
+     * @return boolean true if successfully deleted, false otherwise
+     */
+    public function delete() {
+    	if (parent::delete()) {
+    		$oCloud = new \Iiigel\Model\Cloud($this);
+    		$oCloud->delete();
+    		
+    		return TRUE;
+    	} else {
+    		return FALSE;
+    	}
+    }
+    
 }
 
 ?>

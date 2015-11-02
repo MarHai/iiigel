@@ -68,6 +68,24 @@ class Module extends \Iiigel\Model\GenericModel {
     public function __isset($_sName) {
         return in_array($_sName, array('nProgress', 'aChapter', 'nCurrentChapter')) ? TRUE : parent::__isset($_sName);
     }
+    
+    /**
+     * Deletes current row.
+     * 
+     * @return boolean true if successfully deleted, false otherwise
+     */
+    public function delete() {
+    	if (parent::delete()) {
+    		foreach ($this->aChapter as $oChapter) {
+    			$oChapter->delete();
+    		}
+    		
+    		return TRUE;
+    	} else {
+    		return FALSE;
+    	}
+    }
+    
 }
 
 ?>

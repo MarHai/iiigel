@@ -48,6 +48,24 @@ class Folder extends \Iiigel\Model\File {
         $aData['aChildren'] = $this->aChildren;
         return $aData;
     }
+
+    /**
+     * Deletes current row.
+     * 
+     * @return boolean true if successfully deleted, false otherwise
+     */
+    public function delete() {
+    	if (parent::delete()) {
+    		foreach ($this->aChildren as $oChild) {
+    			$oChild->delete();
+    		}
+    		
+    		return TRUE;
+    	} else {
+    		return FALSE;
+    	}
+    }
+
 }
 
 ?>

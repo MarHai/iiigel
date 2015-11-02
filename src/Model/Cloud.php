@@ -255,6 +255,16 @@ class Cloud {
     		return false;
     	}
     }
+    
+    /**
+     * Deletes all files/folders in cloud.
+     * 
+     * @return boolean true if successfully deleted, false otherwise
+     */
+    public function delete() {
+    	return $this->oRootFolder->delete();
+    }
+    
 }
 
 ?>

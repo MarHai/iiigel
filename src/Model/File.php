@@ -1,5 +1,7 @@
 <?php namespace Iiigel\Model;
 
+use Iiigel\Generic\Upload;
+
 class File extends \Iiigel\Model\GenericModel {
     const TABLE = 'cloud';
     const DEFAULT_ORDER = 'sName ASC';
@@ -235,6 +237,31 @@ class File extends \Iiigel\Model\GenericModel {
     	
     	return $sPath.$this->sName;
     }
+    
+	/**
+     * Deletes current row.
+     * 
+     * @return boolean true if successfully deleted, false otherwise
+     */
+    public function delete() {
+    	if (parent::delete()) {
+    		if ($this->bFilesystem) {
+    			$aFile = explode(';', $this->sFile);
+    			$sDeleteUrl = $aFile[2];
+    			
+    			$aDeleteFunction = explode('/', $sDeleteUrl);
+    			$sUploadHash = $aDeleteFunction[count($aDeleteFunction) - 1];
+    			
+    			$oUpload = new \Iiigel\Generic\Upload();
+    			$oUpload->delete($sUploadHash);
+    		}
+    		
+    		return TRUE;
+    	} else {
+    		return FALSE;
+    	}
+    }
+    
 }
 
 ?>
