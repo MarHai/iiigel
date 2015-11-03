@@ -1,13 +1,13 @@
 <?php namespace Iiigel\View\Interpreter;
 
-class Html extends \Iiigel\View\Interpreter\DefaultInterpreter {
-    /**
-     * Interpret HTML code.
+class File extends \Iiigel\View\Interpreter\DefaultInterpreter {
+	/**
+     * Returns file content.
      * 
      * @param object $_oFile \Iiigel\Model\File object to base the interpretation on
      */
     public function interpret($_oFile) {
-        if ($_oFile->bFilesystem) {
+    	if ($_oFile->bFilesystem) {
         	$aFile = explode(';', $_oFile->sFile);
         	$sFileUrl = $aFile[1];
         	

@@ -9,6 +9,10 @@ class Mail {
      * Create an IMAP connection based on config settings.
      */
     public function __construct() {
+    	if (!is_dir(PATH_DIR.'res/mail/')) {
+    		mkdir(PATH_DIR.'res/mail/');
+    	}
+    	
         $this->oMailbox = new \PhpImap\Mailbox(
             $GLOBALS['aConfig']['aMail']['sHost'], 
             $GLOBALS['aConfig']['aMail']['sUsername'],

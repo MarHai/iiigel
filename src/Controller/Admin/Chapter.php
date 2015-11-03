@@ -119,8 +119,6 @@ class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     	
     	parent::showDetail($_sHashId);
     }
-
-
     
     public function getChapter($_sHashId) {
 		$oTemp = new $this->sClass($_sHashId);
@@ -131,8 +129,8 @@ class Chapter extends \Iiigel\Controller\Admin\DefaultController {
         $oChapter = new \Iiigel\Model\Chapter($_sHashId);
         $oChapter->sText = $_sContent;
         $oChapter->update();
-        $this->sRawOutput = (new \Iiigel\Model\Chapter())->replaceTags($_sContent);
         
+        $this->sRawOutput = $oChapter->replaceTags($_sContent);
     }
 }
 

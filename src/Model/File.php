@@ -32,7 +32,6 @@ class File extends \Iiigel\Model\GenericModel {
 		        $nIdCreator = $GLOBALS['oDb']->escape($this->oCloud->oUser->nId);
 		    	
 		    	$oResult = $GLOBALS['oDb']->query('SELECT * FROM `'.$this::TABLE.'` WHERE nIdCreator='.$nIdCreator.' AND nTreeLeft=1 AND NOT bDeleted LIMIT 1');
-		    	$bNeedCreation = true;
 		    	
 		    	if ($GLOBALS['oDb']->count($oResult) > 0) {
 		    		$aRow = $GLOBALS['oDb']->get($oResult);
@@ -41,6 +40,8 @@ class File extends \Iiigel\Model\GenericModel {
 		    			parent::__construct($aRow);
 		    			return;
 		    		}
+		    	} else {
+		    		$bNeedCreation = true;
 		    	}
 		    }
         }
@@ -171,7 +172,7 @@ class File extends \Iiigel\Model\GenericModel {
      * @return boolean true if allowed, false otherwise
      */
     protected function changesAllowed() {
-    	if ((isset($GLOBALS['oUserLogin'])) && ((!isset($this->nIdCreator)) || ($this->nIdCreator === $GLOBALS['oUserLogin']->nId))) {
+    	if ((isset($GLOBALS['oUserLogin'])) && ((!isset($this->nIdCreator)) || ($this->nIdCreator == $GLOBALS['oUserLogin']->nId))) {
     		return true;
     	} else {
     		return parent::changesAllowed();

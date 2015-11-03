@@ -27,15 +27,23 @@ class Module extends \Iiigel\Model\GenericModel {
     public function __get($_sName) {
         switch($_sName) {
             case 'nProgress':
-            	if (!isset($GLOBALS['oUserLogin'])) {
-            		return 0;
+            	$nIdChapter = $this->nCurrentChapter;
+            	
+            	if ($nIdChapter != 0) {
+	            	$oChapter = new \Iiigel\Model\Chapter($nIdChapter);
+	            	$nCurrent = intval($oChapter->nOrder);
+	            	
+	            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT MAX(nOrder) AS nMax, MIN(nOrder) AS nMin FROM chapter WHERE nIdModule = '.$nIdChapter);
+	            	
+	            	if ($aRow) {
+	            		$nMax = intval($aRow['nMax']);
+	            		$nMin = intval($aRow['nMin']);
+	            		
+	            		return 100 * ($nCurrent - $nMin) / ($nMax + 1);
+	            	}
             	}
             	
-            	$oUser = $GLOBALS['oUserLogin'];
-            	
-            	// CALCULATE PROGRESS OF USER
-            	
-            	return 25;
+            	return 0;
             case 'aChapter':
                 $oChapter = new \Iiigel\Model\Chapter();
                 $oChapter = $oChapter->getList($this->nId);
@@ -51,9 +59,16 @@ class Module extends \Iiigel\Model\GenericModel {
             	
             	$oUser = $GLOBALS['oUserLogin'];
             	
-            	// GET ACTIVE CHAPTER OF USER
+            	$nIdUser = $GLOBALS['oDb']->escape($oUser->nId);
+            	$nId = $GLOBALS['oDb']->escape($this->nId);
             	
-            	return 1;
+            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT nIdChapter FROM user2group WHERE NOT bDeleted AND nIdUser = '.$nIdUser.' AND nIdModule = '.$nId.' LIMIT 1;');
+            	
+            	if ($aRow) {
+            		return intval($aRow['nIdChapter']);
+            	} else {
+            		return 0;
+            	}
             default:
                 return parent::__get($_sName);
         }

@@ -41,8 +41,11 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
         if($this->oModule->nId > 0 && $this->oChapter !== NULL) {
             if($this->oChapter->sInterpreter !== NULL) {
                 $sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$this->oChapter->sInterpreter;
+                
                 if(class_exists($sInterpreter)) {
                     $this->oInterpreter = new $sInterpreter($this->oCloud);
+                } else {
+                	$this->oInterpreter = new \Iiigel\View\Interpreter\File($this->oCloud);
                 }
             }
             return TRUE;
