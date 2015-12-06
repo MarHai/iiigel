@@ -1,0 +1,62 @@
+{% macro userEntry(sUrl, oUser, bAdmin, bGroupEdit) %}
+  <li><a href="{{ sUrl }}Profile/{{ oUser.sHashId }}">
+   <img src="http://www.gravatar.com/avatar/{{ oUser.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px;" />
+   {% if bAdmin %}
+    <b>{{ oUser.sName }}</b>
+   {% else %}
+    {{ oUser.sName }}
+   {% endif %}
+  </a></li>
+{% endmacro %}
+
+{% macro mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, bGroupEdit) %}
+  <div>
+   <h3>{{ aGroup.sName }} <small> - {{ aGroup.nIdInstitution }}</small></h3>
+   <ul>
+    {% import _self as get %}
+    <li><h5>Leaders:</h5><ul>
+		{% for oRow in aGroupLeaders %}
+		 {{ get.userEntry(sUrl, oRow, true, bGroupEdit) }}
+		{% endfor %}
+	</ul></li>
+	<li><h5>Members:</h5><ul>
+		{% for oRow in aGroupMembers %}
+		  {{ get.userEntry(sUrl, oRow, false, bGroupEdit) }}
+		{% endfor %}
+	</ul></li>
+   </ul>
+  </div>
+{% endmacro %}
+
+{% macro modules(aGroupModules, bGroupEdit) %}
+ <div>
+  <h3><i class="fa fa-angle-right"></i>
+   {% if aGroupModules|length > 1 %}
+   		{% trans %}module{% plural 2 %}module.plural{% endtrans %}
+   {% else %}
+   		{% trans 'module' %}
+   {% endif %}
+  </h3>
+  <table class="table table-striped table-condensed table-hover">
+   {% for oRow in aGroupModules %}
+    <tr><td><a href="{{ sUrl }}learn/{{ oRow.sHashId }}">
+	 <img width="48" src="{{ sUrl }}{{ oRow.sImage }}" alt="Image" style="float: left; margin-left: 16px; margin-right: 8px;">
+     <div>
+      <h4><b>{{ oRow.sName }}</b></h4>
+     </div>
+    </a></td></tr>
+   {% endfor %}
+  </table>
+ </div>
+{% endmacro %}
+
+{% import _self as get %}
+{% extends "page.html" %}
+
+{% set nRows = 1 %}
+{% set nColumns = [ 2 ] %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, (bGroupAdmin) or (bAdmin)), '1' : get.modules(aGroupModules, (bGroupAdmin) or (bAdmin)) } } %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}

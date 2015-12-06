@@ -10,8 +10,8 @@ $GLOBALS['aConfig'] = array(
     
     //database settings
     'aDb' => array(
-        'sHost' => 'localhost',
-        'sUsername' => 'root',
+        'sHost' => '127.0.0.1',
+        'sUsername' => 'iiigel',
         'sPassword' => '',
         'sDatabase' => 'iiigel',
         'sCharset' => 'utf8',

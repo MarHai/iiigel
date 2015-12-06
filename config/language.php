@@ -2,7 +2,7 @@
 
 $GLOBALS['aConfig']['aLanguage'] = array(
     'aCountry' => array(
-        'de_DE'
+        'de_DE.UTF8'
     ),
     'aDomain' => array(
         'school'

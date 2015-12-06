@@ -30,11 +30,11 @@
      <td align="right">{% trans 'password' %}:</td>
      <td>
       <div>
-       <input type="password" id="sPassword" value="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
+       <input type="password" id="sPassword" placeholder="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
        <i id="sPassword-correct" class="glyphicon glyphicon-ok hide"></i>
       </div>
       <div>
-       <input type="password" id="sPassword-repeat" value="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
+       <input type="password" id="sPassword-repeat" placeholder="{{ aProfileUser.sPassword }}" class="hide" oninput="return Profile.changePassword();" />
        <i id="sPassword-repeat-correct" class="glyphicon glyphicon-ok hide"></i>
       </div>
       <div id="sPassword-label" style="margin: 3px;">{{ aProfileUser.sPassword }}</div>
@@ -72,7 +72,7 @@
    </tr>
    {% for oRow in aProfileGroup %}
     <tr>
-     <td><b>{{ oRow.sName }}</b></td>
+     <td><a href="{{ sUrl }}Group/{{ oRow.sHashId }}"><b>{{ oRow.sName }}</b></a></td>
      <td>{{ oRow.nIdInstitution }}</td>
     </tr>
    {% endfor %}
@@ -91,7 +91,8 @@
   </h3>
   <table class="table table-striped table-condensed table-hover">
    {% for oRow in aProfileModule %}
-    <tr><td>
+    <tr><td><a href="{{ sUrl }}learn/{{ oRow.sHashId }}">
+	 <img width="48" src="{{ sUrl }}{{ oRow.sImage }}" alt="Image" style="float: left; margin-right: 8px;">
      <div>
       <h4><b>{{ oRow.sName }}</b></h4>
       <h5 style="margin: 0px 12px; float: left;" >{{ 'percent'|trans|format(oRow.nProgress)|raw }}</h6>
@@ -100,7 +101,7 @@
       <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nProgress }}%">
       </div>
      </div>
-    </td></tr>
+    </a></td></tr>
    {% endfor %}
   </table>
  </div>

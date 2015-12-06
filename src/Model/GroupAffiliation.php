@@ -2,6 +2,10 @@
 
 class GroupAffiliation extends \Iiigel\Model\Affiliation {
     const TABLE = 'user2group';
+
+	const MODE_MEMBER = 0;
+	const MODE_LEADER = 1;
+	const MODE_MODULE = 2;
     
     /**
      * Load list of all entries, no matter of the current one.
@@ -9,17 +13,46 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
      * @param  string _sHashId hashed ID of group (!)
      * @return object oDb result object
      */
-    public function getList($_sHashId = NULL) {
-        return $GLOBALS['oDb']->query('SELECT a.*, b.sName AS sUser, c.sName AS sModule, d.sName AS sChapter
-FROM user2group a, `user` b, module c, chapter d
-WHERE 
-	NOT a.bDeleted 
-	AND a.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).') 
-	AND (a.nStart IS NULL OR a.nStart = 0 OR a.nStart < UNIX_TIMESTAMP()) AND (a.nEnd IS NULL OR a.nEnd = 0 OR a.nEnd > UNIX_TIMESTAMP())
-	AND b.nId = a.nIdUser
-	AND c.nId = a.nIdModule
-	AND d.nId = a.nIdChapter
-ORDER BY sUser ASC');
+    public function getList($_sHashId = NULL, $_nMode = NULL) {
+        switch ($_nMode) {
+			case $this::MODE_MEMBER:
+				return $GLOBALS['oDb']->query('SELECT a.* FROM `user` a, `user2group` b 
+					WHERE
+						NOT b.bDeleted
+						AND NOT a.bDeleted
+						AND a.nId = b.nIdUser
+						AND b.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).')
+						AND NOT b.bAdmin
+					ORDER BY a.sName ASC');
+			case $this::MODE_LEADER:
+				return $GLOBALS['oDb']->query('SELECT a.* FROM `user` a, `user2group` b 
+					WHERE
+						NOT b.bDeleted
+						AND NOT a.bDeleted
+						AND a.nId = b.nIdUser
+						AND b.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).')
+						AND b.bAdmin
+					ORDER BY a.sName ASC');
+			case $this::MODE_MODULE:
+				return $GLOBALS['oDb']->query('SELECT a.* FROM `module` a, `module2group` b 
+					WHERE
+						NOT b.bDeleted
+						AND NOT a.bDeleted
+						AND b.nIdModule = a.nId
+						AND b.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).')
+					ORDER BY a.sName ASC');
+			default:
+				return $GLOBALS['oDb']->query('SELECT a.*, b.sName AS sUser, c.sName AS sModule, d.sName AS sChapter
+					FROM user2group a, `user` b, module c, chapter d
+					WHERE 
+						NOT a.bDeleted 
+						AND a.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).') 
+						AND (a.nStart IS NULL OR a.nStart = 0 OR a.nStart < UNIX_TIMESTAMP()) AND (a.nEnd IS NULL OR a.nEnd = 0 OR a.nEnd > UNIX_TIMESTAMP())
+						AND b.nId = a.nIdUser
+						AND c.nId = a.nIdModule
+						AND d.nId = a.nIdChapter
+					ORDER BY sUser ASC');
+		}
     }
     
     /**

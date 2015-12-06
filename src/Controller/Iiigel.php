@@ -27,13 +27,20 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
         $this->oChapter = $this->oModule = NULL;
         if($_sHashId{0} == 'm') {
             $this->oModule = new \Iiigel\Model\Module($_sHashId);
-            $this->oChapter = new \Iiigel\Model\Chapter();
-            $oResult = $this->oChapter->getList($this->oModule->nId);
-            if(($aRow = $GLOBALS['oDb']->get($oResult))) {
-                $this->oChapter = new \Iiigel\Model\Chapter($aRow);
-            } else {
-                $this->oChapter = NULL;
-            }
+			$nCurrentChapter = $this->oModule->nCurrentChapter;
+			
+			if ($nCurrentChapter == 0) {
+		        $this->oChapter = new \Iiigel\Model\Chapter();
+			
+		        $oResult = $this->oChapter->getList($this->oModule->nId);
+		        if(($aRow = $GLOBALS['oDb']->get($oResult))) {
+		            $this->oChapter = new \Iiigel\Model\Chapter($aRow['sHashId']);
+		        } else {
+		            $this->oChapter = NULL;
+		        }
+			} else {
+				$this->oChapter = new \Iiigel\Model\Chapter($nCurrentChapter);
+			}
         } else {
             $this->oChapter = new \Iiigel\Model\Chapter($_sHashId);
             $this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));

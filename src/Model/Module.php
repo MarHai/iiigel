@@ -33,13 +33,13 @@ class Module extends \Iiigel\Model\GenericModel {
 	            	$oChapter = new \Iiigel\Model\Chapter($nIdChapter);
 	            	$nCurrent = intval($oChapter->nOrder);
 	            	
-	            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT MAX(nOrder) AS nMax, MIN(nOrder) AS nMin FROM chapter WHERE nIdModule = '.$nIdChapter);
+	            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT MAX(nOrder) AS nMax, MIN(nOrder) AS nMin FROM chapter WHERE nIdModule = '.$oChapter->nIdModule);
 	            	
 	            	if ($aRow) {
 	            		$nMax = intval($aRow['nMax']);
 	            		$nMin = intval($aRow['nMin']);
 	            		
-	            		return 100 * ($nCurrent - $nMin) / ($nMax + 1);
+	            		return round(100 * ($nCurrent - $nMin) / $nMax);
 	            	}
             	}
             	
@@ -62,10 +62,10 @@ class Module extends \Iiigel\Model\GenericModel {
             	$nIdUser = $GLOBALS['oDb']->escape($oUser->nId);
             	$nId = $GLOBALS['oDb']->escape($this->nId);
             	
-            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT nIdChapter FROM user2group WHERE NOT bDeleted AND nIdUser = '.$nIdUser.' AND nIdModule = '.$nId.' LIMIT 1;');
+            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$nIdUser.' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
             	
             	if ($aRow) {
-            		return intval($aRow['nIdChapter']);
+            		return intval($aRow['nCurrentChapter']);
             	} else {
             		return 0;
             	}

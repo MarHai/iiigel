@@ -18,7 +18,7 @@ class Profile extends \Iiigel\Controller\StaticPage {
 	        }
     	} else {
     		$oUser = new \Iiigel\Model\User($_sHashId);
-    		$this->oView->bProfileEdit = FALSE;
+    		$this->oView->bProfileEdit = isset($GLOBALS['oUserLogin'])? ($GLOBALS['oUserLogin']->nId == $oUser->nId) : FALSE;
     	}
     	
     	$this->oView->sProfileHash = md5(strtolower(trim($oUser->sMail)));

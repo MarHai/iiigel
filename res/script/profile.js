@@ -66,13 +66,16 @@ var Profile = {
 			
 			this.valueFrom('sName', 'sName-label');
 			this.valueFrom('sMail', 'sMail-label');
-			this.valueFrom('sPassword', 'sPassword-label');
-			this.valueFrom('sPassword-repeat', 'sPassword-label');
+			
+			this.get('sPassword').value = "";
+			this.get('sPassword-repeat').value = "";
 			
 			this.hidden('sName-label', !this.hidden('sName', true));
 			this.hidden('sMail-label', !this.hidden('sMail', true));
 			this.hidden('sPassword-label', !(this.hidden('sPassword', true) & this.hidden('sPassword-repeat', true)));
 			this.hidden('sPassword-repeat-correct', this.hidden('sPassword-correct', true));
+			
+			this.changePassword(true);
 		} else
 		if ((sButton == 'save') && (this.get('sPassword').value === this.get('sPassword-repeat').value)) {
 			if (this.bChangedPassword) {
@@ -85,15 +88,23 @@ var Profile = {
 		return false;
 	},
 
-	changePassword: function() {
+	changePassword: function(bReset) {
 		var sPassword = this.get('sPassword').value;
 		var sPasswordRepeat = this.get('sPassword-repeat').value;
 		
-		this.bChangedPassword |= true;
-		
-		this.disabled('btn-profile-save', !this.correct('sPassword-repeat-correct', this.correct('sPassword-correct', sPassword.length > 0) && (sPasswordRepeat === sPassword)));
-		
-		return true;
+		if ((typeof bReset !== 'undefined') && (bReset)) {
+			this.bChangedPassword = false;
+			
+			this.disabled('btn-profile-save', !this.correct('sPassword-repeat-correct', this.correct('sPassword-correct', true) && (sPasswordRepeat === sPassword)));
+			
+			return true;
+		} else {
+			this.bChangedPassword |= true;
+			
+			this.disabled('btn-profile-save', !this.correct('sPassword-repeat-correct', this.correct('sPassword-correct', sPassword.length > 0) && (sPasswordRepeat === sPassword)));
+			
+			return true;
+		}
 	}
 
 };

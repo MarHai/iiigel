@@ -30,6 +30,7 @@ require_once(PATH_DIR.'config/language.php');
 $GLOBALS['sLanguage'] = $GLOBALS['aConfig']['aLanguage']['sDefaultCountry'];
 $GLOBALS['sDomain'] = $GLOBALS['aConfig']['aLanguage']['sDefaultDomain'];
 $GLOBALS['oDb'] = new \Iiigel\Generic\Database();
+
 \Iiigel\Model\User::checkLogin();
 
 //find controller, action, and action params
@@ -89,8 +90,9 @@ if(class_exists($GLOBALS['aRequest']['c'])) {
     if(isset($GLOBALS['oUserLogin'])) {
         $GLOBALS['oUserLogin']->action();
     }
-
+	
     call_user_func_array(array($oApp, $GLOBALS['aRequest']['a']), $aParam);
+	
     echo $oApp->output();
 }
 

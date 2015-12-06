@@ -1,6 +1,6 @@
 {% macro moduleItem(oModule, nOffset) %}
-	<a href="{{ sUrl }}learn/{{ oModule.sHashId }}" class="col-sm-2 col-md-2{{ nOffset == 0 ? '' : ' col-md-offset-' ~ nOffset }} showback box0">
-     <div class="thumbnail">
+	<a href="{{ sUrl }}learn/{{ oModule.sHashId }}" class="col-sm-2 col-md-2{{ nOffset == 0 ? '' : ' col-md-offset-' ~ nOffset }}">
+     <div class="thumbnail" onmouseenter="this.style.boxShadow = '2px 2px 16px grey';" onmouseleave="this.style.boxShadow = '';" >
       <img src="{{ sUrl }}{{ oModule.sImage }}" alt="Image">
       <div class="caption">
        <div class="progress">
