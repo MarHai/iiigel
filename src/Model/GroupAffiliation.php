@@ -16,7 +16,8 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
     public function getList($_sHashId = NULL, $_nMode = NULL) {
         switch ($_nMode) {
 			case $this::MODE_MEMBER:
-				return $GLOBALS['oDb']->query('SELECT a.* FROM `user` a, `user2group` b 
+				return $GLOBALS['oDb']->query('SELECT a.*, b.nIdModule AS nIdModule
+					FROM `user` a, `user2group` b
 					WHERE
 						NOT b.bDeleted
 						AND NOT a.bDeleted

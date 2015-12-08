@@ -27,9 +27,16 @@ class Group extends \Iiigel\Controller\StaticPage {
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MEMBER);
 		
 		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+			$oTempModule = new \Iiigel\Model\Module(intval($aRow['nIdModule']));
+			
+			unset($aRow['nIdModule']);
+			
             $oTemp = new \Iiigel\Model\User($aRow);
-			$aEntry = $oTemp->getCompleteEntry();
-			$aEntry["sHash"] = md5(strtolower(trim($oTemp->sMail)));
+            $aEntry = $oTemp->getCompleteEntry();
+            
+            $aEntry['sModuleImage'] = $oTempModule->sImage;
+            $aEntry['nModuleProgress'] = $oTempModule->nProgress;
+            
            	$aMembers[] = $aEntry;
         }
 		
@@ -37,9 +44,7 @@ class Group extends \Iiigel\Controller\StaticPage {
 		
 		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
             $oTemp = new \Iiigel\Model\User($aRow);
-           	$aEntry = $oTemp->getCompleteEntry();
-			$aEntry["sHash"] = md5(strtolower(trim($oTemp->sMail)));
-           	$aLeaders[] = $aEntry;
+           	$aLeaders[] = $oTemp->getCompleteEntry();
         }
 		
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MODULE);
@@ -50,7 +55,9 @@ class Group extends \Iiigel\Controller\StaticPage {
         }
 		
 		$this->oView->aGroupLeaders = $aLeaders;
+		$this->oView->aNotGroupLeaders = $aMembers;
     	$this->oView->aGroupMembers = $aMembers;
+    	$this->oView->aNotGroupMembers = $aLeaders;
 		$this->oView->aGroupModules = $aModules;
 		
 		$this->oView->bGroupEdit = false;

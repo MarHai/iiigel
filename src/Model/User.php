@@ -137,6 +137,25 @@ class User extends \Iiigel\Model\GenericModel {
         }
         return FALSE;
     }
+
+    /**
+     * Statuc check wether a user is logged in currently.
+     * 
+     * @return boolean TRUE if a user should be logged in, FALSE otherwise
+     */
+    public function isOnline() {
+    	$nId = $this->nId;
+    	$nLimitCreate = (time() - $GLOBALS['aConfig']['nMaxSessionLifetime']);
+    	$nLimitLastAction = (time() - $GLOBALS['aConfig']['nMaxActionDelay']);
+    	
+    	$oResult = $GLOBALS['oDb']->query('SELECT nLastAction FROM `session` WHERE sSession <> \'\' AND nIdCreator = '.$nId.' AND nCreate >= '.$nLimitCreate.' AND nLastAction >= '.$nLimitLastAction.' LIMIT 1');
+    	
+    	if ($GLOBALS['oDb']->count($oResult) > 0) {
+    		return is_array($GLOBALS['oDb']->get($oResult));
+    	} else {
+    		return FALSE;
+    	}
+    }
     
     /**
      * Statuc check wether a user is logged in currently. This is based on the current session, the session table, and the lifetime setting.
@@ -254,7 +273,12 @@ class User extends \Iiigel\Model\GenericModel {
      */
     public function getCompleteEntry($_bIncludeConfigColumns = FALSE) {
         $aData = parent::getCompleteEntry($_bIncludeConfigColumns);
+        
         unset($aData['sPassword']);
+        
+        $aData["sHash"] = md5(strtolower(trim($this->sMail)));
+        $aData["bOnline"] = $this->isOnline();
+        
         return $aData;
     }
     

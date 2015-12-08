@@ -113,6 +113,9 @@ msgstr "Ja"
 msgid "no"
 msgstr "Nein"
 
+msgid "online"
+msgstr "Aktiv"
+
 msgid "email"
 msgstr "E-Mail"
 
@@ -160,6 +163,9 @@ msgstr "Bearbeiten"
 
 msgid "savechanges"
 msgstr "Änderungen speichern"
+
+msgid "add"
+msgstr "Hinzufügen"
 
 msgid "doyoureallywanttodelete"
 msgstr "Soll %s wirklich gelöscht werden?"
@@ -266,6 +272,11 @@ msgid "user2group.member"
 msgid_plural "user2group.member.plural"
 msgstr[0] "Gruppenmitglied"
 msgstr[1] "Gruppenmitglieder"
+
+msgid "user2group.leader"
+msgid_plural "user2group.leader.plural"
+msgstr[0] "Gruppenleiter"
+msgstr[1] "Gruppenleiter"
 
 # #####################
 # MODULE

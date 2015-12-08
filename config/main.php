@@ -23,6 +23,9 @@ $GLOBALS['aConfig'] = array(
     
     //maximum lifetime of a session to stay logged in at one and the same computer
     'nMaxSessionLifetime' => (60*60*24*7),
+	
+	//maximum delay between actions to stay shown as online
+	'nMaxActionDelay' => (60*60),
     
 	//mail settings, used for IMAP connection, sending/receiving mails
 	'aMail' => array(

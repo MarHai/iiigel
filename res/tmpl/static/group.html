@@ -1,30 +1,124 @@
-{% macro userEntry(sUrl, oUser, bAdmin, bGroupEdit) %}
-  <li><a href="{{ sUrl }}Profile/{{ oUser.sHashId }}">
-   <img src="http://www.gravatar.com/avatar/{{ oUser.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px;" />
-   {% if bAdmin %}
-    <b>{{ oUser.sName }}</b>
-   {% else %}
-    {{ oUser.sName }}
-   {% endif %}
-  </a></li>
-{% endmacro %}
 
-{% macro mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, bGroupEdit) %}
+{% macro mainContent(sUrl, aGroup, aGroupLeaders, aNotGroupLeaders, aGroupMembers, aNotGroupMembers, aGroupModules, bGroupEdit) %}
   <div>
    <h3>{{ aGroup.sName }} <small> - {{ aGroup.nIdInstitution }}</small></h3>
-   <ul>
-    {% import _self as get %}
-    <li><h5>Leaders:</h5><ul>
+   <div>
+    <h5>
+     {% if aGroupLeaders|length > 1 %}{% trans %}user2group.leader{% plural 2 %}user2group.leader.plural{% endtrans %}{% else %}{% trans 'user2group.leader' %}{% endif %}:
+    </h5>
+    <table class="table table-striped table-condensed table-hover">
+     <thead>
+	  <tr>
+	   <th width="10%">{% trans 'online' %}</th>
+	   <th width="40%">{% trans 'name' %}</th>
+	   <th></th><th></th>
+	  </tr>
+	 </thead>
 		{% for oRow in aGroupLeaders %}
-		 {{ get.userEntry(sUrl, oRow, true, bGroupEdit) }}
+		 <tr>
+		  <td align = 'center'>
+		   {% if oRow.bOnline %}
+            <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
+           {% else %}
+            <i class="fa fa-globe" style="color: #880000; margin-top: 8px;" ></i>
+           {% endif %}
+		  </td>
+		  <td><a href="{{ sUrl }}Profile/{{ oRow.sHashId }}">
+		   <img src="http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px; margin-right: 8px;" />
+		   <b>{{ oRow.sName }}</b>
+		  </a></td>
+		  <td></td>
+		  <td></td>
+		 </tr>
 		{% endfor %}
-	</ul></li>
-	<li><h5>Members:</h5><ul>
+	 {% if bGroupEdit %}
+	  <tr><form action="{{ sUrl }}Group/add/{{ oRow.sHashId }}" method="GET">
+	   <td></td>
+	   <td>
+	    <div style="margin-top: 8px;">
+	     <select style="width: 100%">
+	      {% for oRow in aNotGroupLeaders %}
+	       <option>
+	        {{ oRow.sName }}
+	       </option>
+	      {% endfor %}
+	     </select>
+	    </div>
+	   </td>
+	   <td></td>
+	   <td>
+	    <a class="btn btn-primary" style="float: right; margin-top: 4px; margin-bottom: 4px; margin-right: 8px;">{% trans 'add' %}</a>
+	   </td>
+	  </form></tr>
+	 {% endif %}
+	</table>
+	<h5>
+	 {% if aGroupMembers|length > 1 %}{% trans %}user2group.member{% plural 2 %}user2group.member.plural{% endtrans %}{% else %}{% trans 'user2group.member' %}{% endif %}:
+   	</h5>
+	<table class="table table-striped table-condensed table-hover">
+	 <thead>
+	  <tr>
+	   <th width="10%">{% trans 'online' %}</th>
+	   <th width="40%">{% trans 'name' %}</th>
+	   <th width="10%">{% trans 'module' %}</th>
+	   <th></th>
+	  </tr>
+	 </thead>
 		{% for oRow in aGroupMembers %}
-		  {{ get.userEntry(sUrl, oRow, false, bGroupEdit) }}
+		 <tr>
+		  <td align = 'center'>
+		   {% if oRow.bOnline %}
+            <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
+           {% else %}
+            <i class="fa fa-globe" style="color: #880000; margin-top: 8px;" ></i>
+           {% endif %}
+		  </td>
+		  <td><a href="{{ sUrl }}Profile/{{ oRow.sHashId }}">
+		   <img src="http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px; margin-right: 8px;" />
+		   {{ oRow.sName }}
+		  </a></td>
+		  <td>
+		   <img width="32" src="{{ sUrl }}{{ oRow.sModuleImage }}" alt="Image" style="float: left; margin-left: 8px; margin-right: 8px;">
+		  </td>
+		  <td>
+		   <div class="progress" style="margin-top: 8px;">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nModuleProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nModuleProgress }}%">
+            </div>
+           </div>
+		  </td>
+		 </tr>
 		{% endfor %}
-	</ul></li>
-   </ul>
+	 {% if bGroupEdit %}
+	  <tr><form action="{{ sUrl }}Group/add/{{ oRow.sHashId }}" method="GET">
+	   <td></td>
+	   <td>
+	    <div style="margin-top: 8px;">
+	     <select style="width: 100%">
+	      {% for oRow in aNotGroupMembers %}
+	       <option>
+	        {{ oRow.sName }}
+	       </option>
+	      {% endfor %}
+	     </select>
+	    </div>
+	   </td>
+	   <td></td>
+	   <td>
+	    <div style="margin-top: 8px;">
+	     <select style="min-width: 50%">
+	      {% for oRow in aGroupModules %}
+	       <option>
+	        {{ oRow.sName }}
+	       </option>
+	      {% endfor %}
+	     </select>
+	     <a class="btn btn-primary" style="float: right; margin-top: -4px; margin-right: 8px;">{% trans 'add' %}</a>
+	    </div>
+	   </td>
+	  </form></tr>
+	 {% endif %}
+	</table>
+   </div>
   </div>
 {% endmacro %}
 
@@ -55,7 +149,7 @@
 
 {% set nRows = 1 %}
 {% set nColumns = [ 2 ] %}
-{% set aContent = { '0': { '0': get.mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, (bGroupAdmin) or (bAdmin)), '1' : get.modules(aGroupModules, (bGroupAdmin) or (bAdmin)) } } %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, aGroup, aGroupLeaders, aNotGroupLeaders, aGroupMembers, aNotGroupMembers, aGroupModules, (bGroupAdmin) or (bAdmin)), '1' : get.modules(aGroupModules, (bGroupAdmin) or (bAdmin)) } } %}
 
 {% block content %}
     {{ parent() }}
