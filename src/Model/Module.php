@@ -17,6 +17,52 @@ class Module extends \Iiigel\Model\GenericModel {
             )
         );
     }
+
+	/**
+	 * Return the user's progress as integer in range of 0 to 100.
+	 *
+	 * @param integer $_nIdUser user ID
+	 * @return integer the progress of a user by id in this module
+	 */
+	public function getProgress($_nIdUser) {
+		$nIdChapter = $this->getCurrentChapter($_nIdUser);
+            	
+        if ($nIdChapter != 0) {
+	    	$oChapter = new \Iiigel\Model\Chapter($nIdChapter);
+	        $nCurrent = intval($oChapter->nOrder);
+	        
+	        $aRow = $GLOBALS['oDb']->getOneRow('SELECT MAX(nOrder) AS nMax, MIN(nOrder) AS nMin FROM chapter WHERE nIdModule = '.$oChapter->nIdModule);
+	        
+	        if ($aRow) {
+	        	$nMax = intval($aRow['nMax']);
+	         	$nMin = intval($aRow['nMin']);
+	            
+	         	return round(100 * ($nCurrent - $nMin) / $nMax);
+	     	}
+     	}
+        
+     	return 0;
+	}
+
+	/**
+	 * Return the user's progress as id of the current chapter in this module.
+	 *
+	 * @param integer $_nIdUser user ID
+	 * @return integer the id of the current chapter or 0 if there is not any sort of progress
+	 */
+	public function getCurrentChapter($_nIdUser) {
+        $nId = $GLOBALS['oDb']->escape($this->nId);
+        
+        $oResult = $GLOBALS['oDb']->query('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$_nIdUser.' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
+        
+        if ($GLOBALS['oDb']->count($oResult) > 0) {
+        	if ($aRow = $GLOBALS['oDb']->get($oResult)) {
+            	return intval($aRow['nCurrentChapter']);
+        	}
+        }
+        
+       	return 0;
+	}
     
     /**
      * Access id (->nId), nProgress (->nProgress), or any other data (->NAME).
@@ -27,23 +73,7 @@ class Module extends \Iiigel\Model\GenericModel {
     public function __get($_sName) {
         switch($_sName) {
             case 'nProgress':
-            	$nIdChapter = $this->nCurrentChapter;
-            	
-            	if ($nIdChapter != 0) {
-	            	$oChapter = new \Iiigel\Model\Chapter($nIdChapter);
-	            	$nCurrent = intval($oChapter->nOrder);
-	            	
-	            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT MAX(nOrder) AS nMax, MIN(nOrder) AS nMin FROM chapter WHERE nIdModule = '.$oChapter->nIdModule);
-	            	
-	            	if ($aRow) {
-	            		$nMax = intval($aRow['nMax']);
-	            		$nMin = intval($aRow['nMin']);
-	            		
-	            		return round(100 * ($nCurrent - $nMin) / $nMax);
-	            	}
-            	}
-            	
-            	return 0;
+            	return isset($GLOBALS['oUserLogin'])? $this->getProgress($GLOBALS['oUserLogin']->nId) : 0;
             case 'aChapter':
                 $oChapter = new \Iiigel\Model\Chapter();
                 $oChapter = $oChapter->getList($this->nId);
@@ -53,22 +83,7 @@ class Module extends \Iiigel\Model\GenericModel {
                 }
                 return $aReturn;
             case 'nCurrentChapter':
-            	if (!isset($GLOBALS['oUserLogin'])) {
-            		return 0;
-            	}
-            	
-            	$oUser = $GLOBALS['oUserLogin'];
-            	
-            	$nIdUser = $GLOBALS['oDb']->escape($oUser->nId);
-            	$nId = $GLOBALS['oDb']->escape($this->nId);
-            	
-            	$aRow = $GLOBALS['oDb']->getOneRow('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$nIdUser.' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
-            	
-            	if ($aRow) {
-            		return intval($aRow['nCurrentChapter']);
-            	} else {
-            		return 0;
-            	}
+            	return isset($GLOBALS['oUserLogin'])? $this->getCurrentChapter($GLOBALS['oUserLogin']->nId) : 0;
             default:
                 return parent::__get($_sName);
         }

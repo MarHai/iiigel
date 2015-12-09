@@ -6,6 +6,7 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
 	const MODE_MEMBER = 0;
 	const MODE_LEADER = 1;
 	const MODE_MODULE = 2;
+	const MODE_POSSIBLE = 3;
     
     /**
      * Load list of all entries, no matter of the current one.
@@ -41,6 +42,16 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
 						AND NOT a.bDeleted
 						AND b.nIdModule = a.nId
 						AND b.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).')
+					ORDER BY a.sName ASC');
+			case $this::MODE_POSSIBLE:
+				return $GLOBALS['oDb']->query('SELECT a.*
+					FROM `user` a, `user2institution` b
+					WHERE
+						NOT a.bDeleted
+						AND NOT b.bDeleted
+						AND b.nIdInstitution = (SELECT nIdInstitution FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).')
+						AND (b.nStart IS NULL OR b.nStart = 0 OR b.nStart < UNIX_TIMESTAMP()) AND (b.nEnd IS NULL OR b.nEnd = 0 OR b.nEnd > UNIX_TIMESTAMP())
+						AND a.nId = b.nIdUser
 					ORDER BY a.sName ASC');
 			default:
 				return $GLOBALS['oDb']->query('SELECT a.*, b.sName AS sUser, c.sName AS sModule, d.sName AS sChapter

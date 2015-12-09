@@ -20,9 +20,26 @@ class Group extends \Iiigel\Controller\StaticPage {
     	
 		$oSingle = new \Iiigel\Model\GroupAffiliation();
 		
+		$aNotLeaders = array();
+		$aNotMembers = array();
+		
 		$aLeaders = array();
 		$aMembers = array();
 		$aModules = array();
+		
+		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_POSSIBLE);
+		
+		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+            $oTemp = new \Iiigel\Model\User($aRow);
+           	$aNotMembers[] = $oTemp->getCompleteEntry();
+        }
+        
+        $oResult = $oSingle->getList($_sHashId, $oSingle::MODE_POSSIBLE);
+		
+		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+            $oTemp = new \Iiigel\Model\User($aRow);
+           	$aNotLeaders[] = $oTemp->getCompleteEntry();
+        }
 		
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MEMBER);
 		
@@ -32,10 +49,17 @@ class Group extends \Iiigel\Controller\StaticPage {
 			unset($aRow['nIdModule']);
 			
             $oTemp = new \Iiigel\Model\User($aRow);
+            
+            for ($i = count($aNotMembers) - 1; $i >= 0; $i--) {
+            	if ($aNotMembers[$i]['sHashId'] === $oTemp->sHashId) {
+            		unset($aNotMembers[$i]);
+            	}
+            }
+            
             $aEntry = $oTemp->getCompleteEntry();
             
             $aEntry['sModuleImage'] = $oTempModule->sImage;
-            $aEntry['nModuleProgress'] = $oTempModule->nProgress;
+            $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
             
            	$aMembers[] = $aEntry;
         }
@@ -44,6 +68,13 @@ class Group extends \Iiigel\Controller\StaticPage {
 		
 		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
             $oTemp = new \Iiigel\Model\User($aRow);
+            
+            for ($i = count($aNotLeaders) - 1; $i >= 0; $i--) {
+            	if ($aNotLeaders[$i]['sHashId'] === $oTemp->sHashId) {
+            		unset($aNotLeaders[$i]);
+            	}
+            }
+            
            	$aLeaders[] = $oTemp->getCompleteEntry();
         }
 		
@@ -55,10 +86,11 @@ class Group extends \Iiigel\Controller\StaticPage {
         }
 		
 		$this->oView->aGroupLeaders = $aLeaders;
-		$this->oView->aNotGroupLeaders = $aMembers;
     	$this->oView->aGroupMembers = $aMembers;
-    	$this->oView->aNotGroupMembers = $aLeaders;
 		$this->oView->aGroupModules = $aModules;
+		
+		$this->oView->aNotGroupLeaders = $aNotLeaders;
+    	$this->oView->aNotGroupMembers = $aNotMembers;
 		
 		$this->oView->bGroupEdit = false;
     	
