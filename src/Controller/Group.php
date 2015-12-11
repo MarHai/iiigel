@@ -58,6 +58,7 @@ class Group extends \Iiigel\Controller\StaticPage {
             
             $aEntry = $oTemp->getCompleteEntry();
             
+            $aEntry['sModuleHashId'] = $oTempModule->sHashId;
             $aEntry['sModuleImage'] = $oTempModule->sImage;
             $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
             
@@ -95,6 +96,34 @@ class Group extends \Iiigel\Controller\StaticPage {
 		$this->oView->bGroupEdit = false;
     	
     	$this->loadFile('group');
+    }
+    
+    private function add($_oGroup, $_oUser, $_bAdmin, $_oModule = NULL) {
+    	$oSingle = new \Iiigel\Model\GroupAffiliation();
+    	
+    	if ($_bAdmin) {
+    		//
+    	} else {
+    		//
+    	}
+    	
+    	$this->redirect(URL.'Group/'.$_oGroup->sHashId);
+    }
+    
+    public function addAdmin($_sHashId = NULL) {
+    	if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser']))) {
+    		return $this->add(new \Iiigel\Model\Group($_sHashId), new \Iiigel\Model\User($GLOBALS['aRequest']['sHashIdUser']), True);
+    	} else {
+    		throw new \Exception(_('error.permission'));
+    	}
+    }
+
+    public function addUser($_sHashId = NULL) {
+    if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser'])) && (isset($GLOBALS['aRequest']['sHashIdModule']))) {
+    		return $this->add(new \Iiigel\Model\Group($_sHashId), new \Iiigel\Model\User($GLOBALS['aRequest']['sHashIdUser']), True, new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']));
+    	} else {
+    		throw new \Exception(_('error.permission'));
+    	}
     }
 
 }

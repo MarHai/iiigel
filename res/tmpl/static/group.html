@@ -2,6 +2,7 @@
 {% macro mainContent(sUrl, aGroup, aGroupLeaders, aNotGroupLeaders, aGroupMembers, aNotGroupMembers, aGroupModules, bGroupEdit) %}
   <div>
    <h3>{{ aGroup.sName }} <small> - {{ aGroup.nIdInstitution }}</small></h3>
+   <script type="text/javascript" src="res/script/group.js"></script>
    <div>
     <h5>
      {% if aGroupLeaders|length > 1 %}{% trans %}user2group.leader{% plural 2 %}user2group.leader.plural{% endtrans %}{% else %}{% trans 'user2group.leader' %}{% endif %}:
@@ -15,7 +16,7 @@
 	  </tr>
 	 </thead>
 		{% for oRow in aGroupLeaders %}
-		 <tr>
+		 <tr onclick="Group.open(1, '{{ oRow.sHashId }}');" >
 		  <td align = 'center'>
 		   {% if oRow.bOnline %}
             <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
@@ -27,18 +28,24 @@
 		   <img src="http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px; margin-right: 8px;" />
 		   <b>{{ oRow.sName }}</b>
 		  </a></td>
-		  <td></td>
+		  <td><script type="text/javascript">
+		  	Group.create(1, "{{ oRow.sHashId }}", {
+		  		"sName" : "{{ oRow.sName }}",
+		  		"sHash" : "{{ oRow.sHash }}",
+		  		"bOnline" : {{ oRow.bOnline }}
+		  	});
+		  </script></td>
 		  <td></td>
 		 </tr>
 		{% endfor %}
 	 {% if bGroupEdit %}
-	  <tr><form action="{{ sUrl }}Group/add/{{ oRow.sHashId }}" method="GET">
+	  <tr><form id="fAddAdmin" action="{{ sUrl }}Group/addAdmin/{{ aGroup.sHashId }}" method="GET">
 	   <td></td>
 	   <td>
 	    <div style="margin-top: 8px;">
-	     <select style="width: 100%">
+	     <select id="sHashIdUser" name="sHashIdUser" style="width: 100%">
 	      {% for oRow in aNotGroupLeaders %}
-	       <option>
+	       <option value="{{ oRow.sHashId }}" >
 	        {{ oRow.sName }}
 	       </option>
 	      {% endfor %}
@@ -47,7 +54,7 @@
 	   </td>
 	   <td></td>
 	   <td>
-	    <a class="btn btn-primary" style="float: right; margin-top: 4px; margin-bottom: 4px; margin-right: 8px;">{% trans 'add' %}</a>
+	    <a class="btn btn-primary" style="float: right; margin-top: 4px; margin-bottom: 4px; margin-right: 8px;" onclick="return Group.click('fAddAdmin');">{% trans 'add' %}</a>
 	   </td>
 	  </form></tr>
 	 {% endif %}
@@ -65,7 +72,7 @@
 	  </tr>
 	 </thead>
 		{% for oRow in aGroupMembers %}
-		 <tr>
+		 <tr onclick="Group.open(0, '{{ oRow.sHashId }}');" >
 		  <td align = 'center'>
 		   {% if oRow.bOnline %}
             <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
@@ -85,17 +92,25 @@
             <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nModuleProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nModuleProgress }}%">
             </div>
            </div>
+           <script type="text/javascript">
+		  	Group.create(0, "{{ oRow.sHashId }}", {
+		  		"sName" : "{{ oRow.sName }}",
+		  		"sHash" : "{{ oRow.sHash }}",
+		  		"sModuleHashId" : "{{ oRow.sModuleHashId }}",
+		  		"bOnline" : {{ oRow.bOnline }}
+		  	});
+		   </script>
 		  </td>
 		 </tr>
 		{% endfor %}
 	 {% if bGroupEdit %}
-	  <tr><form action="{{ sUrl }}Group/add/{{ oRow.sHashId }}" method="GET">
+	  <tr><form id="fAddUser" action="{{ sUrl }}Group/addUser/{{ aGroup.sHashId }}" method="GET">
 	   <td></td>
 	   <td>
 	    <div style="margin-top: 8px;">
-	     <select style="width: 100%">
+	     <select id="sHashIdUser" name="sHashIdUser" style="width: 100%">
 	      {% for oRow in aNotGroupMembers %}
-	       <option>
+	       <option value="{{ oRow.sHashId }}" >
 	        {{ oRow.sName }}
 	       </option>
 	      {% endfor %}
@@ -105,14 +120,14 @@
 	   <td></td>
 	   <td>
 	    <div style="margin-top: 8px;">
-	     <select style="min-width: 50%">
+	     <select id="sHashIdModule" name="sHashIdModule" style="min-width: 50%">
 	      {% for oRow in aGroupModules %}
-	       <option>
+	       <option value="{{ oRow.sHashId }}" >
 	        {{ oRow.sName }}
 	       </option>
 	      {% endfor %}
 	     </select>
-	     <a class="btn btn-primary" style="float: right; margin-top: -4px; margin-right: 8px;">{% trans 'add' %}</a>
+	     <a class="btn btn-primary" style="float: right; margin-top: -4px; margin-right: 8px;" onclick="return Group.click('fAddUser');">{% trans 'add' %}</a>
 	    </div>
 	   </td>
 	  </form></tr>

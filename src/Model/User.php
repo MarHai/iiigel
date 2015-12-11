@@ -277,7 +277,7 @@ class User extends \Iiigel\Model\GenericModel {
         unset($aData['sPassword']);
         
         $aData["sHash"] = md5(strtolower(trim($this->sMail)));
-        $aData["bOnline"] = $this->isOnline();
+        $aData["bOnline"] = FALSE | $this->isOnline();
         
         return $aData;
     }
