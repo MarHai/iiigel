@@ -8,8 +8,12 @@ upload/
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 # composer.lock
 
-.gitignore
 auth.json
 composer.json
 composer.lock
-config/
+
+.project
+.buildpath
+.settings/
+.externalToolBuilder
+.git/

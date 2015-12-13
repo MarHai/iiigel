@@ -167,6 +167,9 @@ msgstr "Änderungen speichern"
 msgid "add"
 msgstr "Hinzufügen"
 
+msgid "remove"
+msgstr "Entfernen"
+
 msgid "doyoureallywanttodelete"
 msgstr "Soll %s wirklich gelöscht werden?"
 

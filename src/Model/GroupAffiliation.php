@@ -2,11 +2,23 @@
 
 class GroupAffiliation extends \Iiigel\Model\Affiliation {
     const TABLE = 'user2group';
+    const CONFIG_COLUMN = array('nCreate', 'nUpdate', 'nIdCreator', 'nIdUpdater');
 
 	const MODE_MEMBER = 0;
 	const MODE_LEADER = 1;
 	const MODE_MODULE = 2;
 	const MODE_POSSIBLE = 3;
+
+	protected function changesAllowed() {
+		if (parent::changesAllowed()) {
+			return TRUE;
+		} else
+		if (isset($GLOBALS['oUserLogin'])) {
+			return $GLOBALS['oDb']->count($GLOBALS['oDb']->query('SELECT * FROM `user2group` WHERE nIdGroup = '.$this->nIdGroup.' AND nIdUser = '.$GLOBALS['oUserLogin']->nId.' AND bAdmin AND NOT bDeleted')) > 0;
+		} else {
+			return FALSE;
+		}
+	}
     
     /**
      * Load list of all entries, no matter of the current one.
@@ -17,7 +29,7 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
     public function getList($_sHashId = NULL, $_nMode = NULL) {
         switch ($_nMode) {
 			case $this::MODE_MEMBER:
-				return $GLOBALS['oDb']->query('SELECT a.*, b.nIdModule AS nIdModule
+				return $GLOBALS['oDb']->query('SELECT a.*, b.nIdModule AS nIdModule, b.sHashId AS sHashIdU2G
 					FROM `user` a, `user2group` b
 					WHERE
 						NOT b.bDeleted
@@ -27,7 +39,7 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
 						AND NOT b.bAdmin
 					ORDER BY a.sName ASC');
 			case $this::MODE_LEADER:
-				return $GLOBALS['oDb']->query('SELECT a.* FROM `user` a, `user2group` b 
+				return $GLOBALS['oDb']->query('SELECT a.*, b.sHashId AS sHashIdU2G FROM `user` a, `user2group` b 
 					WHERE
 						NOT b.bDeleted
 						AND NOT a.bDeleted

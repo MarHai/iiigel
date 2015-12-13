@@ -29,7 +29,21 @@ class Profile extends \Iiigel\Controller\StaticPage {
     		'sPassword' => '********'
     	);
     	
-    	$this->oView->aProfileModule = $oUser->getModules();
+    	$aIdModules = $oUser->getModules(FALSE, TRUE);
+    	$aModules = array();
+    	
+    	for ($i = 0; $i < count($aIdModules); $i++) {
+    		$oTemp = new \Iiigel\Model\Module(intval($aIdModules[$i]));
+    		
+    		$aModules[] = array(
+    			"sHashId" => $oTemp->sHashId,
+    			"sName" => $oTemp->sName,
+    			"sImage" => $oTemp->sImage,
+    			"nProgress" => $oTemp->getProgress($oUser->nId)
+    		);
+    	}
+    	
+    	$this->oView->aProfileModule = $aModules;
     	
     	$aGroup = array();
     	
