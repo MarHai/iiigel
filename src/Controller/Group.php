@@ -28,7 +28,7 @@ class Group extends \Iiigel\Controller\StaticPage {
 		
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_POSSIBLE);
 		
-		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
             $oTemp = new \Iiigel\Model\User($aRow);
             
            	$aNot[] = $oTemp->getCompleteEntry();
@@ -36,7 +36,7 @@ class Group extends \Iiigel\Controller\StaticPage {
 		
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MEMBER);
 		
-		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
 			$oTempModule = new \Iiigel\Model\Module(intval($aRow['nIdModule']));
 			
 			unset($aRow['nIdModule']);
@@ -51,6 +51,7 @@ class Group extends \Iiigel\Controller\StaticPage {
             
             $aEntry = $oTemp->getCompleteEntry();
             
+            $aEntry['sHashIdU2G'] = $aRow['sHashIdU2G'];
             $aEntry['sModuleHashId'] = $oTempModule->sHashId;
             $aEntry['sModuleImage'] = $oTempModule->sImage;
             $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
@@ -61,7 +62,7 @@ class Group extends \Iiigel\Controller\StaticPage {
 		
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_LEADER);
 		
-		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
             $oTemp = new \Iiigel\Model\User($aRow);
             
             for ($i = count($aNot) - 1; $i >= 0; $i--) {
@@ -80,16 +81,15 @@ class Group extends \Iiigel\Controller\StaticPage {
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MODULE);
 		$oChapterHandle = new \Iiigel\Model\Chapter();
 		
-		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
             $oTemp = new \Iiigel\Model\Module($aRow);
             
             $aEntry = $oTemp->getCompleteEntry();
             $oResult0 = $oChapterHandle->getList($oTemp->nId);
             
-            $aEntry['sHashIdU2G'] = $aRow['sHashIdU2G'];
             $aEntry['aChapters'] = array();
             
-           	while (($aRow0 = $GLOBALS['oDb']->get($oResult0))) {
+           	while (($GLOBALS['oDb']->count($oResult0) > 0) && ($aRow0 = $GLOBALS['oDb']->get($oResult0))) {
            		$aEntry['aChapters'][] = $aRow0;
            	}
             
@@ -124,7 +124,7 @@ class Group extends \Iiigel\Controller\StaticPage {
     		$oSingle = new \Iiigel\Model\GroupAffiliation();
     		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_LEADER);
     	
-    		while(($aRow = $GLOBALS['oDb']->get($oResult))) {
+    		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
     			$oTemp = new \Iiigel\Model\User($aRow);
     				
     			if ($oTemp->nId == $GLOBALS['oUserLogin']->nId) {
