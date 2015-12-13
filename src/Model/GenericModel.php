@@ -256,7 +256,7 @@ abstract class GenericModel implements \JsonSerializable {
                 $aValue['bDeleted'] = 0;
             }
             if(in_array('nCreate', $this::CONFIG_COLUMN)) {
-                $aValue['nCreate'] = time();
+                $aValue['nCreate'] = standardized_time();
             }
             if(in_array('nIdCreator', $this::CONFIG_COLUMN)) {
                 $aValue['nIdCreator'] = isset($GLOBALS['oUserLogin']) ? $GLOBALS['oUserLogin']->nId : NULL;
@@ -290,7 +290,7 @@ abstract class GenericModel implements \JsonSerializable {
         if($this->nId > 0 && count($this->aData) > 1 && $this->changesAllowed()) {
             $aValue = array();
             if(in_array('nUpdate', $this::CONFIG_COLUMN)) {
-                $aValue[] = 'nUpdate = '.time();
+                $aValue[] = 'nUpdate = '.standardized_time();
             }
             if(in_array('nIdUpdater', $this::CONFIG_COLUMN)) {
                 $aValue[] = 'nIdUpdater = '.(isset($GLOBALS['oUserLogin']) ? $GLOBALS['oUserLogin']->nId : NULL);
@@ -317,7 +317,7 @@ abstract class GenericModel implements \JsonSerializable {
                 $aValue = array();
                 $aValue[] = 'bDeleted = 1';
                 if(in_array('nUpdate', $this::CONFIG_COLUMN)) {
-                    $aValue[] = 'nUpdate = '.time();
+                    $aValue[] = 'nUpdate = '.standardized_time();
                 }
                 if(in_array('nIdUpdater', $this::CONFIG_COLUMN)) {
                     $aValue[] = 'nIdUpdater = '.(isset($GLOBALS['oUserLogin']) ? $GLOBALS['oUserLogin']->nId : NULL);

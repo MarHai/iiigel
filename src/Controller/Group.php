@@ -4,9 +4,9 @@ class Group extends \Iiigel\Controller\StaticPage {
 	const DEFAULT_ACTION = 'show';
     
     /**
-     * Display the profile of a user.
+     * Display a group.
      * 
-     * @param string $_sHashId hashed string represents the user
+     * @param string $_sHashId hashed string represents the group
      */
     public function show($_sHashId = NULL) {
     	if (($_sHashId == NULL) || (!isset($GLOBALS['oUserLogin']))) {
@@ -107,6 +107,12 @@ class Group extends \Iiigel\Controller\StaticPage {
     	$this->loadFile('group');
     }
     
+    /**
+     * Returns the permission of the current user to edit relations in a group.
+     *
+     * @param string $_sHashId hashed string represents the group
+     * @return boolean TRUE if the user is allowed to edit the group, FALSE otherwise
+     */
     private function hasGroupEditPermission($_sHashId = NULL) {
     	if (($_sHashId == NULL) || (!isset($GLOBALS['oUserLogin']))) {
     		return false;
@@ -132,6 +138,14 @@ class Group extends \Iiigel\Controller\StaticPage {
     	}
     }
     
+    /**
+     * Add a user to a group.
+     *
+     * @param object $_oGroup is the group
+     * @param object $_oUser is the user
+     * @param boolean $_bAdmin sets if the user shall be an admin in the group
+     * @param object $_oModule is the module, the user is set in ( needed if he won't be an admin )
+     */
     private function add($_oGroup, $_oUser, $_bAdmin, $_oModule = NULL) {
     	if ($this->hasGroupEditPermission($_oGroup->sHashId)) {
     		$nIdChapter = 0;
@@ -158,6 +172,12 @@ class Group extends \Iiigel\Controller\StaticPage {
     	}
     }
     
+    /**
+     * Removes a user from a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     * @param string $_sHashIdU2G hashed string represents the relation of the user to the group
+     */
     public function remove($_sHashId = NULL, $_sHashIdU2G = NULL) {
     	if (($_sHashIdU2G != NULL) && ($this->hasGroupEditPermission($_sHashId))) {
     		$oGroup = new \Iiigel\Model\Group($_sHashId);
@@ -171,6 +191,11 @@ class Group extends \Iiigel\Controller\StaticPage {
     	}
     }
     
+    /**
+     * Adds a user as admin in a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     */
     public function addAdmin($_sHashId = NULL) {
     	if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser']))) {
     		return $this->add(new \Iiigel\Model\Group($_sHashId), new \Iiigel\Model\User($GLOBALS['aRequest']['sHashIdUser']), True);
@@ -179,6 +204,11 @@ class Group extends \Iiigel\Controller\StaticPage {
     	}
     }
 
+    /**
+     * Adds a user as general member in a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     */
     public function addUser($_sHashId = NULL) {
     if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser'])) && (isset($GLOBALS['aRequest']['sHashIdModule']))) {
     		return $this->add(new \Iiigel\Model\Group($_sHashId), new \Iiigel\Model\User($GLOBALS['aRequest']['sHashIdUser']), False, new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']));
@@ -187,6 +217,12 @@ class Group extends \Iiigel\Controller\StaticPage {
     	}
     }
 
+    /**
+     * Edits the relation of a user ( member ) in a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     * @param string $_sHashIdU2G hashed string represents the relation
+     */
     public function editUser($_sHashId = NULL, $_sHashIdU2G = NULL) {
     	if (($_sHashIdU2G != NULL) && (isset($GLOBALS['aRequest']['sHashIdChapter'])) && (isset($GLOBALS['aRequest']['sHashIdModule'])) && ($this->hasGroupEditPermission($_sHashId))) {
     		$oGroup = new \Iiigel\Model\Group($_sHashId);

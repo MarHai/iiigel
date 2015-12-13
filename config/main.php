@@ -34,6 +34,9 @@ $GLOBALS['aConfig'] = array(
 		'sPassword' => '',
 		'sHost' => ''
 	),
+		
+	//default time zone
+	'sTimeZone' => 'Europe/Berlin',
     
     //default date format
     'sDateFormatJs' => 'dd. mm. yyyy hh:ii',

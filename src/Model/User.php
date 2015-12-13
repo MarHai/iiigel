@@ -40,7 +40,7 @@ class User extends \Iiigel\Model\GenericModel {
                     (bDeleted, nCreate, nIdCreator, sMail, sName, sPassword, bAdmin, bMailIfOffline, bActive, sLanguage)
                     VALUES (
                         0,
-                        '.time().',
+                        '.standardized_time().',
                         '.(isset($GLOBALS['oUserLogin']) ? $GLOBALS['oUserLogin']->nId : 0).',
                         '.$GLOBALS['oDb']->escape(trim(strtolower($this->sMail))).',
                         '.$GLOBALS['oDb']->escape(trim(isset($this->sName) ? $this->sName : $this->sMail)).',
@@ -145,8 +145,8 @@ class User extends \Iiigel\Model\GenericModel {
      */
     public function isOnline() {
     	$nId = $this->nId;
-    	$nLimitCreate = (time() - $GLOBALS['aConfig']['nMaxSessionLifetime']);
-    	$nLimitLastAction = (time() - $GLOBALS['aConfig']['nMaxActionDelay']);
+    	$nLimitCreate = (standardized_time() - $GLOBALS['aConfig']['nMaxSessionLifetime']);
+    	$nLimitLastAction = (standardized_time() - $GLOBALS['aConfig']['nMaxActionDelay']);
     	
     	$oResult = $GLOBALS['oDb']->query('SELECT nLastAction FROM `session` WHERE sSession <> \'\' AND nIdCreator = '.$nId.' AND nCreate >= '.$nLimitCreate.' AND nLastAction >= '.$nLimitLastAction.' LIMIT 1');
     	
@@ -167,7 +167,7 @@ class User extends \Iiigel\Model\GenericModel {
             return $GLOBALS['oUserLogin']->nId > 0;
         } else {
             try {
-                $mSession = $GLOBALS['oDb']->getOneRow('SELECT * FROM `session` WHERE sSession = '.$GLOBALS['oDb']->escape(session_id()).' AND nCreate >= '.(time() - $GLOBALS['aConfig']['nMaxSessionLifetime']));
+                $mSession = $GLOBALS['oDb']->getOneRow('SELECT * FROM `session` WHERE sSession = '.$GLOBALS['oDb']->escape(session_id()).' AND nCreate >= '.(standardized_time() - $GLOBALS['aConfig']['nMaxSessionLifetime']));
                 if(is_array($mSession) && isset($mSession['nIdCreator'])) {
                     $oUser = new \Iiigel\Model\User(intval($mSession['nIdCreator']));
                     return $oUser->login();
@@ -211,7 +211,7 @@ class User extends \Iiigel\Model\GenericModel {
             if(($oResult = $GLOBALS['oDb']->query('SELECT * FROM `session` WHERE nIdCreator = '.$this->nId.' AND sSession = '.$sSession))) {
                 if($GLOBALS['oDb']->count($oResult) == 0) {
                     $GLOBALS['oDb']->query('INSERT INTO `session` (nCreate, nIdCreator, sSession, nLastAction)
-                        VALUES ('.time().', '.$this->nId.', '.$sSession.', '.time().')');
+                        VALUES ('.standardized_time().', '.$this->nId.', '.$sSession.', '.standardized_time().')');
                 }
             }
             $this->addAffiliation($_sHashId);
@@ -252,7 +252,7 @@ class User extends \Iiigel\Model\GenericModel {
      */
     public function action() {
         if(isset($GLOBALS['oUserLogin'])) {
-            $GLOBALS['oDb']->query('UPDATE session SET nLastAction = '.time().', sLastAction = '.$GLOBALS['oDb']->escape(json_encode($GLOBALS['aRequest'])).' WHERE nIdCreator = '.$this->nId.' AND sSession = '.$GLOBALS['oDb']->escape(session_id()));
+            $GLOBALS['oDb']->query('UPDATE session SET nLastAction = '.standardized_time().', sLastAction = '.$GLOBALS['oDb']->escape(json_encode($GLOBALS['aRequest'])).' WHERE nIdCreator = '.$this->nId.' AND sSession = '.$GLOBALS['oDb']->escape(session_id()));
         }
     }
     

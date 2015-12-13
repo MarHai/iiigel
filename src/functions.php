@@ -96,4 +96,13 @@ function except_splitTracebackIntoList($_sTraceback) {
     return $sReturn;
 }
 
+/**
+ * Returns the current Unix timestamp, but standardized to this project
+ * 
+ * @return int timestamp ( Unix )
+ */
+function standardized_time() {
+	return time();
+}
+
 ?>
