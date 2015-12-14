@@ -51,7 +51,10 @@ class Group extends \Iiigel\Controller\StaticPage {
             
             $aEntry = $oTemp->getCompleteEntry();
             
+            $aEntry['sHash'] = md5(strtolower(trim($oTemp->sMail)));
+            $aEntry['bOnline'] = FALSE | $oTemp->isOnline();
             $aEntry['sHashIdU2G'] = $aRow['sHashIdU2G'];
+            
             $aEntry['sModuleHashId'] = $oTempModule->sHashId;
             $aEntry['sModuleImage'] = $oTempModule->sImage;
             $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
@@ -73,6 +76,8 @@ class Group extends \Iiigel\Controller\StaticPage {
             
             $aEntry = $oTemp->getCompleteEntry();
             
+            $aEntry['sHash'] = md5(strtolower(trim($oTemp->sMail)));
+            $aEntry['bOnline'] = FALSE | $oTemp->isOnline();
             $aEntry['sHashIdU2G'] = $aRow['sHashIdU2G'];
             
            	$aLeaders[] = $aEntry;
