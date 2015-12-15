@@ -155,10 +155,14 @@ class Group extends \Iiigel\Controller\StaticPage {
     	if ($this->hasGroupEditPermission($_oGroup->sHashId)) {
     		$nIdChapter = 0;
     		
-    		if ($_oModule != NULL) {
+    		if ($_oModule !== NULL) {
     			$oTemp = new \Iiigel\Model\Chapter();
-    			$aRow = $GLOBALS['oDb']->get($oTemp->getList($_oModule->nId));
-    			$nIdChapter = $aRow['nId'];
+    			$oResult = $oTemp->getList($_oModule->nId);
+    			
+    			if ($oResult) {
+    				$aRow = $GLOBALS['oDb']->get($oResult);
+    				$nIdChapter = $aRow['nId'];
+    			}
     		}
     		
     		$oSingle = new \Iiigel\Model\GroupAffiliation(array(
