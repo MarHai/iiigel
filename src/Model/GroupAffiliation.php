@@ -4,10 +4,10 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
     const TABLE = 'user2group';
     const CONFIG_COLUMN = array('nCreate', 'nUpdate', 'nIdCreator', 'nIdUpdater');
 
-	const MODE_MEMBER = 0;
-	const MODE_LEADER = 1;
-	const MODE_MODULE = 2;
-	const MODE_POSSIBLE = 3;
+	const MODE_MEMBER = 1;
+	const MODE_LEADER = 2;
+	const MODE_MODULE = 3;
+	const MODE_POSSIBLE = 4;
 
 	protected function changesAllowed() {
 		if (parent::changesAllowed()) {
