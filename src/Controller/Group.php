@@ -161,7 +161,10 @@ class Group extends \Iiigel\Controller\StaticPage {
     			
     			if ($oResult) {
     				$aRow = $GLOBALS['oDb']->get($oResult);
-    				$nIdChapter = $aRow['nId'];
+    				
+    				if (isset($aRow['nId'])) {
+    					$nIdChapter = $aRow['nId'];
+    				}
     			}
     		}
     		

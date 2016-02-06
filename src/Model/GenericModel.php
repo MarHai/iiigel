@@ -275,6 +275,8 @@ abstract class GenericModel implements \JsonSerializable {
                     return $this->nId;
                 }
             } else {
+            	print('INSERT INTO `'.$this::TABLE.'` ('.implode(', ', array_keys($aValue)).') VALUES ('.implode(', ', $aValue).')');
+            	
                 throw new \Exception(_('error.create'));
             }
         }
