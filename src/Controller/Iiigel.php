@@ -209,6 +209,31 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
     public function download($_sHashId) {
         //DOWNLOAD a file (presented as download) or ZIP&DOWNLOAD a folder (presented as download)
         //die() afterwards
+        
+    	$oFile = $this->oCloud->loadFile($_sHashId);
+    	
+    	if ($oFile !== NULL) {
+    		$aEntry = $oFile->getCompleteEntry(TRUE);
+    		
+    		$this->oCloud->closeFile($_sHashId);
+    		
+    		if ($aEntry['bFilesystem']) {
+    			if ($aEntry['sType'] === 'folder') {
+    				// ... ZIP
+    			} else
+    			if (strpos($aEntry['sType'], 'text') !== 0) {
+    				$this->redirect($aEntry['sFile'].'?a=download');
+    			}
+    		}
+    		
+    		header('Cache-Control: no-cache, must-revalidate');
+    		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+    		header('Content-Type: '.$aEntry['sType']);
+    		header('Content-Length: '.strlen($aEntry['sFile']));
+    		header('Content-Disposition: attachment; filename="'.$aEntry['sName'].'"');
+    		
+    		die($aEntry['sFile']);
+    	}
     }
     
     /**
@@ -236,6 +261,37 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
         //PUSH file_get_contents or curl into cloud from current folder
         $this->sRawOutput = json_encode($this->oCloud->get());
     }
+    
+    /**
+     * Submit a handin for the current chapter.
+     */
+    public function submit($_sHashIdChapter) {
+    	if ($this->loadEnvironment($_sHashIdChapter)) {
+    		$sState = $this->oCloud->getCurrentState();
+    		
+    		$nIdUser = $GLOBALS['oDb']->escape($GLOBALS['oUserLogin']->nId);
+    		$nIdModule = $GLOBALS['oDb']->escape($this->oModule->nId);
+    		$nIdChapter = $GLOBALS['oDb']->escape($this->oChapter->nId);
+    		
+    		$oResult = $GLOBALS['oDb']->query('SELECT user2group.nIdGroup AS nIdGroup FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$nIdUser.' AND user2group.nIdModule = '.$nIdModule.' AND user2group.nIdChapter = chapter.nId AND chapter.nId = '.$nIdChapter.' ORDER BY chapter.nOrder DESC LIMIT 1;');
+    		
+    		if ($GLOBALS['oDb']->count($oResult) > 0) {
+    			if ($aRow = $GLOBALS['oDb']->get($oResult)) {
+    				$oHandin = new \Iiigel\Model\Handin(array(
+    					"nIdGroup" => $aRow['nIdGroup'],
+    					"nIdChapter" => $this->oChapter->nId,
+    					"sInterpreter" => $this->oChapter->sInterpreter,
+    					"sCloud" => $sState
+    				));
+    				
+    				if ($oHandin->create() !== NULL) {
+    					$this->sRawOutput = $sState;
+    				}
+    			}
+    		}
+    	}
+    }
+    
 }
 
 ?>

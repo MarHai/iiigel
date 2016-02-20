@@ -53,7 +53,7 @@ class Module extends \Iiigel\Model\GenericModel {
 	public function getCurrentChapter($_nIdUser) {
         $nId = $GLOBALS['oDb']->escape($this->nId);
         
-        $oResult = $GLOBALS['oDb']->query('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$_nIdUser.' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
+        $oResult = $GLOBALS['oDb']->query('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$GLOBALS['oDb']->escape($_nIdUser).' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
         
         if ($GLOBALS['oDb']->count($oResult) > 0) {
         	if ($aRow = $GLOBALS['oDb']->get($oResult)) {

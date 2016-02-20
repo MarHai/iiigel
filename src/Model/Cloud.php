@@ -175,6 +175,38 @@ class Cloud {
 		
 		return $aSub;
     }
+
+    private function completeState($oFile) {
+    	$aData = $oFile->getCompleteEntry(TRUE);
+    	
+    	if ($aData['sType'] === 'folder') {
+    		$aChildren = array();
+    		
+    		for ($i = 0; $i < count($aData['aChildren']); $i++) {
+    			$aChildren[$i] = $this->completeState($aData['aChildren'][$i]);
+    		}
+    		
+    		$aData['aChildren'] = $aChildren;
+    	}
+    	
+    	return $aData;
+    }
+
+    /**
+     * Creates a screenshot of this current cloud as json.
+     * 
+     * @return string Represents a current screenshot of this cloud as json
+     */
+    public function getCurrentState() {
+    	$aFiles = $this->get();
+    	$aData = array();
+    	
+    	for ($i = 0; $i < count($aFiles); $i++) {
+    		$aData[$i] = $this->completeState($aFiles[$i]);
+    	}
+    	
+    	return json_encode($aData);
+    }
     
     /**
      * Get object which represents the file/folder at path ($_sFilename) if available

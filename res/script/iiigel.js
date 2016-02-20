@@ -340,7 +340,11 @@ $(function() {
     $('a.iiigel-handin').off('click').on('click', function(_oEvent) {
         _oEvent.preventDefault();
         bootbox.confirm(i18n('handin.areyousure'), function(_bHandin) {
-            if(_bHandin) {
+        	sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
+        	
+            if((_bHandin) && (sCurrentChapterHash !== null)) {
+            	$.get('?c=Iiigel&a=submit', { _sHashIdChapter: sCurrentChapterHash });
+            	
                 bootbox.alert(i18n('handin.done'));
             }
         });
