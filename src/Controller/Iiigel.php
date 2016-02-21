@@ -83,10 +83,40 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
             $this->oChapter->sText =  $this->oChapter->replaceTags( $this->oChapter->sText);
             $this->oView->oChapter = $this->oChapter;
             $this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
+            $this->oView->bHandin = FALSE;
+            $this->oView->oHandin = NULL;
             $this->loadFile('iiigel');
         } else {
             throw new \Exception(sprintf(_('error.objectload'), $_sHashId));
         }
+    }
+    
+    public function lookAtHandin($_sHashId) {
+    	$oHandin = new \Iiigel\Model\Handin($_sHashId);
+    	
+    	$this->oCloud = new \Iiigel\Model\Cloud(intval($oHandin->nIdCreator));
+    	$this->oChapter = new \Iiigel\Model\Chapter(intval($oHandin->nIdChapter));
+    	$this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
+    	
+    	if($oHandin->sInterpreter !== NULL) {
+    		$sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$oHandin->sInterpreter;
+    		 
+    		if(class_exists($sInterpreter)) {
+    			$this->oInterpreter = new $sInterpreter($this->oCloud);
+    		} else {
+    			$this->oInterpreter = new \Iiigel\View\Interpreter\File($this->oCloud);
+    		}
+    		
+    		$this->oView->oModule = $this->oModule;
+    		$this->oChapter->sText =  $this->oChapter->replaceTags( $this->oChapter->sText);
+    		$this->oView->oChapter = $this->oChapter;
+    		$this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
+    		$this->oView->bHandin = TRUE;
+    		$this->oView->oHandin = $oHandin;
+    		$this->loadFile('iiigel');
+    	} else {
+    		throw new \Exception(sprintf(_('error.objectload'), $_sHashId));
+    	}
     }
     
     /**
@@ -101,18 +131,45 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
      * 
      * @param string $_sHashIdFile    hash ID of element to interpret
      * @param string $_sHashIdChapter hash ID of chapter to be interpreted in (important for correct interpreter)
+     * @param string $_sHashIdHandin  hash ID of handin to set interpreter and finding file-content
      */
-    public function interpret($_sHashIdFile, $_sHashIdChapter) {
-        if($this->loadEnvironment($_sHashIdChapter)) {
-            if(($oFile = $this->oCloud->loadFile($_sHashIdFile))) {
-                $this->sRawOutput = $this->oInterpreter->interpret($oFile);
-                return;
-            }
-        } else {
-        	throw new \Exception($_sHashIdFile." - ".$_sHashIdChapter);
-        }
-        
-        throw new \Exception(_('error.filenotfound'));
+    public function interpret($_sHashIdFile, $_sHashIdChapter, $_sHashIdHandin = '') {
+    	if (strlen($_sHashIdChapter) > 0) {
+    		if($this->loadEnvironment($_sHashIdChapter)) {
+    			if(($oFile = $this->oCloud->loadFile($_sHashIdFile))) {
+    				$this->sRawOutput = $this->oInterpreter->interpret($oFile);
+    				return;
+    			}
+    		} else {
+    			throw new \Exception($_sHashIdFile." - ".$_sHashIdChapter);
+    		}
+    	} else
+    	if (strlen($_sHashIdHandin) > 0) {
+    		$oHandin = new \Iiigel\Model\Handin($_sHashIdHandin);
+    		
+    		$this->oCloud = new \Iiigel\Model\Cloud(intval($oHandin->nIdCreator));
+    		$this->oChapter = new \Iiigel\Model\Chapter(intval($oHandin->nIdChapter));
+    		$this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
+    		 
+    		if($oHandin->sInterpreter !== NULL) {
+    			$sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$oHandin->sInterpreter;
+    			 
+    			if(class_exists($sInterpreter)) {
+    				$this->oInterpreter = new $sInterpreter($this->oCloud);
+    			} else {
+    				$this->oInterpreter = new \Iiigel\View\Interpreter\File($this->oCloud);
+    			}
+    			
+    			if(($oFile = $this->oCloud->loadFile($_sHashIdFile))) {
+    				$this->sRawOutput = $this->oInterpreter->interpret($oFile);
+    				return;
+    			}
+    		} else {
+    			throw new \Exception($_sHashIdFile." - ".$_sHashIdHandin);
+    		}
+    	}
+    	
+    	throw new \Exception(_('error.filenotfound'));
     }
     
     /**

@@ -1,6 +1,6 @@
 $(function() {
     var oCloud = {}, sCurrentFolderHash = null,
-        oEditor = null, oSession = null, sCurrentFileHash = null, oEditorTimeout = null;
+        oEditor = null, oSession = null, sCurrentFileHash = null, oEditorTimeout = null, oHandinCloud = null;
     
     function adjustIiigelHeight() {
         //initiate height
@@ -75,21 +75,27 @@ $(function() {
     }
     
     function saveFile(_sContent) {
-    	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null)) {
+    	if ((oHandinCloud.length == 0) && (typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null)) {
     		$.get('?c=Iiigel&a=update', { _sHashId: sCurrentFileHash, _sContent: _sContent });
     	}
     }
 
     function interpret() {
-    	sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
-    	
-    	if ((typeof(sCurrentChapterHash) === 'undefined') || (sCurrentChapterHash === null)) {
-    		sCurrentChapterHash = $($('#iiigel-module a[data-chapter]').get(0)).data('chapter');
-    	}
-    	
-    	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null) &&
-    		(typeof(sCurrentChapterHash) !== 'undefined') && (sCurrentChapterHash !== null)) {
-    		$('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: sCurrentChapterHash });
+    	if (oHandinCloud.length > 0) {
+    		if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null)) {
+    			$('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: '', _sHashIdHandin: oHandinCloud[0].name });
+    		}
+    	} else {
+    		sCurrentChapterHash = $($('#iiigel-module a.active[data-chapter]').get(0)).data('chapter');
+        	
+        	if ((typeof(sCurrentChapterHash) === 'undefined') || (sCurrentChapterHash === null)) {
+        		sCurrentChapterHash = $($('#iiigel-module a[data-chapter]').get(0)).data('chapter');
+        	}
+        	
+        	if ((typeof(sCurrentFileHash) !== 'undefined') && (sCurrentFileHash !== null) &&
+            	(typeof(sCurrentChapterHash) !== 'undefined') && (sCurrentChapterHash !== null)) {
+            	$('#iiigel-interpreter').load('?c=Iiigel&a=interpret', { _sHashIdFile: sCurrentFileHash, _sHashIdChapter: sCurrentChapterHash });
+            }
     	}
     }
 
@@ -118,9 +124,9 @@ $(function() {
                     '<td>' + oElem.aChildren[i].sSize + '</td>' +
                     '<td>' + i18n_datetime(oElem.aChildren[i].nUpdate) + '</td>' +
                     '<td>' +
-                        '<a href="' + $('.logo').get(0).href + 'Iiigel/download/' + oElem.aChildren[i].sHashId + '" class="btn btn-default btn-xs tooltips iiigel-download iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.download' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file')) +'"><i class="fa fa-' + (oElem.aChildren[i].sType == 'folder' ? 'dropbox' : 'download') + '"></i></a> ' +
+                        (oHandinCloud.length == 0? ('<a href="' + $('.logo').get(0).href + 'Iiigel/download/' + oElem.aChildren[i].sHashId + '" class="btn btn-default btn-xs tooltips iiigel-download iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.download' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file')) +'"><i class="fa fa-' + (oElem.aChildren[i].sType == 'folder' ? 'dropbox' : 'download') + '"></i></a> ' +
                         '<a href="#" class="btn btn-default btn-xs tooltips iiigel-rename iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.rename') +'"><i class="fa fa-i-cursor"></i></a> ' +
-                        '<a href="#" class="btn btn-danger btn-xs tooltips iiigel-delete iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.delete' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file')) +'"><i class="fa fa-ban"></i></a>' +
+                        '<a href="#" class="btn btn-danger btn-xs tooltips iiigel-delete iiigel-unobtrusive" data-placement="left" title="' + i18n('cloud.delete' + (oElem.aChildren[i].sType == 'folder' ? 'folder' : 'file')) +'"><i class="fa fa-ban"></i></a>') : '') +
                     '</td>' +
                   '</tr>').appendTo($('#iiigel-cloudbrowser tbody'));
             }
@@ -241,7 +247,7 @@ $(function() {
 
     //open-file selector
     function openFile(_sHashId) {
-        $.getJSON('?c=Iiigel&a=open', { _sHashId: _sHashId }, function(_oFile) {
+    	var loadData = function(_oFile) {
             if(_oFile.sType.indexOf('text') === 0) {
                 sCurrentFileHash = _oFile.sHashId;
                 if(_oFile.sName.indexOf('.') > 0) {
@@ -256,7 +262,7 @@ $(function() {
                 }
                 
                 oEditor.setValue(_oFile.sFile);
-                oEditor.setReadOnly(false);
+                oEditor.setReadOnly(oHandinCloud.length > 0);
                 oEditor.focus();
                 oEditor.gotoLine(oSession.getLength(), oSession.getLine(oSession.getLength() - 1).length);
                 oSession.off('change');
@@ -280,7 +286,13 @@ $(function() {
             } else {
             	bootbox.alert('<iframe scrolling="no" src="' + _oFile.sFile + '"  onload="adjustIframeHeight(this);"></iframe><script src="res/script/iframe.js"></script>');
             }
-        });
+        }
+    	
+    	if (oHandinCloud.length > 0) {
+    		loadData(findElementForHash(_sHashId, oCloud));
+    	} else {
+    		$.getJSON('?c=Iiigel&a=open', { _sHashId: _sHashId }, loadData);
+    	}
     }
     
     //allow mode changes (from cloud to interpreter to chapter and back)
@@ -427,9 +439,16 @@ $(function() {
         });
     }
     
+    oHandinCloud = $('#iiigel-handin-cloud');
+    
     //initial load of cloud and open files
-    $.getJSON('?c=Iiigel&a=cloud', function(_oData) {
-        updateCloudList(_oData);
-        $('#iiigel-editor .iiigel-files a[data-hash]').first().click();
-    });
+    if (oHandinCloud.length > 0) {
+    	updateCloudList(JSON.parse(oHandinCloud[0].value));
+    	//$('#iiigel-editor .iiigel-files a[data-hash]').first().click();
+    } else {
+        $.getJSON('?c=Iiigel&a=cloud', function(_oData) {
+            updateCloudList(_oData);
+            $('#iiigel-editor .iiigel-files a[data-hash]').first().click();
+        });
+    }
 });

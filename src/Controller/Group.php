@@ -113,37 +113,6 @@ class Group extends \Iiigel\Controller\StaticPage {
     }
     
     /**
-     * Returns the permission of the current user to edit relations in a group.
-     *
-     * @param string $_sHashId hashed string represents the group
-     * @return boolean TRUE if the user is allowed to edit the group, FALSE otherwise
-     */
-    private function hasGroupEditPermission($_sHashId = NULL) {
-    	if (($_sHashId == NULL) || (!isset($GLOBALS['oUserLogin']))) {
-    		return false;
-    	}
-    	
-    	if (!$GLOBALS['oUserLogin']->bAdmin) {
-    		$bGroupEdit = false;
-    	
-    		$oSingle = new \Iiigel\Model\GroupAffiliation();
-    		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_LEADER);
-    	
-    		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
-    			$oTemp = new \Iiigel\Model\User($aRow);
-    				
-    			if ($oTemp->nId == $GLOBALS['oUserLogin']->nId) {
-    				$bGroupEdit = true;
-    			}
-    		}
-    	
-    		return $bGroupEdit;
-    	} else {
-    		return true;
-    	}
-    }
-    
-    /**
      * Add a user to a group.
      *
      * @param object $_oGroup is the group
