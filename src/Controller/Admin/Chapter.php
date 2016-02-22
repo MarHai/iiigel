@@ -1,6 +1,5 @@
 <?php namespace Iiigel\Controller\Admin;
 
-
 class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     const DEFAULT_ACTION = 'showDetail';
     const TABLE = 'chapter';
@@ -110,7 +109,8 @@ class Chapter extends \Iiigel\Controller\Admin\DefaultController {
     	$oForm = new \Iiigel\View\Page();
 		$oForm->loadTemplate('admin/chapter-editor.html');
 		$oForm->sChapterId = $oTemp->sHashId;
-		    
+		$oForm->aChapterNames = $oModule->aChapter;
+    
 		$this->oView->aContent = $oForm->render();
 		$this->oView->aContent = '<div class="iiigel-scroll" id="chapter-interpreter">          
 </div>';

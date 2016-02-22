@@ -1,19 +1,88 @@
 <script type="text/javascript" src="res/script/chapter-editor.js"></script>
+<script type="text/javascript" src="res/script/intlink.js"></script>
+
 
 <div class="input-group input-group-sm">
-    <div class="input-group-btn">
+	{% for oChapter in aChapterNames %}
+		<input id="chapter-{{ oChapter.sHashId }}" name="chapter" hidden="true" value="{{ oChapter.sName }}" />
+	{% endfor %}
+	
+	<div class="input-group-btn">
         <!-- Buttons -->
-        <div class="btn-group btn-group-sm" role="group" aria-label="...">
+			
+				<button type="button" class="btn btn-default" onclick="writeText('[code][/code]')">Code</button>
+				<button type="button" class="btn btn-default" onclick="writeText('[tasks][/tasks]')">Tasks</button>
+				<button type="button" class="btn btn-default" onclick="writeText('[task][/task]')">Task</button>
+				<button type="button" class="btn btn-default" onclick="writeText('[break]')">Break</button>
+			
+			
+			<div class="btn-group btn-group-sm" role="group" aria-label="...">
+				<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      				Link
+      				<span class="caret"></span>
+    			</button>
+    			<ul class="dropdown-menu">
+					<li><a onclick='intlinkPrompt()'>{% trans 'intlink.capt' %}</a></li>
+      				<li><a onclick='bootbox.prompt({title: i18n("extlink.url"),
+												   value: "",
+												   callback: (function(_oElem) {
+														return function(_mResult) {
+															if(_mResult !== null && _mResult) {	
+																writeText("[link]{href=\""+_mResult+"\";}"+_mResult+"[/link]");
+															}
+														}
+													})
+													(this)
+												});'>{% trans 'extlink.capt' %}</a></li>
+				</ul>
+			</div>	
+			
+			<div class="btn-group btn-group-sm" role="group" aria-label="...">
+				<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Image
+					<span class="caret"></span>
+				</button>
+    			<ul class="dropdown-menu">
+					<li><a onclick='intlinkPrompt()'>{% trans 'intimg.capt' %}</a></li>
+      				<li><a onclick='bootbox.prompt({title: i18n("extimg.url"),
+												   value: "",
+												   callback: (function(_oElem) {
+														return function(_mResult) {
+															if(_mResult !== null && _mResult) {	
+																writeText("[image]{src=\""+_mResult+"\";}");
+															}
+														}
+													})
+													(this)
+												});'>{% trans 'extimg.capt' %}</a></li>
+				</ul>
+			</div>	
+			
+            <div class="btn-group btn-group-sm" role="group" aria-label="...">
+			
+                
+                <div class="btn-group" role="group">
+    			<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      				Table
+      				<span class="caret"></span>
+    			</button>
+    			<ul class="dropdown-menu">
+					<li><a onclick="writeText('[table][/table]')">{% trans 'table.add' %}</a></li>
+      				<li><a onclick="writeText('[row][/row]')">{% trans 'table.add.row' %}</a></li>
+      				<li><a onclick="writeText('[cell][/cell]')">{% trans 'table.add.cell' %}</a></li>
+					<li><a onclick="writeText('[table]\n	[row][cell]1[/cell][cell]2[/cell][/row]\n	[row][cell]3[/cell][cell]4[/cell][/row]\n	[row][cell]5[/cell][cell]6[/cell][/row]\n[/table]')">{% trans 'table.add.example' %}</a></li>
+					
+					
+					
+				</ul>
+			</div>
 
 
-            <button type="button" class="btn btn-default" onclick="writeText('[code][/code]')">Code</button>
-            <button type="button" class="btn btn-default" onclick="writeText('[tasks][/tasks]')">Tasks</button>
-            <button type="button" class="btn btn-default" onclick="writeText('[task][/task]')">Task</button>
-            <button type="button" class="btn btn-default" onclick="writeText('[break]')">Break</button>
+                
     
-            <button type="button" class="btn btn-default" onclick="writeText('[headline][/headline]')">Headline</button>
-            <button type="button" class="btn btn-default" onclick="writeText('[li][/li]')">List</button>
-            <button type="button" class="btn btn-default" onclick="writeText('[big][/big]')">Big</button>  
+                <button type="button" class="btn btn-default" onclick="writeText('[headline][/headline]')">Headline</button>
+                <button type="button" class="btn btn-default" onclick="writeText('[li][/li]')">List</button>
+                <button type="button" class="btn btn-default" onclick="writeText('[big][/big]')">Big</button>  
         </div>
     </div>
 </div>
@@ -24,6 +93,7 @@
         </div>
 	</div>
 </div>
+
 
 <!-- 
 <div class="iiigel-scroll" id="chapter-interpreter">          

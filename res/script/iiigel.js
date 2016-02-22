@@ -472,8 +472,10 @@ $(function() {
         });
     }
     
-    for (var i = 0; i < _HandinMessages.length; i++) {
-    	$.gritter.add(_HandinMessages[i]);
+    if (typeof(_HandinMessages) !== 'undefined') {
+    	for (var i = 0; i < _HandinMessages.length; i++) {
+			$.gritter.add(_HandinMessages[i]);
+		}
     }
 });
 

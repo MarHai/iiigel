@@ -403,17 +403,38 @@ msgstr "Verweigern"
 # CHAPTER-EDITOR
 # #####################
 
-msgid "link.extern"
+msgid "extlink.capt"
 msgstr "Externer Link"
 
-msgid "link.extern.url"
-msgstr "Pfad eingeben"
+msgid "extlink.url"
+msgstr "Externer Link: Pfad eingeben"
 
-msgid "link.intern"
+msgid "intlink.capt"
 msgstr "Interner Link"
 
-msgid "link.intern.chapter"
+msgid "intlink.url"
+msgstr "Interner Link: Pfad eingeben"
+
+msgid "intlink.which"
 msgstr "Kapitel auswählen"
+
+msgid "extimg.capt"
+msgstr "Externes Bild"
+
+msgid "intimg.capt"
+msgstr "Internes Bild"
+
+msgid "table.add"
+msgstr "Tabelle hinzufügen"
+
+msgid "table.add.row"
+msgstr "Zeile hinzufügen"
+
+msgid "table.add.cell"
+msgstr "Zelle hinzufügen"
+
+msgid "table.add.example"
+msgstr "Beispiel hinzufügen"
 
 # #####################
 # CLOUD
