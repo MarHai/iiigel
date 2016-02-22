@@ -5,12 +5,14 @@
                 <h3><i class="fa fa-angle-right"></i> {{ oChapter.sName }}</h3>
                 {{ oChapter.sText|raw }}
             </div>
+            {% if bHandin %}
+            <textarea id="iiigel-handin-cloud" name="{{ oHandin.sHashId }}" hidden="true">{{ oHandin.sCloud }}</textarea>
+            {% endif %}
             {% if oChapter.bCloud %}
                 <div class="showback hide iiigel-scroll" id="iiigel-cloud">
                     <ol class="breadcrumb"></ol>
                     <div class="row">
                     	{% if bHandin %}
-                    	<textarea id="iiigel-handin-cloud" name="{{ oHandin.sHashId }}" hidden="true">{{ oHandin.sCloud }}</textarea>
                         <div class="col-lg-12 col-md-8 col-sm-12">
                         {% else %}
                         <div class="col-lg-8 col-md-8 col-sm-12">
@@ -125,6 +127,17 @@
                         <span class="hidden-md">{% trans 'mode.helpwanted' %}</span>
                     </a>
                 </p>
+               	{% else %}
+               	<p>
+                    <a class="btn btn-primary iiigel-handin-accept tooltips" href="#" data-title="{% trans 'handin.accept' %}">
+                        <i class="fa fa-hand-o-right hidden-sm hidden-xs hidden-lg"></i>
+                        <span class="hidden-md">{% trans 'handin.accept' %}</span>
+                    </a>
+                    <a class="btn btn-danger iiigel-handin-deny tooltips" href="#" data-title="{% trans 'handin.deny' %}">
+                        <i class="fa fa-question hidden-sm hidden-xs hidden-lg"></i>
+                        <span class="hidden-md">{% trans 'handin.deny' %}</span>
+                    </a>
+                </p>
                 {% endif %}
             </div>
         </div>
@@ -137,7 +150,7 @@
 
 {% set nRows = 1 %}
 {% set nColumns = [ 1 ] %}
-{% set aContent = { '0': { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin and bGroupAdmin, oHandin) } } %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin, oHandin) } } %}
 
 {% block content %}
     {{ parent() }}

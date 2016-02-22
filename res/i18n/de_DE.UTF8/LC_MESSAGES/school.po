@@ -387,6 +387,34 @@ msgstr "Alles klar, Abgabe erledigt. Während du auf deinen Lehrer wartest, kann
 msgid "handin.obligatory"
 msgstr "Verpflichtende Abgabe"
 
+msgid "handin.title"
+msgstr "Abgabe"
+
+msgid "handin.back.title"
+msgstr "Korrektur"
+
+msgid "handin.accept"
+msgstr "Akzeptieren"
+
+msgid "handin.deny"
+msgstr "Verweigern"
+
+# #####################
+# CHAPTER-EDITOR
+# #####################
+
+msgid "link.extern"
+msgstr "Externer Link"
+
+msgid "link.extern.url"
+msgstr "Pfad eingeben"
+
+msgid "link.intern"
+msgstr "Interner Link"
+
+msgid "link.intern.chapter"
+msgstr "Kapitel auswählen"
+
 # #####################
 # CLOUD
 # #####################

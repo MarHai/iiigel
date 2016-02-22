@@ -363,6 +363,26 @@ $(function() {
         return false;
     });
     
+    $('a.iiigel-handin-accept').off('click').on('click', function(_oEvent) {
+        _oEvent.preventDefault();
+        if (oHandinCloud.length > 0) {
+        	$.get('?c=Iiigel&a=accept', { _sHashId: oHandinCloud[0].name }, function() {
+        		window.location = '';
+        	});
+        }
+        return false;
+    });
+    
+    $('a.iiigel-handin-deny').off('click').on('click', function(_oEvent) {
+        _oEvent.preventDefault();
+        if (oHandinCloud.length > 0) {
+        	$.get('?c=Iiigel&a=deny', { _sHashId: oHandinCloud[0].name }, function() {
+        		window.location = '';
+        	});
+        }
+        return false;
+    });
+    
     //help call requests
     $('a.iiigel-help').off('click').on('click', function(_oEvent) {
         _oEvent.preventDefault();
@@ -451,4 +471,10 @@ $(function() {
             $('#iiigel-editor .iiigel-files a[data-hash]').first().click();
         });
     }
+    
+    for (var i = 0; i < _HandinMessages.length; i++) {
+    	$.gritter.add(_HandinMessages[i]);
+    }
 });
+
+

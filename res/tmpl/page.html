@@ -47,6 +47,27 @@
         <script src="{{ sUrl }}res/i18n/{{ sCountry }}/LC_MESSAGES/{{ sDomain }}.js"></script>
         <script src="{{ sUrl }}res/script/basic.js"></script>
         <script src="{{ sUrl }}res/script/iiigel.js"></script>
+        {% if bHandinMessages %}
+        <script type="text/javascript">
+        	var _HandinMessages = [];
+        	{% for oRow in aReviewHandins %}
+        	_HandinMessages.push({
+        		title: '<a href="{{ sUrl }}learn/lookAtHandin/{{ oRow.sHashId }}">{% trans 'handin.title' %}: {{ oRow.sName }}</a>',
+        		text: '{{ oRow.sChapter }}',
+        		image: 'http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm',
+        		sticky: true
+        	});
+        	{% endfor %}
+        	{% for oRow in aCheckedHandins %}
+        	_HandinMessages.push({
+        		title: '<a href="{{ sUrl }}learn/{{ oRow.sLearn }}">{% trans 'handin.back.title' %}: {{ oRow.sName }}</a>',
+        		text: '{{ oRow.sChapter }}',
+        		image: 'http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm',
+        		sticky: true
+        	});
+        	{% endfor %}
+        </script>
+        {% endif %}
     </head>
     <body>
         <section id="container">

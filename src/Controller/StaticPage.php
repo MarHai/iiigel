@@ -10,6 +10,39 @@ class StaticPage extends \Iiigel\Controller\DefaultController {
      */
     public function __construct() {
         $this->oView = new \Iiigel\View\Page();
+        
+        if ($GLOBALS['oUserLogin'] !== NULL) {
+        	$oTmpHandin = new \Iiigel\Model\Handin();
+        	
+        	$aReviewHandins = array();
+        	$aCheckedHandins = array();
+        	
+        	foreach ($GLOBALS['oUserLogin']->getGroups() as $oGroup) {
+        		if ($this->hasGroupEditPermission($oGroup->sHashId)) {
+        			$oResult = $oTmpHandin->getList($oGroup->sHashId);
+        	
+        			while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
+        				$oTemp = new \Iiigel\Model\Handin($aRow);
+        	
+        				$aReviewHandins[] = $oTemp->getCompleteEntry();
+        			}
+        		}
+        	}
+        	
+        	$oResult = $oTmpHandin->getList($GLOBALS['oUserLogin']->sHashId);
+        	
+        	while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
+        		$oTemp = new \Iiigel\Model\Handin($aRow);
+        	
+        		$aCheckedHandins[] = $oTemp->getCompleteEntry();
+        	}
+        	
+        	$this->oView->bHandinMessages = (count($aReviewHandins) > 0) || (count($aCheckedHandins) > 0);
+        	$this->oView->aReviewHandins = $aReviewHandins;
+        	$this->oView->aCheckedHandins = $aCheckedHandins;
+        } else {
+        	$this->oView->bHandinMessages = FALSE;
+        }
     }
     
     /**

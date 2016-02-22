@@ -42,6 +42,16 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
 				$this->oChapter = new \Iiigel\Model\Chapter($nCurrentChapter);
 			}
         } else {
+        	$aTemp = array();
+        	 
+        	foreach ($this->oView->aCheckedHandins as $oRow) {
+        		if ($oRow['sLearn'] !== $_sHashId) {
+        			$aTemp[] = $oRow;
+        		}
+        	}
+        	 
+        	$this->oView->aCheckedHandins = $aTemp;
+        	
             $this->oChapter = new \Iiigel\Model\Chapter($_sHashId);
             $this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
         }
@@ -92,30 +102,45 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
     }
     
     public function lookAtHandin($_sHashId) {
-    	$oHandin = new \Iiigel\Model\Handin($_sHashId);
+    	$aTemp = array();
     	
-    	$this->oCloud = new \Iiigel\Model\Cloud(intval($oHandin->nIdCreator));
-    	$this->oChapter = new \Iiigel\Model\Chapter(intval($oHandin->nIdChapter));
-    	$this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
-    	
-    	if($oHandin->sInterpreter !== NULL) {
-    		$sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$oHandin->sInterpreter;
-    		 
-    		if(class_exists($sInterpreter)) {
-    			$this->oInterpreter = new $sInterpreter($this->oCloud);
-    		} else {
-    			$this->oInterpreter = new \Iiigel\View\Interpreter\File($this->oCloud);
+    	foreach ($this->oView->aReviewHandins as $oRow) {
+    		if ($oRow['sHashId'] !== $_sHashId) {
+    			$aTemp[] = $oRow;
     		}
+    	}
+    	
+    	$this->oView->aReviewHandins = $aTemp;
+    	
+    	$oHandin = new \Iiigel\Model\Handin($_sHashId);
+    	$oGroup = new \Iiigel\Model\Group(intval($oHandin->nIdGroup));
+    	
+    	if ($this->hasGroupEditPermission($oGroup->sHashId)) {
+    		$this->oCloud = new \Iiigel\Model\Cloud(intval($oHandin->nIdCreator));
+    		$this->oChapter = new \Iiigel\Model\Chapter(intval($oHandin->nIdChapter));
+    		$this->oModule = new \Iiigel\Model\Module(intval($this->oChapter->nIdModule));
+    		 
+    		if($oHandin->sInterpreter !== NULL) {
+    			$sInterpreter = '\\Iiigel\\View\\Interpreter\\'.$oHandin->sInterpreter;
+    			 
+    			if(class_exists($sInterpreter)) {
+    				$this->oInterpreter = new $sInterpreter($this->oCloud);
+    			} else {
+    				$this->oInterpreter = new \Iiigel\View\Interpreter\File($this->oCloud);
+    			}
     		
-    		$this->oView->oModule = $this->oModule;
-    		$this->oChapter->sText =  $this->oChapter->replaceTags( $this->oChapter->sText);
-    		$this->oView->oChapter = $this->oChapter;
-    		$this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
-    		$this->oView->bHandin = TRUE;
-    		$this->oView->oHandin = $oHandin;
-    		$this->loadFile('iiigel');
+    			$this->oView->oModule = $this->oModule;
+    			$this->oChapter->sText =  $this->oChapter->replaceTags( $this->oChapter->sText);
+    			$this->oView->oChapter = $this->oChapter;
+    			$this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
+    			$this->oView->bHandin = TRUE;
+    			$this->oView->oHandin = $oHandin;
+    			$this->loadFile('iiigel');
+    		} else {
+    			throw new \Exception(sprintf(_('error.objectload'), $_sHashId));
+    		}
     	} else {
-    		throw new \Exception(sprintf(_('error.objectload'), $_sHashId));
+    		throw new \Exception(_('error.permission'));
     	}
     }
     
@@ -334,18 +359,74 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
     		
     		if ($GLOBALS['oDb']->count($oResult) > 0) {
     			if ($aRow = $GLOBALS['oDb']->get($oResult)) {
-    				$oHandin = new \Iiigel\Model\Handin(array(
-    					"nIdGroup" => $aRow['nIdGroup'],
-    					"nIdChapter" => $this->oChapter->nId,
-    					"sInterpreter" => $this->oChapter->sInterpreter,
-    					"sCloud" => $sState
-    				));
+    				$oResult = $GLOBALS['oDb']->query('SELECT * FROM handin WHERE 
+    					nIdCreator = '.$nIdUser.' AND
+    					nIdGroup = '.$GLOBALS['oDb']->escape($aRow['nIdGroup']).' AND
+    					nIdChapter = '.$nIdChapter.'
+    				LIMIT 1;');
     				
-    				if ($oHandin->create() !== NULL) {
-    					$this->sRawOutput = $sState;
+    				if ($GLOBALS['oDb']->count($oResult) > 0) {
+    					$oHandin = new \Iiigel\Model\Handin($GLOBALS['oDb']->get($oResult));
+    					
+    					$oHandin->bCurrentlyUnderReview = !$oHandin->bCurrentlyUnderReview;
+    					
+    					if ($oHandin->update()) {
+    						$this->sRawOutput = $sState;
+    					}
+    				} else {
+    					$oHandin = new \Iiigel\Model\Handin(array(
+    						"nIdGroup" => $aRow['nIdGroup'],
+    						"nIdChapter" => $this->oChapter->nId,
+    						"sInterpreter" => $this->oChapter->sInterpreter,
+    						"sCloud" => $sState
+    					));
+    					
+    					if ($oHandin->create() !== NULL) {
+    						$this->sRawOutput = $sState;
+    					}
     				}
     			}
     		}
+    	}
+    }
+
+    /**
+     * Accepts a handin for the current chapter.
+     */
+    public function accept($_sHashId) {
+    	$oHandin = new \Iiigel\Model\Handin($_sHashId);
+    	$oGroup = new \Iiigel\Model\Group(intval($oHandin->nIdGroup));
+    	
+    	if ($this->hasGroupEditPermission($oGroup->sHashId)) {
+    		$oChapter = new \Iiigel\Model\Chapter(intval($oHandin->nIdChapter));
+    		
+    		$nOrder = $GLOBALS['oDb']->escape($oChapter->nOrder);
+    		$nIdModule = $GLOBALS['oDb']->escape($oChapter->nIdModule);
+    		$nIdUser = $GLOBALS['oDb']->escape($oHandin->nIdCreator);
+    		$nIdGroup = $GLOBALS['oDb']->escape($oGroup->nId);
+    		
+    		$GLOBALS['oDb']->query('UPDATE `user2group` SET `nIdChapter` = (SELECT `nId` FROM `chapter` WHERE NOT `bDeleted` AND `bLive` AND `nOrder` > '.$nOrder.' AND `nIdModule` = '.$nIdModule.' ORDER BY `nOrder` ASC LIMIT 1) WHERE NOT `bDeleted` AND `nIdUser` = '.$nIdUser.' AND `nIdGroup` = '.$nIdGroup.';');
+    		
+    		$this->sRawOutput = ($oHandin->delete()? 'y' : 'n');
+    	} else {
+    		throw new \Exception(_('error.permission'));
+    	}
+    }
+
+    /**
+     * Denies a handin for the current chapter.
+     */
+    public function deny($_sHashId) {
+    	$oHandin = new \Iiigel\Model\Handin($_sHashId);
+    	$oGroup = new \Iiigel\Model\Group(intval($oHandin->nIdGroup));
+    	
+    	if ($this->hasGroupEditPermission($oGroup->sHashId)) {
+    		$oHandin->bCurrentlyUnderReview = !$oHandin->bCurrentlyUnderReview;
+    		$oHandin->nRound += 1;
+    		
+    		$this->sRawOutput = ($oHandin->update()? 'y' : 'n');
+    	} else {
+    		throw new \Exception(_('error.permission'));
     	}
     }
     
