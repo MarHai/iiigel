@@ -1,0 +1,19 @@
+<h3><i class="fa fa-angle-right"></i> {% trans 'addusers' %}</h3>
+<form class="form-horizontal" method="post" action="{{ sUrl }}Admin/{{ sType }}/addUser/{{ sHashId }}">
+    <div class="form-group">
+        <label class="col-md-offset-1 col-md-3 control-label" for="nIdUser">{% trans %}user{% endtrans %}</label>
+        <div class="col-md-6">
+            <select id="nIdUser" name="nIdUser" class="form-control input-md">
+                {% for aRow in aUser %}
+                    <option value="{{ aRow.nId }}">{{ aRow.sName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-6">
+            <input type="submit" class="btn btn-success" value="{% trans 'add' %}" />
+        </div>
+    </div>
+</form>

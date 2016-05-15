@@ -73,8 +73,7 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
 						AND a.nIdGroup = (SELECT nId FROM `group` WHERE sHashId = '.$GLOBALS['oDb']->escape($_sHashId).') 
 						AND (a.nStart IS NULL OR a.nStart = 0 OR a.nStart < UNIX_TIMESTAMP()) AND (a.nEnd IS NULL OR a.nEnd = 0 OR a.nEnd > UNIX_TIMESTAMP())
 						AND b.nId = a.nIdUser
-						AND c.nId = a.nIdModule
-						AND d.nId = a.nIdChapter
+						AND ((c.nId = a.nIdModule AND d.nId = a.nIdChapter) OR (a.nIdModule = 0 AND a.nIdChapter = 0 AND c.nId = (SELECT MIN(nId) FROM `module`) AND d.nId = (SELECT MIN(nId) FROM `chapter`)))
 					ORDER BY sUser ASC');
 		}
     }
@@ -92,8 +91,8 @@ class GroupAffiliation extends \Iiigel\Model\Affiliation {
             return array(
                 'sUser' => $this->sUser,
                 'bAdmin' => $this->bAdmin,
-                'sModule' => $this->sModule,
-                'sChapter' => $this->sChapter
+                'sModule' => $this->nIdModule == 0? '-' : $this->sModule,
+                'sChapter' => $this->nIdChapter == 0? '-' : $this->sChapter
             );
         }
     }
