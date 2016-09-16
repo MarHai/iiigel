@@ -26,6 +26,8 @@ var Group = {
 			this.modules[sHashId] = aData;
 			this.modules.push(this.modules[sHashId]);
 		} else {
+			aData.bModule = (nType != 3);
+			
 			this.users[sHashId] = aData;
 			this.users.push(this.users[sHashId]);
 		}
@@ -56,7 +58,7 @@ var Group = {
 			sHtml += "<form id='Group-editUser-" + this.idIndex + "' action='" + this.url + "Group/editUser/" + this.hashId + "/" + sHashId + "' method='GET'>";
 			sHtml += "<table style='width: 100%;'><tr><th></th><th></th></tr>";
 			
-			var oModule = this.modules[oTemp.sModuleHashId];
+			var oModule = oTemp.bModule? this.modules[oTemp.sModuleHashId] : null;
 			
 			sHtml += "<tr><td>" + i18n('module') + "</td>";
 			sHtml += "<td><select name='sHashIdModule' style='width: 100%;'>";
@@ -64,7 +66,7 @@ var Group = {
 			for (var i = 0; i < this.modules.length; i++) {
 				sHtml += "<option value='" + this.modules[i].sHashId + "'";
 				
-				if (this.modules[i].sHashId === oTemp.sModuleHashId) {
+				if ((oTemp.bModule) && (this.modules[i].sHashId === oTemp.sModuleHashId)) {
 					sHtml += " selected='selected'";
 				}
 				
@@ -74,19 +76,25 @@ var Group = {
 			sHtml += "</select></td></tr>";
 			
 			sHtml += "<tr><td>" + i18n('mode.chapter') + "</td>";
-			sHtml += "<td><select name='sHashIdChapter' style='width: 100%;'>";
+			sHtml += "<td>";
 			
-			for (var i = 0; i < oModule.aChapters.length; i++) {
-				sHtml += "<option value='" + oModule.aChapters[i].sHashId + "'";
+			if (oTemp.bModule) {
+				sHtml += "<select name='sHashIdChapter' style='width: 100%;'>";
 				
-				if (oModule.aChapters[i].nId == oTemp.nCurrentChapterId) {
-					sHtml += " selected='selected'";
+				for (var i = 0; i < oModule.aChapters.length; i++) {
+					sHtml += "<option value='" + oModule.aChapters[i].sHashId + "'";
+					
+					if (oModule.aChapters[i].nId == oTemp.nCurrentChapterId) {
+						sHtml += " selected='selected'";
+					}
+					
+					sHtml += ">" + oModule.aChapters[i].nOrder + " - " + oModule.aChapters[i].sName + "</option>";
 				}
 				
-				sHtml += ">" + oModule.aChapters[i].nOrder + " - " + oModule.aChapters[i].sName + "</option>";
+				sHtml += "</select>";
 			}
 			
-			sHtml += "</select></td></tr>";
+			sHtml += "</td></tr>";
 			
 			sHtml += "</table></form></div><div>";
 			

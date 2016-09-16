@@ -1,4 +1,4 @@
-{% macro mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin, oHandin) %}
+{% macro mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin, oHandin,  icurrentuserprogress) %}
     <div class="row mt">
         <div class="col-lg-9 col-md-9 col-sm-12">
             <div class="showback iiigel-scroll" id="iiigel-chapter">
@@ -92,9 +92,22 @@
                     <div class="progress-bar" role="progressbar" aria-valuenow="{{ bHandin? oModule.getProgress(oHandin.nIdCreator) : oModule.nProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ bHandin? oModule.getProgress(oHandin.nIdCreator) : oModule.nProgress }}%"></div>
                 </div>
                 <div class="list-group">
+					{% set activeChapter = oChapter.nOrder %}
                 	{% for oChapter in oModule.aChapter %}
-                        <a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" {{ bHandin? 'onclick="return false;"' : '' }} data-chapter="{{ oChapter.sHashId }}" class="list-group-item{{ (oChapter.nId == (bHandin? oHandin.nIdChapter : oModule.nCurrentChapter) ? ' active' : '') }} {{ bHandin? 'disabled' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
-                    {% endfor %}
+						{% if loop.index == activeChapter %}
+							<a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" {{ bHandin? 'onclick="return false;"' : '' }} data-chapter="{{ oChapter.sHashId }}" class="list-group-item list-group-item-info{{ (oChapter.nId == (bHandin? oHandin.nIdChapter : oModule.nCurrentChapter) ? ' active' : '') }} {{ bHandin? 'disabled' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+						{% else %}
+							{% if loop.index < icurrentuserprogress %}
+								<a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" {{ bHandin? 'onclick="return false;"' : '' }} data-chapter="{{ oChapter.sHashId }}" class="list-group-item{{ (oChapter.nId == (bHandin? oHandin.nIdChapter : oModule.nCurrentChapter) ? ' active' : '') }} {{ bHandin? 'disabled' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+							{% endif %}
+							{% if loop.index == icurrentuserprogress %}
+								<a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" {{ bHandin? 'onclick="return false;"' : '' }} data-chapter="{{ oChapter.sHashId }}" class="list-group-item list-group-item-info{{ (oChapter.nId == (bHandin? oHandin.nIdChapter : oModule.nCurrentChapter) ? ' active' : '') }} {{ bHandin? 'disabled' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+							{% endif %}
+							{% if loop.index > icurrentuserprogress %}
+								<a href="{{ sUrl }}learn/{{ oChapter.sHashId }}" {{ bHandin? 'onclick="return false;"' : '' }} data-chapter="{{ oChapter.sHashId }}" style='background: #e6e6e6'  class="list-group-item{{ (oChapter.nId == (bHandin? oHandin.nIdChapter : oModule.nCurrentChapter) ? ' active' : '') }} {{ bHandin? 'disabled' : '' }}">{{ loop.index }}. {{ oChapter.sName }}</a>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
                 </div>
             </div>
             <div class="showback" id="iiigel-controls">
@@ -150,7 +163,7 @@
 
 {% set nRows = 1 %}
 {% set nColumns = [ 1 ] %}
-{% set aContent = { '0': { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin, oHandin) } } %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, bGroupAdmin, oModule, oChapter, nEditorWaitTime, bHandin, oHandin, icurrentuserprogress) } } %}
 
 {% block content %}
     {{ parent() }}

@@ -1,5 +1,4 @@
-
-{% macro mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, aNotInGroup, aGroupModules, bGroupEdit) %}
+{% macro mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, aNotInGroup, aGroupModules, bGroupEdit,aHandins) %}
   <div>
    <h3>{{ aGroup.sName }} <small> - {{ aGroup.nIdInstitution }}</small></h3>
    <script type="text/javascript" src="res/script/group.js"></script>
@@ -21,11 +20,11 @@
 	 </thead>
 		{% for oRow in aGroupLeaders %}
 		 <tr {% if bGroupEdit %} onclick="Group.open(1, '{{ oRow.sHashIdU2G }}');" {% endif %} >
-		  <td align = 'center'>
+		  <td align = 'center' style = "vertical-align: middle;">
 		   {% if oRow.bOnline %}
-            <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
+            <i class="fa fa-globe" style="color: #00DD00; display: table-cell;vertical-align: middle;" ></i>
            {% else %}
-            <i class="fa fa-globe" style="color: #880000; margin-top: 8px;" ></i>
+            <i class="fa fa-globe" style="color: #880000; display: table-cell;vertical-align: middle;" ></i>
            {% endif %}
 		  </td>
 		  <td><a href="{{ sUrl }}Profile/{{ oRow.sHashId }}">
@@ -47,7 +46,7 @@
 	  <tr><form id="fAddAdmin" action="{{ sUrl }}Group/addAdmin/{{ aGroup.sHashId }}" method="GET">
 	   <td></td>
 	   <td>
-	    <div style="margin-top: 8px;">
+	    <div style="display: table-cell;vertical-align: middle;">
 	     <select name="sHashIdUser" style="width: 100%">
 	      {% for oRow in aNotInGroup %}
 	       <option value="{{ oRow.sHashId }}" >
@@ -71,50 +70,83 @@
 	 <thead>
 	  <tr>
 	   <th width="10%">{% trans 'online' %}</th>
-	   <th width="40%">{% trans 'name' %}</th>
+	   <th width="40%">{% trans 'name' %}</th> 
+	   <th width="10%">{% trans 'viewcloud' %}</th>
 	   <th width="10%">{% trans 'module' %}</th>
+	   <th width="40%"></th>
+	   <th width="10%">{% trans 'handin' %}</th>
+	   <th width="10%">{% trans 'levelup' %}</th>
 	   <th></th>
 	  </tr>
 	 </thead>
 		{% for oRow in aGroupMembers %}
 		 <tr {% if bGroupEdit %} onclick="Group.open(0, '{{ oRow.sHashIdU2G }}');" {% endif %} >
-		  <td align = 'center'>
+		  <td align = 'center' style = "vertical-align: middle;">
 		   {% if oRow.bOnline %}
-            <i class="fa fa-globe" style="color: #00DD00; margin-top: 8px;" ></i>
+            <i class="fa fa-globe" style="color: #00DD00; display: table-cell;vertical-align: middle;" ></i>
            {% else %}
-            <i class="fa fa-globe" style="color: #880000; margin-top: 8px;" ></i>
+            <i class="fa fa-globe" style="color: #880000; display: table-cell;vertical-align: middle;" ></i>
            {% endif %}
 		  </td>
 		  <td><a href="{{ sUrl }}Profile/{{ oRow.sHashId }}">
 		   <img src="http://www.gravatar.com/avatar/{{ oRow.sHash }}.jpg?s=32&d=mm" class="img-circle" width="32" style="margin-bottom: 8px; margin-right: 8px;" />
 		   {{ oRow.sName }}
 		  </a></td>
+             
+          <td align = 'center' style = "vertical-align: middle;">
+            <div class="glyphicon glyphicon-folder-open" style="display: table-cell;vertical-align: middle;" aria-hidden="true"></div>   
+          </td> 
+             
 		  <td>
-		   <img width="32" src="{{ sUrl }}{{ oRow.sModuleImage }}" alt="Image" style="float: left; margin-left: 8px; margin-right: 8px;">
+		   {% if oRow.bModule %}
+		    <img width="32" src="{{ sUrl }}{{ oRow.sModuleImage }}" alt="Image" style="float: left; margin-left: 8px; margin-right: 8px;">
+		   {% endif %}
 		  </td>
 		  <td>
-		   <div class="progress" style="margin-top: 8px;">
-            <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nModuleProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nModuleProgress }}%">
+		   {% if oRow.bModule %}
+		    <div class="progress" style="margin-top: 8px;">
+             <div class="progress-bar" role="progressbar" aria-valuenow="{{ oRow.nModuleProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ oRow.nModuleProgress }}%">
+             </div>
             </div>
-           </div>
-           <script type="text/javascript">
-		  	Group.create(0, "{{ oRow.sHashIdU2G }}", {
+            <script type="text/javascript">
+		  	 Group.create(0, "{{ oRow.sHashIdU2G }}", {
 		  		"sHashId" : "{{ oRow.sHashId }}",
 		  		"sName" : "{{ oRow.sName }}",
 		  		"sHash" : "{{ oRow.sHash }}",
 		  		"sModuleHashId" : "{{ oRow.sModuleHashId }}",
-		  		"nCurrentChapterId" : "{{ oRow.nCurrentChapterId }}",
+		  	 	"nCurrentChapterId" : "{{ oRow.nCurrentChapterId }}",
+		  	 	"bOnline" : {{ oRow.bOnline }}
+		  	 });
+		    </script>
+		   {% else %}
+		    <script type="text/javascript">
+		     Group.create(3, "{{ oRow.sHashIdU2G }}", {
+		  		"sHashId" : "{{ oRow.sHashId }}",
+		  		"sName" : "{{ oRow.sName }}",
+		  		"sHash" : "{{ oRow.sHash }}",
 		  		"bOnline" : {{ oRow.bOnline }}
-		  	});
-		   </script>
+		  	 });
+		    </script>
+		   {% endif %}
 		  </td>
+		  
+			{% set found = 0  %}
+			{% for oHandin in aHandins %}
+				{% if (oHandin.nIdCreator == oRow.nId) and (found ==0) %}
+					<td align = 'center' style = "color:#FF5959;vertical-align: middle;"><a class="glyphicon glyphicon-bell" style=" color: inherit; display: table-row;vertical-align: middle;" aria-hidden="true" href="{{ sUrl }}learn/lookAtHandin/{{ oHandin.sHashId }}"></a>  </td>{% set found = 1  %}
+				{% endif %}
+			{% endfor %}
+			{% if found == 0 %}
+				<td align = 'center' style = "vertical-align: middle;"><div class="glyphicon glyphicon-bell" style="display: table-row;vertical-align: middle;" aria-hidden="true"></div>  </td>
+			{% endif %}		
+			<td align = 'center' style = "vertical-align: middle;"><div class="glyphicon glyphicon-plus-sign" style="display: table-cell;vertical-align: middle;" aria-hidden="true"></div> </td>
 		 </tr>
 		{% endfor %}
 	 {% if (bGroupEdit) and (aNotInGroup|length > 0) %}
 	  <tr><form id="fAddUser" action="{{ sUrl }}Group/addUser/{{ aGroup.sHashId }}" method="GET">
 	   <td></td>
 	   <td>
-	    <div style="margin-top: 8px;">
+	    <div style="display: table-cell;vertical-align: middle;">
 	     <select name="sHashIdUser" style="width: 100%">
 	      {% for oRow in aNotInGroup %}
 	       <option value="{{ oRow.sHashId }}" >
@@ -126,7 +158,7 @@
 	   </td>
 	   <td></td>
 	   <td>
-	    <div style="margin-top: 8px;">
+	    <div style="display: table-cell;vertical-align: middle;">
 	     <select name="sHashIdModule" style="min-width: 50%">
 	      {% for oRow in aGroupModules %}
 	       <option value="{{ oRow.sHashId }}" >
@@ -144,7 +176,7 @@
   </div>
 {% endmacro %}
 
-{% macro modules(aGroupModules, bGroupEdit) %}
+{% macro modules(aGroup, aGroupModules, aOtherModules, bGroupAdmin) %}
  <div>
   <h3><i class="fa fa-angle-right"></i>
    {% if aGroupModules|length > 1 %}
@@ -180,9 +212,28 @@
 			"aChapters" : aTempChapters
 		});
 	</script>
+    </td><td>
+     {% if bGroupAdmin %}
+      <form id="fRemoveModule" action="{{ sUrl }}Group/removeModule/{{ aGroup.sHashId }}" method="GET">
+       <input type="hidden" name="sHashIdModule" value="{{ oRow.sHashId }}" />
+       <a class="btn btn-danger" style="float: right; margin-top: 4px; margin-right: 8px;" onclick="return Group.click('fRemoveModule');">{% trans 'remove' %}</a>
+      </form>
+     {% endif %}
     </td></tr>
    {% endfor %}
   </table>
+  {% if bGroupAdmin %}
+   <div><form id="fAddModule" action="{{ sUrl }}Group/addModule/{{ aGroup.sHashId }}" method="GET">
+    <select name="sHashIdModule" style="min-width: 30%">
+	 {% for oRow in aOtherModules %}
+	  <option value="{{ oRow.sHashId }}" >
+	   {{ oRow.sName }}
+	  </option>
+	 {% endfor %}
+	</select>
+	<a class="btn btn-primary" style="margin-top: -4px; margin-left: 8px;" onclick="return Group.click('fAddModule');">{% trans 'add' %}</a>
+   </form></div>
+  {% endif %}
  </div>
 {% endmacro %}
 
@@ -191,7 +242,7 @@
 
 {% set nRows = 1 %}
 {% set nColumns = [ 2 ] %}
-{% set aContent = { '0': { '0': get.mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, aNotInGroup, aGroupModules, (bGroupEdit) or (bAdmin)), '1' : get.modules(aGroupModules, (bGroupAdmin) or (bAdmin)) } } %}
+{% set aContent = { '0': { '0': get.mainContent(sUrl, aGroup, aGroupLeaders, aGroupMembers, aNotInGroup, aGroupModules, (bGroupEdit) or (bAdmin),aHandins), '1' : get.modules(aGroup, aGroupModules, aOtherModules, (bGroupAdmin) or (bAdmin)) } } %}
 
 {% block content %}
     {{ parent() }}

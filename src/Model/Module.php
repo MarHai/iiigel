@@ -64,6 +64,41 @@ class Module extends \Iiigel\Model\GenericModel {
        	return 0;
 	}
     
+    	/**
+	 * Return the user's progress as Module Index of the current chapter in this module.
+	 *
+	 * @param integer $_nIdUser user ID
+	 * @return integer the Module index of the current chapter or 0 if there is not any sort of progress
+	 */
+	public function getCurrentChapterProgressOrder($_nIdUser) {
+        
+         $nId = $GLOBALS['oDb']->escape($this->nId);
+        
+        $oResult = $GLOBALS['oDb']->query('SELECT user2group.nIdChapter AS nCurrentChapter FROM user2group, chapter WHERE NOT user2group.bDeleted AND user2group.nIdUser = '.$GLOBALS['oDb']->escape($_nIdUser).' AND user2group.nIdModule = '.$nId.' AND user2group.nIdChapter = chapter.nId ORDER BY chapter.nOrder DESC LIMIT 1;');
+        
+        $nChapterId = 0;
+        
+        if ($GLOBALS['oDb']->count($oResult) > 0) {
+        	if ($aRow = $GLOBALS['oDb']->get($oResult)) {
+            	$nChapterId = intval($aRow['nCurrentChapter']);
+        	}
+        }
+        
+        
+        
+        if ($nChapterId > 0 ){
+           $oResult =  $GLOBALS['oDb']->query('SELECT nOrder FROM chapter WHERE chapter.nId = '.$nChapterId.'');
+        }        
+         if ($GLOBALS['oDb']->count($oResult) > 0) {
+        	if ($aRow = $GLOBALS['oDb']->get($oResult)) {
+            	return intval($aRow['nOrder']);
+        	}
+        }
+        return 0;
+	}
+    
+    
+    
     /**
      * Access id (->nId), nProgress (->nProgress), or any other data (->NAME).
      * 

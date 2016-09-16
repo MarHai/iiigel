@@ -83,7 +83,11 @@ class Database {
      * @return integer number of rows retrieved/affected
      */
     public function count($_oResult) {
-        return $_oResult->num_rows;
+    	if (isset($_oResult->num_rows)) {
+        	return $_oResult->num_rows;
+    	} else {
+    		return 0;
+    	}
     }
     
     /**

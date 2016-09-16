@@ -3,7 +3,7 @@
 $GLOBALS['aConfig'] = array(
     
     //if true, debug information is shown every now and then
-    'bDebug' => TRUE,
+    'bDebug' => FALSE,
     
     //if URL root path is not /, then it needs to be specified here (without trailing slash)
     'sRootPath' => 'iiigel',

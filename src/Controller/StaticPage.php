@@ -11,7 +11,7 @@ class StaticPage extends \Iiigel\Controller\DefaultController {
     public function __construct() {
         $this->oView = new \Iiigel\View\Page();
         
-        if ($GLOBALS['oUserLogin'] !== NULL) {
+        if (isset($GLOBALS['oUserLogin'])) {
         	$oTmpHandin = new \Iiigel\Model\Handin();
         	
         	$aReviewHandins = array();

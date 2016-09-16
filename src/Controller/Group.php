@@ -37,7 +37,8 @@ class Group extends \Iiigel\Controller\StaticPage {
 		$oResult = $oSingle->getList($_sHashId, $oSingle::MODE_MEMBER);
 		
 		while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
-			$oTempModule = new \Iiigel\Model\Module(intval($aRow['nIdModule']));
+			$nTempIdModule = intval($aRow['nIdModule']);
+			$oTempModule = $nTempIdModule != 0? new \Iiigel\Model\Module($nTempIdModule) : NULL;
 			
 			unset($aRow['nIdModule']);
 			
@@ -54,11 +55,15 @@ class Group extends \Iiigel\Controller\StaticPage {
             $aEntry['sHash'] = md5(strtolower(trim($oTemp->sMail)));
             $aEntry['bOnline'] = FALSE | $oTemp->isOnline();
             $aEntry['sHashIdU2G'] = $aRow['sHashIdU2G'];
+            $aEntry['bModule'] = ($nTempIdModule != 0);
+			$aEntry['nId']=$oTemp -> nId;
             
-            $aEntry['sModuleHashId'] = $oTempModule->sHashId;
-            $aEntry['sModuleImage'] = $oTempModule->sImage;
-            $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
-            $aEntry['nCurrentChapterId'] = $oTempModule->getCurrentChapter($oTemp->nId);
+            if ($oTempModule !== NULL) {
+	            $aEntry['sModuleHashId'] = $oTempModule->sHashId;
+	            $aEntry['sModuleImage'] = $oTempModule->sImage;
+	            $aEntry['nModuleProgress'] = $oTempModule->getProgress($oTemp->nId);
+	            $aEntry['nCurrentChapterId'] = $oTempModule->getCurrentChapter($oTemp->nId);
+            }
             
            	$aMembers[] = $aEntry;
         }
@@ -100,17 +105,60 @@ class Group extends \Iiigel\Controller\StaticPage {
             
 			$aModules[] = $aEntry;
         }
+        
+        $oSingle = new \Iiigel\Model\Module();
+        $oResult = $oSingle->getList();
+        
+        $aOtherModules = array();
+        
+        while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
+        	$oTemp = new \Iiigel\Model\Module($aRow);
+        	$bFound = false;
+        	
+        	for ($i = count($aModules) - 1; $i >= 0; $i--) {
+            	if ($aModules[$i]['sHashId'] === $oTemp->sHashId) {
+            		$bFound = true;
+            	}
+            }
+            
+            if (!$bFound) {
+            	$aEntry = $oTemp->getCompleteEntry();
+            	
+            	$aOtherModules[] = $aEntry;
+            }
+        }
+		
+		
+		$oSingle = new \Iiigel\Model\Handin();
+        $oResult = $oSingle->getList();
+        
+        while(($GLOBALS['oDb']->count($oResult) > 0) && ($aRow = $GLOBALS['oDb']->get($oResult))) {
+        	$oTemp = new \Iiigel\Model\Handin($aRow);
+			if ($oTemp->nIdGroup == $oGroup->nId ){
+				$aEntry = $oTemp->getCompleteEntry();
+				$aEntry['nIdCreator']=$oTemp->nIdCreator;
+			}
+            $aHandins[] = $aEntry;
+        }
 		
 		$this->oView->aGroupLeaders = $aLeaders;
     	$this->oView->aGroupMembers = $aMembers;
 		$this->oView->aGroupModules = $aModules;
 		
 		$this->oView->aNotInGroup = $aNot;
+		$this->oView->aOtherModules = $aOtherModules;
     	
     	$this->oView->bGroupEdit = $this->hasGroupEditPermission($_sHashId);
+		
+		
+		$this->oView->aHandins =  $aHandins;
     	
     	$this->loadFile('group');
-    }
+
+		
+		
+
+	}
     
     /**
      * Add a user to a group.
@@ -191,7 +239,7 @@ class Group extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashId hashed string represents the group
      */
     public function addUser($_sHashId = NULL) {
-    if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser'])) && (isset($GLOBALS['aRequest']['sHashIdModule']))) {
+    	if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdUser'])) && (isset($GLOBALS['aRequest']['sHashIdModule']))) {
     		return $this->add(new \Iiigel\Model\Group($_sHashId), new \Iiigel\Model\User($GLOBALS['aRequest']['sHashIdUser']), False, new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']));
     	} else {
     		throw new \Exception(_('error.permission'));
@@ -205,14 +253,26 @@ class Group extends \Iiigel\Controller\StaticPage {
      * @param string $_sHashIdU2G hashed string represents the relation
      */
     public function editUser($_sHashId = NULL, $_sHashIdU2G = NULL) {
-    	if (($_sHashIdU2G != NULL) && (isset($GLOBALS['aRequest']['sHashIdChapter'])) && (isset($GLOBALS['aRequest']['sHashIdModule'])) && ($this->hasGroupEditPermission($_sHashId))) {
+    	if (($_sHashIdU2G != NULL) && (isset($GLOBALS['aRequest']['sHashIdModule'])) && ($this->hasGroupEditPermission($_sHashId))) {
     		$oGroup = new \Iiigel\Model\Group($_sHashId);
     		$oAffiliation = new \Iiigel\Model\GroupAffiliation($_sHashIdU2G);
-    		$oChapter = new \Iiigel\Model\Chapter($GLOBALS['aRequest']['sHashIdChapter']);
+    		
     		$oModule = new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']);
+    		$oChapter = NULL;
+    		
+    		if (isset($GLOBALS['aRequest']['sHashIdChapter'])) {
+    			$oChapter = new \Iiigel\Model\Chapter($GLOBALS['aRequest']['sHashIdChapter']);
+    		} else {
+    			$oTemp = new \Iiigel\Model\Chapter();
+    			$mResult = $oTemp->getList($oModule->nId);
+    			
+    			if ($GLOBALS['oDb']->count($mResult) > 0) {
+    				$oChapter =new \Iiigel\Model\Chapter($GLOBALS['oDb']->get($mResult));
+    			}
+    		}
     		
     		$oAffiliation->nIdModule = $oModule->nId;
-    		$oAffiliation->nIdChapter = $oChapter->nId;
+    		$oAffiliation->nIdChapter = $oChapter !== NULL? $oChapter->nId : 0;
     		
     		$oAffiliation->update();
     	
@@ -221,6 +281,62 @@ class Group extends \Iiigel\Controller\StaticPage {
     		throw new \Exception(_('error.permission'));
     	}
     }
+    
+    /**
+     * Adds a module to a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     */
+    public function addModule($_sHashId = NULL) {
+    	if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdModule'])) && ($this->hasGroupEditPermission($_sHashId))) {
+    		$oGroup = new \Iiigel\Model\Group($_sHashId);
+    		$oModule = new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']);
+    		
+    		$nIdGroup = $GLOBALS['oDb']->escape($oGroup->nId);
+    		$nIdModule = $GLOBALS['oDb']->escape($oModule->nId);
+    		
+    		$nUpdate = $GLOBALS['oDb']->escape(standardized_time());
+    		$nIdUpdater = $GLOBALS['oDb']->escape($GLOBALS['oUserLogin']->nId);
+    		
+    		$oResult = $GLOBALS['oDb']->query('SELECT `nId` FROM `module2group` WHERE `nIdGroup` = '.$nIdGroup.' AND `nIdModule` = '.$nIdModule.' LIMIT 1');
+    		
+    		if ($GLOBALS['oDb']->count($oResult) > 0) {
+    			$nIdEntry = $GLOBALS['oDb']->get($oResult)['nId'];
+    			
+    			$GLOBALS['oDb']->query('UPDATE `module2group` SET `bDeleted` = 0, `nUpdate` = '.$nUpdate.', `nIdUpdater` = '.$nIdUpdater.' WHERE `nId` = '.$nIdEntry);
+    		} else {
+    			$GLOBALS['oDb']->query('INSERT INTO `module2group` (`bDeleted`, `nCreate`, `nUpdate`, `nIdCreator`, `nIdUpdater`, `nIdModule`, `nIdGroup`) VALUES (0,'.$nUpdate.',0,'.$nIdUpdater.',0,'.$nIdModule.','.$nIdGroup.')');
+    		}
+    		
+    		$this->redirect(URL.'Group/'.$_sHashId);
+    	} else {
+    		throw new \Exception(_('error.permission'));
+    	}
+    }
+
+	/**
+     * Removes a module from a group
+     *
+     * @param string $_sHashId hashed string represents the group
+     */
+	public function removeModule($_sHashId = NULL) {
+		if (($_sHashId != NULL) && (isset($GLOBALS['aRequest']['sHashIdModule'])) && ($this->hasGroupEditPermission($_sHashId))) {
+    		$oGroup = new \Iiigel\Model\Group($_sHashId);
+    		$oModule = new \Iiigel\Model\Module($GLOBALS['aRequest']['sHashIdModule']);
+    		
+    		$nIdGroup = $GLOBALS['oDb']->escape($oGroup->nId);
+    		$nIdModule = $GLOBALS['oDb']->escape($oModule->nId);
+    		
+    		$nUpdate = $GLOBALS['oDb']->escape(standardized_time());
+    		$nIdUpdater = $GLOBALS['oDb']->escape($GLOBALS['oUserLogin']->nId);
+    		
+    		$GLOBALS['oDb']->query('UPDATE `module2group` SET `bDeleted` = 1, `nUpdate` = '.$nUpdate.', `nIdUpdater` = '.$nIdUpdater.' WHERE `nIdGroup` = '.$nIdGroup.' AND `nIdModule` = '.$nIdModule);
+    		
+    		$this->redirect(URL.'Group/'.$_sHashId);
+    	} else {
+    		throw new \Exception(_('error.permission'));
+    	}
+	}
 
 }
 

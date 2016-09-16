@@ -55,14 +55,19 @@ class User extends \Iiigel\Model\GenericModel {
                 } else {
                     if($this->setId($GLOBALS['oDb']->getLastId())) {
                         if($this->load()) {
-                            if($GLOBALS['oDb']->query('UPDATE `user` SET sHashId = '.$GLOBALS['oDb']->escape($this->hashId()).' WHERE nId = '.$this->nId.' LIMIT 1')) {
-                                $this->addAffiliation($_sHashId);
+                        	$sNewHashId = $this->hashId();
+                        	
+                            if($GLOBALS['oDb']->query('UPDATE `user` SET sHashId = '.$GLOBALS['oDb']->escape($sNewHashId).' WHERE nId = '.$this->nId.' LIMIT 1')) {
+                            	$GLOBALS['oUserLogin'] = $this;
+                            	
+                            	$this->addAffiliation($_sHashId);
+                            	
                                 $oMail = new \Iiigel\Generic\Mail();
                                 try {
                                     $oMail->send(
                                         $this->sMail,
                                         _('mail.reg.subject'),
-                                        sprintf(_('mail.reg.message'), $this->sHashId, (URL.'html/activate/'.$this->sHashId))
+                                        sprintf(_('mail.reg.message'), $sNewHashId, (URL.'html/activate/'.$sNewHashId))
                                     );
                                     return TRUE;
                                 } catch(\Exception $oException) {
@@ -95,6 +100,7 @@ class User extends \Iiigel\Model\GenericModel {
             $aModelExistent = array();
             $oAffiliation = NULL;
             $sId = '';
+            
             if($_sHashId{0} == 'i') {
                 $oModel = new \Iiigel\Model\Institution($_sHashId);
                 $aModelExistent = $this->getInstitutions();
@@ -106,6 +112,7 @@ class User extends \Iiigel\Model\GenericModel {
                 $oAffiliation = new \Iiigel\Model\GroupAffiliation();
                 $sId = 'nIdGroup';
             }
+            
             if($oModel !== NULL && $oModel->load()) {
                 foreach($aModelExistent as $oModelExistent) {
                     if($oModelExistent->nId == $oModel->nId) {
@@ -116,7 +123,23 @@ class User extends \Iiigel\Model\GenericModel {
                     'nIdUser' => $this->nId,
                     $sId => $oModel->nId
                 ));
+                
+                $GLOBALS['bAutoPermission'] = true;
+                
+                if ($sId === 'nIdGroup') {
+                	$oAdditionalAffiliation = new \Iiigel\Model\InstitutionAffiliation();
+                	 
+                	$oAdditionalAffiliation->setData(array(
+                		'nIdUser' => $this->nId,
+                		'nIdInstitution' => $oModel->nIdInstitution
+                	));
+                	 
+                	$oAdditionalAffiliation->create();
+                }
+                
                 $oAffiliation->create();
+                
+                $GLOBALS['bAutoPermission'] = false;
             }
         }
     }
@@ -190,7 +213,7 @@ class User extends \Iiigel\Model\GenericModel {
     public function login($_sMail = NULL, $_sPassword = NULL, $_sHashId = NULL) {
         if($_sMail !== NULL && $_sPassword !== NULL) {
             //first, check if it should be a register call ...
-            $aMailCount = $GLOBALS['oDb']->getOneRow('SELECT COUNT(*) AS nCount FROM `user` WHERE sMail = '.$GLOBALS['oDb']->escape($_sMail));
+            $aMailCount = $GLOBALS['oDb']->getOneRow('SELECT COUNT(*) AS nCount FROM `user` WHERE sMail = '.$GLOBALS['oDb']->escape($_sMail).' AND NOT bDeleted');
             if($aMailCount['nCount'] == 0) {
                 return NULL;
             }
@@ -262,6 +285,10 @@ class User extends \Iiigel\Model\GenericModel {
      * @return boolean true if allowed, false otherwise
      */
     protected function changesAllowed() {
+    	if ($GLOBALS['bAutoPermission']) {
+    		return TRUE;
+    	}
+    	
         return isset($GLOBALS['oUserLogin']) && ($this->nId == $GLOBALS['oUserLogin']->nId || $GLOBALS['oUserLogin']->bAdmin);
     }
     

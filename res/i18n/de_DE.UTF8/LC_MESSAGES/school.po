@@ -167,6 +167,9 @@ msgstr "Änderungen speichern"
 msgid "add"
 msgstr "Hinzufügen"
 
+msgid "addusers"
+msgstr "Benutzer hinzufügen"
+
 msgid "remove"
 msgstr "Entfernen"
 
@@ -206,7 +209,10 @@ msgid "mode.interpretation.fullscreen"
 msgstr "Code-Modus als Vollbild"
 
 msgid "mode.handin"
-msgstr "abgeben"
+msgstr "Abgeben"
+
+msgid "mode.continue"
+msgstr "Weiter"
 
 msgid "mode.helpwanted"
 msgstr "Hilfe anfordern"
@@ -248,7 +254,7 @@ msgid "mail.reg.subject"
 msgstr "E-Mail-Validierung für die Registrierung"
 
 msgid "mail.reg.message"
-msgstr "Hallo und herzlich willkommen, bitte validieren Sie folgenden Code: %s %s"
+msgstr "<html><body><p>Hallo und herzlich willkommen, bitte validieren Sie folgenden Code: <b>%s</b><br><a href='%s'>Klicke hier</a></p></body></html>"
 
 # #####################
 # INSTITUTION
@@ -258,6 +264,15 @@ msgstr "Neue Institution erstellen"
 
 msgid "institution.nameexample"
 msgstr "z.B. Gymnasium am Geroweiher"
+
+# #####################
+# USER2INSTITUTION
+# #####################
+
+msgid "user2institution.member"
+msgid_plural "user2institution.member.plural"
+msgstr[0] "Institutionsmitglied"
+msgstr[1] "Institutionsmitglieder"
 
 # #####################
 # GROUP

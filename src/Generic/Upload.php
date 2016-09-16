@@ -45,6 +45,10 @@ class Upload {
     		}
     	}
     	
+    	if ((!file_exists($_sTmpName)) || (file_exists($GLOBALS['aConfig']['sUploadDir'].$_sName))) {
+    		return false;
+    	}
+    	
     	return move_uploaded_file($_sTmpName, $GLOBALS['aConfig']['sUploadDir'].$_sName);
     }
     

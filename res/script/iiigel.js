@@ -18,10 +18,10 @@ $(function() {
         
         //setup other heights
         $('#iiigel-cloud, #iiigel-interpreter, #iiigel-chapter').height(nHeightAvailable - nHeightEditor);
-        var nHeightControls = Math.ceil($('#iiigel-controls').outerHeight());
+        /*var nHeightControls = Math.ceil($('#iiigel-controls').outerHeight());
         if($('#iiigel-module').height() > 120 && (nHeightAvailable - nHeightControls) > 120) {
             $('#iiigel-module').css('maxHeight', (nHeightAvailable - nHeightControls) + 'px');
-        }
+        }*/
     }
     
     

@@ -359,11 +359,17 @@ abstract class GenericModel implements \JsonSerializable {
      * @return boolean true if allowed, false otherwise
      */
     protected function changesAllowed() {
-        if($GLOBALS['oUserLogin']->bAdmin) {
-            return TRUE;
-        } elseif(isset($GLOBALS['oUserLogin'])) {
-            return $GLOBALS['oDb']->count($GLOBALS['oDb']->query('SELECT * FROM `right` WHERE nIdUser = '.$GLOBALS['oUserLogin']->nId.' AND eType = '.$GLOBALS['oDb']->escape($this::TABLE).' AND nIdType = '.$GLOBALS['oDb']->escape($this->nId))) > 0;
-        } else {
+    	if ($GLOBALS['bAutoPermission']) {
+    		return TRUE;
+    	}
+    	
+    	if (isset($GLOBALS['oUserLogin'])) {
+    		if($GLOBALS['oUserLogin']->bAdmin) {
+		        return TRUE;
+		    } else {
+		        return $GLOBALS['oDb']->count($GLOBALS['oDb']->query('SELECT * FROM `right` WHERE nIdUser = '.$GLOBALS['oUserLogin']->nId.' AND eType = '.$GLOBALS['oDb']->escape($this::TABLE).' AND nIdType = '.$GLOBALS['oDb']->escape($this->nId))) > 0;
+		    }
+    	} else {
             return FALSE;
         }
     }

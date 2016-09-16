@@ -69,11 +69,7 @@ class Mail {
             }
             return $aReturn;
         } else {
-            $aEnvelope = array(
-                'from' => $GLOBALS['aConfig']['aMail']['sAddress'],
-                'to' => trim($_mRecipient),
-                'subject' => $_sSubject
-            );
+			
             $aBody = array();
             if(count($_mAttachment) > 0) {
                 $aBody[] = array(
@@ -81,12 +77,6 @@ class Mail {
                     'subtype' => 'mixed'
                 );
             }
-            $aBody[] = array(
-                'type' => TYPETEXT,
-                'subtype' => 'plain',
-                'description' => 'message_text',
-                'contents.data' => $_sMessage
-            );
             for($i = 0; $i < count($_mAttachment); $i++) {
                 if(is_file($_mAttachment[$i]) && is_readable($_mAttachment[$i])) {
                     list($sFile) = explode('/', strrev(str_replace('\\', '/', $_mAttachment[$i])), 2);
@@ -106,7 +96,10 @@ class Mail {
                     );
                 }
             }
-            return mail($_mRecipient, $_sSubject, imap_mail_compose($aEnvelope, $aBody));
+			$header  = 'MIME-Version: 1.0' . "\r\n";
+			$header .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+            
+            return mail($_mRecipient, $_sSubject,$_sMessage,$header);
         }
     }
 }

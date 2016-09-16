@@ -95,6 +95,7 @@ class Iiigel extends \Iiigel\Controller\StaticPage {
             $this->oView->nEditorWaitTime = $GLOBALS['aConfig']['nEditorWaitTime'];
             $this->oView->bHandin = FALSE;
             $this->oView->oHandin = NULL;
+			$this->oView->icurrentuserprogress = $this->oModule->getCurrentChapterProgressOrder($GLOBALS['oUserLogin']->nId);
             $this->loadFile('iiigel');
         } else {
             throw new \Exception(sprintf(_('error.objectload'), $_sHashId));
